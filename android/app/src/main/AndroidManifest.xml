@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mobitrack_dv_flutter">
    <application
-        android:label="mobitrack_dv_flutter"
+        android:label="Mobitrack DV"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
