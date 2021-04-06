@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/view/location_status.dart';
@@ -23,6 +24,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.logout),
+          onPressed: () {
+            Get.find<AuthController>().setLoggedInData(false);
+          },
+        ),
         appBar: AppBar(
           title: const Text('Mobitrack'),
           actions: [
