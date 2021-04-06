@@ -4,6 +4,7 @@ import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller_bindings.dart';
 import 'package:mobitrack_dv_flutter/view/home.dart';
 import 'package:mobitrack_dv_flutter/view/login.dart';
+import 'package:mobitrack_dv_flutter/view/register/register_sales_officer.dart';
 
 void main() {
   runApp(MyApp());
