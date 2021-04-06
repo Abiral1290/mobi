@@ -22,7 +22,8 @@ class DatabaseHelper {
 
   // this opens the database (and creates it if it doesn't exist)
   _initDatabase() async {
-    var path = await getDatabasesPath() + _databaseName;
+    var x = await getDatabasesPath();
+    var path = await getDatabasesPath() +'/'+ _databaseName;
     return await openDatabase(path,
         version: _databaseVersion, onCreate: _onCreate);
   }
