@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller_bindings.dart';
-import 'package:mobitrack_dv_flutter/view/home.dart';
+import 'package:mobitrack_dv_flutter/view/login.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       initialBinding: ControllerBindings(),
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
