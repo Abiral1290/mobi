@@ -113,7 +113,6 @@ class Utilities {
       DialogAction addionalAction,
       Widget additional,
       bool canclose = true,
-      
       bool dismissable}) async {
     return await showDialog(
       barrierDismissible: dismissable == null ? false : dismissable,
@@ -156,7 +155,7 @@ class Utilities {
                 ),
                 content: Text(body),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: additional != null
                         ? additional
                         : canclose
@@ -172,7 +171,7 @@ class Utilities {
                     },
                   ),
                   if (addionalAction != null)
-                    FlatButton(
+                    TextButton(
                       child: Text(addionalAction.label),
                       onPressed: addionalAction.onPressed,
                     ),

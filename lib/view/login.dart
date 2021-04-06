@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/call_server.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     getCallServerNumber().then((value) {
-      if (value.isNotEmpty)
+      if (value.isNotEmpty) if (this.mounted)
         setState(() => _callServerNum = value);
       else {}
     });
@@ -47,9 +49,11 @@ class _LoginPageState extends State<LoginPage> {
     if (res) {
       Utilities.showInToast("Validation Success!",
           toastType: ToastType.SUCCESS);
+      Get.find<AuthController>().setLoggedInData(true);
     } else {
       Utilities.showInToast("Couldn't validate your number. Please try again",
           toastType: ToastType.ERROR);
+      Get.find<AuthController>().setLoggedInData(false);
     }
 
     Navigator.pop(context);
