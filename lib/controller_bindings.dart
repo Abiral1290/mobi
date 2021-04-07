@@ -8,6 +8,6 @@ class ControllerBindings implements Bindings {
   void dependencies() {
     Get.put<PreferenceController>(PreferenceController(), permanent: true);
     Get.put<AuthController>(AuthController(), permanent: true);
-    Get.lazyPut<LocationController>(() => LocationController());
+    Get.put<LocationController>(LocationController());
   }
 }

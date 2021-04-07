@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:background_location/background_location.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
@@ -11,10 +10,38 @@ import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 class LocationController extends GetxController {
   List<LocationModel> locationList;
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  Timer timer;
+  Position userPosition;
+  StreamSubscription<Position> positionStream;
 
   LocationController() {
     getLocationData();
+    getCurrentPosition();
+  }
+
+  getPositionStream() async {
+    positionStream = Geolocator.getPositionStream().listen((Position position) {
+      if (position != null) {
+        LocationModel model = LocationModel(
+          id: Random().nextInt(100).toString(),
+          latitude: position.latitude,
+          longitude: position.longitude,
+          time: position.timestamp.toString(),
+        );
+        Get.find<LocationController>().addLocation(model);
+
+        position = position;
+        update();
+      }
+    });
+  }
+
+  getCurrentPosition() {
+    Geolocator.getCurrentPosition().then((value) {
+      if (value != null) {
+        userPosition = value;
+        update();
+      }
+    });
   }
 
   startLocationService() async {
@@ -24,58 +51,33 @@ class LocationController extends GetxController {
       icon: "@mipmap/ic_launcher",
     );
     await BackgroundLocation.setAndroidConfiguration(1000);
-    await BackgroundLocation.startLocationService(distanceFilter: 0)
-        .then((value) {
-      print(value.toString());
-    });
-    Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.bestForNavigation,
-    ).then((value) {
-      if (value != null) {
-        LocationModel model = LocationModel(
-          id: Random().nextInt(100).toString(),
-          latitude: value.latitude,
-          longitude: value.longitude,
-          time: value.timestamp.toString(),
-        );
-        Get.find<LocationController>().addLocation(model);
-      }
-    });
-    timer = Timer.periodic(Duration(seconds: 20), (timer) {
-      print("Timer started");
-      BackgroundLocation().getCurrentLocation().then((location) {
-        Get.showSnackbar(GetBar(
-          title: "Running",
-          message: "",
-          messageText: Text(DateTime.now().toString()),
-          duration: Duration(seconds: 1),
-        ));
+    await BackgroundLocation.startLocationService(distanceFilter: 0);
 
-        LocationModel model = LocationModel(
-          id: Random().nextInt(100).toString(),
-          latitude: location.latitude,
-          longitude: location.longitude,
-          time: location.time.toString(),
-        );
-        Get.find<LocationController>().addLocation(model);
+    getPositionStream();
 
-        print("""\n
-                          Latitude:  ${location.latitude}
-                          Longitude: ${location.longitude}
-                          Altitude: ${location.altitude}
-                          Accuracy: ${location.accuracy}
-                          Bearing:  ${location.bearing}
-                          Speed: ${location.speed}
-                          Time: ${location.time}
-                        """);
-      });
-      print("Running: ${DateTime.now()}");
-    });
+    // timer = Timer.periodic(Duration(seconds: 20), (timer) {
+    //   print("Timer started");
+
+    //   getCurrentLocation().then((value) {
+    //     if (value != null) {
+    //       LocationModel model = LocationModel(
+    //         id: Random().nextInt(100).toString(),
+    //         latitude: value.latitude,
+    //         longitude: value.longitude,
+    //         time: value.timestamp.toString(),
+    //       );
+    //       Get.find<LocationController>().addLocation(model);
+    //     }
+    //   });
+
+    //   print("Running: ${DateTime.now()}");
+    // });
   }
 
   stopBackgroundLocationService() {
     BackgroundLocation.stopLocationService();
-    timer?.cancel();
+    // timer?.cancel();
+    positionStream.cancel();
     print("Timer cancelled");
   }
 
@@ -116,7 +118,7 @@ class LocationController extends GetxController {
   @override
   void dispose() {
     // BackgroundLocation.stopLocationService();
-    timer?.cancel();
+    // timer?.cancel();
     super.dispose();
   }
 }

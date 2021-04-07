@@ -25,11 +25,12 @@ class PreferenceController extends GetxController {
     try {
       _preferences.setBool(checkIn, checkInData).then((value) {
         if (value) isCheckedIn = checkInData;
+        update();
+        print("Checked In: $isCheckedIn");
       });
     } catch (e) {
       print("error fetching data");
     }
-    update();
   }
 
   Future<bool> getLogInValue() async {

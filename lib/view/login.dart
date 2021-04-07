@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
       Get.find<AuthController>().setLoggedInData(false);
     }
 
-    Navigator.pop(context);
+    Get.back();
   }
 
   @override
