@@ -33,12 +33,15 @@ class DrawerPage extends StatelessWidget {
                     icon: Icon(Icons.remove_red_eye),
                     onPressed: () => Get.to(() => ProfilePage())),
               ),
-              CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: Get.size.width * 0.1,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.white,
+              GestureDetector(
+                onTap: () => Get.to(() => ProfilePage()),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  radius: Get.size.width * 0.1,
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(
@@ -65,115 +68,113 @@ class DrawerPage extends StatelessWidget {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                header(),
+                Divider(
+                  thickness: 5.0,
+                ),
+                ExpansionTile(
+                  title: Center(
+                    child: Text(
+                      "Shop",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                  collapsedBackgroundColor: Colors.green,
                   children: [
-                    header(),
-                    Divider(
-                      thickness: 5.0,
-                    ),
-                    ExpansionTile(
-                      title: Center(
-                        child: Text(
-                          "Shop",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      backgroundColor: Colors.green,
-                      collapsedBackgroundColor: Colors.green,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            var res = await GeolocatorPlatform.instance
-                                .checkPermission();
+                    ElevatedButton(
+                      onPressed: () async {
+                        var res =
+                            await GeolocatorPlatform.instance.checkPermission();
 
-                            if (res == LocationPermission.whileInUse ||
-                                res == LocationPermission.always) {
-                              var res = await GeolocatorPlatform.instance
-                                  .isLocationServiceEnabled();
-                              if (!res) {
-                                Utilities.showInToast(
-                                    'Please enable location services and permision',
-                                    toastType: ToastType.INFO);
-                                await GeolocatorPlatform.instance
-                                    .openLocationSettings();
-                              } else {
-                                Get.to(() => RegisterShopPage());
-                              }
+                        if (res == LocationPermission.whileInUse ||
+                            res == LocationPermission.always) {
+                          var res = await GeolocatorPlatform.instance
+                              .isLocationServiceEnabled();
+                          if (!res) {
+                            Utilities.showInToast(
+                                'Please enable location services and permision',
+                                toastType: ToastType.INFO);
+                            await GeolocatorPlatform.instance
+                                .openLocationSettings();
+                          } else {
+                            Get.to(() => RegisterShopPage());
+                          }
 
-                              // setState(() {
-                              //   userPos = pos;
-                              //   _locationChecked = true;
-                              // });
-                            } else {
-                              Utilities.showInToast(
-                                  'Please enable location services and permision',
-                                  toastType: ToastType.INFO);
-                              await GeolocatorPlatform.instance
-                                  .requestPermission();
-                            }
-                          },
-                          child: Text("Register Shop"),
-                          style: expandedButtonStyle,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("View Shop"),
-                          style: expandedButtonStyle,
-                        ),
-                      ],
+                          // setState(() {
+                          //   userPos = pos;
+                          //   _locationChecked = true;
+                          // });
+                        } else {
+                          Utilities.showInToast(
+                              'Please enable location services and permision',
+                              toastType: ToastType.INFO);
+                          await GeolocatorPlatform.instance
+                              .openLocationSettings();
+                          await GeolocatorPlatform.instance.requestPermission();
+                        }
+                      },
+                      child: Text("Register Shop"),
+                      style: expandedButtonStyle,
                     ),
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text("Sell Product"),
-                      style: buttonStyle,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Add Entry"),
-                      style: buttonStyle,
-                    ),
-                    ExpansionTile(
-                      title: Center(
-                        child: Text(
-                          "Report",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      backgroundColor: Colors.green,
-                      collapsedBackgroundColor: Colors.green,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Sales Report"),
-                          style: expandedButtonStyle,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Attandance"),
-                          style: expandedButtonStyle,
-                        ),
-                      ],
+                      child: Text("View Shop"),
+                      style: expandedButtonStyle,
                     ),
                   ],
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.find<AuthController>().setLoggedInData(false);
-                  },
-                  child: Text("Logout"),
-                  style: buttonStyle.copyWith(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red[900]),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text("Sell Product"),
+                  style: buttonStyle,
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text("Add Entry"),
+                  style: buttonStyle,
+                ),
+                ExpansionTile(
+                  title: Center(
+                    child: Text(
+                      "Report",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                  collapsedBackgroundColor: Colors.green,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Sales Report"),
+                      style: expandedButtonStyle,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Attandance"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: () {
+                    //TODO: logout
+                    //TODO: Get.find<AuthController>().setLoggedInData(false);
+                    },
+                    child: Text("Logout"),
+                    style: buttonStyle.copyWith(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red[900]),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -47,13 +47,10 @@ class _LoginPageState extends State<LoginPage> {
     var res = await callServerVerify(_userNUmber, _callServerNum);
 
     if (res) {
-      Utilities.showInToast("Validation Success!",
-          toastType: ToastType.SUCCESS);
-      Get.find<AuthController>().setLoggedInData(true);
+      await Get.find<AuthController>().signIn(_userNUmber);
     } else {
       Utilities.showInToast("Couldn't validate your number. Please try again",
           toastType: ToastType.ERROR);
-      Get.find<AuthController>().setLoggedInData(false);
     }
 
     Get.back();
