@@ -185,7 +185,8 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       SizedBox(
                         height: Get.size.height * 0.02,
                       ),
-                      Center(
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
                         child: Text(
                           "Warning: Please fill form if and only if you are in that shop.",
                           style: TextStyle(
@@ -198,24 +199,24 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       SizedBox(
                         height: Get.size.height * 0.02,
                       ),
-                      Center(
-                        child: Text(
-                          Get.find<LocationController>()
-                                  .userPosition
-                                  .latitude
-                                  .toString() +
-                              ", " +
-                              Get.find<LocationController>()
-                                  .userPosition
-                                  .longitude
-                                  .toString(),
-                          style: TextStyle(
-                            color: Colors.red[900],
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      // Center(
+                      //   child: Text(
+                      //     Get.find<LocationController>()
+                      //             .userPosition
+                      //             .latitude
+                      //             .toString() +
+                      //         ", " +
+                      //         Get.find<LocationController>()
+                      //             .userPosition
+                      //             .longitude
+                      //             .toString(),
+                      //     style: TextStyle(
+                      //       color: Colors.red[900],
+                      //       fontStyle: FontStyle.italic,
+                      //       fontWeight: FontWeight.bold,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   );
           },

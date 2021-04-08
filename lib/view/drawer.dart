@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/register/register_shop.dart';
 
 class DrawerPage extends StatelessWidget {
@@ -14,7 +16,6 @@ class DrawerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget header() {
       return Container(
-        height: Get.size.height * 0.2,
         child: Center(
           child: Column(
             children: [
@@ -60,8 +61,34 @@ class DrawerPage extends StatelessWidget {
                       thickness: 5.0,
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => RegisterShopPage());
+                      onPressed: () async {
+                        var res =
+                            await GeolocatorPlatform.instance.checkPermission();
+
+                        if (res == LocationPermission.whileInUse ||
+                            res == LocationPermission.always) {
+                          var res = await GeolocatorPlatform.instance
+                              .isLocationServiceEnabled();
+                          if (!res) {
+                            Utilities.showInToast(
+                                'Please enable location services and permision',
+                                toastType: ToastType.INFO);
+                            await GeolocatorPlatform.instance
+                                .openLocationSettings();
+                          } else {
+                            Get.to(() => RegisterShopPage());
+                          }
+
+                          // setState(() {
+                          //   userPos = pos;
+                          //   _locationChecked = true;
+                          // });
+                        } else {
+                          Utilities.showInToast(
+                              'Please enable location services and permision',
+                              toastType: ToastType.INFO);
+                          await GeolocatorPlatform.instance.requestPermission();
+                        }
                       },
                       child: Text("Register Shop"),
                       style: buttonStyle,
