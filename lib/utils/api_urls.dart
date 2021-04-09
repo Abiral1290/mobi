@@ -2,6 +2,7 @@ class ApiUrls {
   static final String _mainUrl = 'http://202.52.240.148:8092/';
   static final String _endPoint = _mainUrl + 'dv_group/public/api/';
   static final String login = _endPoint + 'login';
+  static final String outlets = _endPoint + 'outlets';
 
   /*
       CallServer URLs

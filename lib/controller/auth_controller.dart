@@ -48,4 +48,11 @@ class AuthController extends GetxController {
       return 'Unknown error occured';
     }
   }
+
+  void logout() async {
+    await Get.find<PreferenceController>().clear();
+    _officer = null;
+    isLoggedIn = false;
+    update();
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 
@@ -6,6 +7,7 @@ class DatabaseHelper {
   static final _databaseVersion = 1;
 
   static final locationTable = 'location';
+  static final outletsTable = 'outlets';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -22,7 +24,7 @@ class DatabaseHelper {
 
   // this opens the database (and creates it if it doesn't exist)
   _initDatabase() async {
-    var path = await getDatabasesPath() +'/'+ _databaseName;
+    var path = await getDatabasesPath() + '/' + _databaseName;
     return await openDatabase(path,
         version: _databaseVersion, onCreate: _onCreate);
   }
@@ -38,6 +40,16 @@ class DatabaseHelper {
               time TEXT
               )
           ''');
+    await db.execute('''
+          CREATE TABLE $outletsTable (
+              name TEXT,
+              owner_name TEXT,
+              contact TEXT,
+              type TEXT,
+              latitude REAL,
+              longitude REAL
+              )
+          ''');
   }
 
   Future<LocationModel> insertLocationData(LocationModel locationModel) async {
@@ -45,6 +57,32 @@ class DatabaseHelper {
     await db.insert(locationTable, locationModel.toJson());
     print('inserted location data');
     return locationModel;
+  }
+
+//for outlets
+  Future<bool> insertOutlet(Outlet o) async {
+    Database db = await instance.instace;
+    var res = await db.insert(outletsTable, o.toJson());
+    print('inserted outlet data');
+    return res == 1;
+  }
+
+  Future<List<Outlet>> getAllOutletData() async {
+    Database db = await instance.instace;
+    List<Outlet> outlets = [];
+    var res = await db.query(outletsTable);
+    res.forEach((element) {
+      outlets.add(Outlet.fromJson(element));
+    });
+    print(outlets);
+    return outlets;
+  }
+
+  Future<bool> deleteOutlet(Outlet o) async {
+    Database db = await instance.instace;
+    var res =
+        await db.delete(outletsTable, where: 'name = ?', whereArgs: [o.name]);
+    return res == 1;
   }
 
   Future<List<LocationModel>> getAllLocationData() async {

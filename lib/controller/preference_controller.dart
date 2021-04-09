@@ -7,6 +7,11 @@ class PreferenceController extends GetxController {
   String user = "user";
   bool isCheckedIn = false;
 
+  clear() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    await _preferences.clear();
+  }
+
   Future<bool> getCheckInValue() async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
     try {
@@ -30,7 +35,8 @@ class PreferenceController extends GetxController {
       print(e);
     }
   }
-   Future<String> getUser() async {
+
+  Future<String> getUser() async {
     try {
       var pref = await SharedPreferences.getInstance();
       return pref.getString(user);
@@ -53,5 +59,4 @@ class PreferenceController extends GetxController {
       print("error fetching data");
     }
   }
-
 }

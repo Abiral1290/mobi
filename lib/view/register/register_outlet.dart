@@ -2,8 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
+import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
@@ -149,10 +152,13 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 80, vertical: 5),
                         child: MaterialButton(
-                          onPressed: () {
-                            FocusScope.of(context).unfocus();
+                          onPressed: () async {
+                            FocusScope.of(context).unfocus(); //dismiss keyboard
+
                             if (validateInput()) {
+                              var conn = await Utilities.isInternetWorking();
                               showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (context) {
                                     return CupertinoAlertDialog(
@@ -162,8 +168,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                           Divider(),
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                                'Registering new Sales Outlet'),
+                                            child: Text(conn
+                                                ? 'Registering new Sales Outlet'
+                                                : 'Saving offline'),
                                           ),
                                           CupertinoActivityIndicator(
                                             radius: 17,
@@ -172,6 +179,36 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                       ),
                                     );
                                   });
+                              await Future.delayed(Duration(seconds: 2));
+                              if (conn) {
+                                //online store
+                                var pos = await GeolocatorPlatform.instance
+                                    .getCurrentPosition(
+                                        desiredAccuracy:
+                                            LocationAccuracy.bestForNavigation);
+
+                                var response = await registerOutlet(Outlet(
+                                    contact: _phoneCntrl.text,
+                                    latitude: pos.latitude,
+                                    name: _nameCntrl.text,
+                                    ownerName: _ownerCntrl.text,
+                                    type: _type,
+                                    salesOfficerId:
+                                        Get.find<AuthController>().user.id,
+                                    longitude: pos.longitude));
+                                Navigator.of(context).pop();
+                                Utilities.showInToast(response.message,
+                                    toastType: response.success
+                                        ? ToastType.SUCCESS
+                                        : ToastType.ERROR);
+
+                                if (response.success) {
+                                  Navigator.of(context).pop();
+                                }
+                              } else {
+                                //TODO: offline db storage
+
+                              }
                             } else {
                               Utilities.showInToast('Please complete the form',
                                   toastType: ToastType.ERROR);

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
-import 'package:mobitrack_dv_flutter/view/register/register_shop.dart';
+import 'package:mobitrack_dv_flutter/view/register/register_outlet.dart';
 
 class DrawerPage extends StatelessWidget {
   final ButtonStyle buttonStyle = ButtonStyle(
@@ -164,7 +164,7 @@ class DrawerPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                     //TODO: logout
-                    //TODO: Get.find<AuthController>().setLoggedInData(false);
+                    TODO: Get.find<AuthController>().logout();
                     },
                     child: Text("Logout"),
                     style: buttonStyle.copyWith(
