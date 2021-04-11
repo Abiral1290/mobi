@@ -23,6 +23,7 @@ class DrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget header() {
+      var user = Get.find<AuthController>().user;
       return Container(
         child: Center(
           child: Column(
@@ -48,14 +49,14 @@ class DrawerPage extends StatelessWidget {
                 height: Get.size.height * 0.01,
               ),
               Text(
-                "Your Name",
+                user.name,
                 style: TextStyle(fontSize: 19),
               ),
               SizedBox(
                 height: Get.size.height * 0.01,
               ),
               Text(
-                "Your Number",
+                user.phone,
                 style: TextStyle(fontSize: 25),
               ),
             ],
@@ -163,8 +164,9 @@ class DrawerPage extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
-                    //TODO: logout
-                    TODO: Get.find<AuthController>().logout();
+                      //TODO: logout
+                      TODO:
+                      Get.find<AuthController>().logout();
                     },
                     child: Text("Logout"),
                     style: buttonStyle.copyWith(

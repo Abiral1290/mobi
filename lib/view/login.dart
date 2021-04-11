@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  showLoading() async {
+  showLoadingandCheckAPI() async {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -42,18 +42,30 @@ class _LoginPageState extends State<LoginPage> {
               actions: <Widget>[],
             ));
 
-    await Future.delayed(Duration(seconds: 7));
+    await Future.delayed(Duration(seconds: 24));
 
     var res = await callServerVerify(_userNUmber, _callServerNum);
+    Get.back();
 
     if (res) {
       await Get.find<AuthController>().signIn(_userNUmber);
     } else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+                title: new Text("Error"),
+                content: new Text("Session Expired. Please call again"),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: Text('Close'),
+                    onPressed: () => Get.back(),
+                  )
+                ],
+              ));
       Utilities.showInToast("Couldn't validate your number. Please try again",
           toastType: ToastType.ERROR);
     }
-
-    Get.back();
   }
 
   @override
@@ -75,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (conn) {
                       launch('tel://$_callServerNum');
 
-                      showLoading();
+                      showLoadingandCheckAPI();
                     } else {
                       Utilities.showInToast('No internet',
                           toastType: ToastType.ERROR);
