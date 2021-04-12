@@ -42,6 +42,7 @@ class DatabaseHelper {
           ''');
     await db.execute('''
           CREATE TABLE $outletsTable (
+              id INTEGER,
               name TEXT,
               owner_name TEXT,
               contact TEXT,
@@ -74,7 +75,6 @@ class DatabaseHelper {
     res.forEach((element) {
       outlets.add(Outlet.fromJson(element));
     });
-    print(outlets);
     return outlets;
   }
 
@@ -92,7 +92,6 @@ class DatabaseHelper {
     res.forEach((element) {
       location.add(LocationModel.fromJson(element));
     });
-    print(location);
     return location;
   }
 

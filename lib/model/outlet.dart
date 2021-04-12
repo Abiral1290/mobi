@@ -7,6 +7,7 @@ import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 
 class Outlet {
+  int id;
   String name;
   String ownerName;
   String contact;
@@ -14,17 +15,22 @@ class Outlet {
   int salesOfficerId;
   double latitude;
   double longitude;
+  String address;
 
-  Outlet(
-      {this.name,
-      this.ownerName,
-      this.contact,
-      this.type,
-      this.salesOfficerId,
-      this.latitude,
-      this.longitude});
+  Outlet({
+    this.id,
+    this.name,
+    this.ownerName,
+    this.contact,
+    this.type,
+    this.salesOfficerId,
+    this.latitude,
+    this.longitude,
+    this.address,
+  });
 
   Outlet.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     ownerName = json['owner_name'];
     contact = json['contact'];
@@ -32,10 +38,16 @@ class Outlet {
     salesOfficerId = json['sales_officer_id'];
     latitude = json['latitude'];
     longitude = json['longitude'];
+    var street = json['street'] != null ? json['street']['name'] + ', ' : '';
+    var area = json['area'] != null ? json['area']['name'] + ', ' : '';
+    var district = json['district'] != null ? json['district']['name'] : '';
+
+    address = '$street$area$district';
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson([bool isLocalStorage = false]) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (isLocalStorage) data['id'] = this.id;
     data['name'] = this.name;
     data['owner_name'] = this.ownerName;
     data['contact'] = this.contact;
@@ -62,6 +74,33 @@ Future<ApiResponse> registerOutlet(Outlet outlet) async {
     if (resp.statusCode == 200) {
       return ApiResponse(obj['success'], obj['message'], null);
     } else {
+      return ApiResponse(
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+    }
+  } catch (e) {
+    print(e.toString());
+    return ApiResponse(false, e.toString(), null);
+  }
+}
+
+Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
+  var headers = {
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Accept': 'application/json'
+  };
+
+  try {
+    var res = await http.get(Uri.parse(ApiUrls.outlets), headers: headers);
+    Map<String, dynamic> obj = json.decode(res.body);
+
+    if (res.statusCode == 200) {
+      final data = obj["data"].cast<Map<String, dynamic>>();
+      List<Outlet> outlets = await data.map<Outlet>((json) {
+        return Outlet.fromJson(json);
+      }).toList();
+      return ApiResponse(true, obj['message'], outlets);
+    } else {
+      print(obj);
       return ApiResponse(
           obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
     }

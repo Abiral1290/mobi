@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/call_server.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
               actions: <Widget>[],
             ));
 
-    await Future.delayed(Duration(seconds: 24));
+    await Future.delayed(Duration(seconds: Constants.callWaitSec));
 
     var res = await callServerVerify(_userNUmber, _callServerNum);
     Get.back();

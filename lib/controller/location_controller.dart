@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
+import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationController extends GetxController {
   List<LocationModel> locationList;
@@ -13,9 +14,29 @@ class LocationController extends GetxController {
   Position userPosition;
   StreamSubscription<Position> positionStream;
 
+  // LocationController() {
+  //   getLocationData();
+  //   getCurrentPosition();
+  // }
+
   LocationController() {
-    getLocationData();
-    getCurrentPosition();
+    Geolocator.checkPermission().then((value) {
+      if (value == LocationPermission.always ||
+          value == LocationPermission.whileInUse) {
+        getLocationData();
+        getCurrentPosition();
+      } else {
+        Utilities.showInToast('Please enable location permission',
+            toastType: ToastType.INFO);
+        GeolocatorPlatform.instance.requestPermission().then((value) {
+          if (value == LocationPermission.always ||
+              value == LocationPermission.whileInUse) {
+            getLocationData();
+            getCurrentPosition();
+          }
+        });
+      }
+    });
   }
 
   getPositionStream() async {

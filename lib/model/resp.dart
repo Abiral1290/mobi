@@ -1,7 +1,7 @@
-class ApiResponse {
+class ApiResponse<T> {
   final bool success;
   final String message;
-  final dynamic response;
+  final T response;
 
   ApiResponse(this.success, this.message, this.response);
 }

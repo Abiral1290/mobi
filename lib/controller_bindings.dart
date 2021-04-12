@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 
 class ControllerBindings implements Bindings {
   @override
@@ -9,5 +11,7 @@ class ControllerBindings implements Bindings {
     Get.put<PreferenceController>(PreferenceController(), permanent: true);
     Get.put<AuthController>(AuthController(), permanent: true);
     Get.put<LocationController>(LocationController());
+    Get.lazyPut<ProductsController>(() => ProductsController());
+    Get.lazyPut<OutletsController>(() => OutletsController());
   }
 }

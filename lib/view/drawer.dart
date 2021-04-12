@@ -3,8 +3,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
+import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
-import 'package:mobitrack_dv_flutter/view/register/register_outlet.dart';
+import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
 
 class DrawerPage extends StatelessWidget {
   final ButtonStyle buttonStyle = ButtonStyle(
@@ -104,11 +106,6 @@ class DrawerPage extends StatelessWidget {
                           } else {
                             Get.to(() => RegisterShopPage());
                           }
-
-                          // setState(() {
-                          //   userPos = pos;
-                          //   _locationChecked = true;
-                          // });
                         } else {
                           Utilities.showInToast(
                               'Please enable location services and permision',
@@ -122,22 +119,49 @@ class DrawerPage extends StatelessWidget {
                       style: expandedButtonStyle,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => Get.to(() => ViewOutletsPage()),
                       child: Text("View Shop"),
                       style: expandedButtonStyle,
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Sell Product"),
-                  style: buttonStyle,
+                SizedBox(height: Get.size.height * 0.01),
+                // ElevatedButton(
+                //   onPressed: () {},
+                //   child: Text("Sell Product"),
+                //   style: buttonStyle,
+                // ),
+                // ElevatedButton(
+                //   onPressed: () {},
+                //   child: Text("Add Entry"),
+                //   style: buttonStyle,
+                // ),
+                ExpansionTile(
+                  title: Center(
+                    child: Text(
+                      "Products",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                  collapsedBackgroundColor: Colors.green,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => ViewProductsPage());
+                      },
+                      child: Text("View Products"),
+                      style: expandedButtonStyle,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Sell Products"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Add Entry"),
-                  style: buttonStyle,
-                ),
+                SizedBox(height: Get.size.height * 0.01),
+
                 ExpansionTile(
                   title: Center(
                     child: Text(
@@ -160,12 +184,13 @@ class DrawerPage extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: Get.size.height * 0.01),
+
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
                       //TODO: logout
-                      TODO:
                       Get.find<AuthController>().logout();
                     },
                     child: Text("Logout"),

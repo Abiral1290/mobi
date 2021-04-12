@@ -1,3 +1,5 @@
+import 'distributor.dart';
+
 class SalesOfficer {
   int id;
   String name;
@@ -12,6 +14,7 @@ class SalesOfficer {
   int salesSupervisorId;
   String apiToken;
   String phone;
+  List<Distributor> distributors;
 
   SalesOfficer(
       {this.id,
@@ -26,7 +29,8 @@ class SalesOfficer {
       this.marketingManagerId,
       this.salesSupervisorId,
       this.apiToken,
-      this.phone});
+      this.phone,
+      this.distributors});
 
   SalesOfficer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -42,6 +46,12 @@ class SalesOfficer {
     salesSupervisorId = json['sales_supervisor_id'];
     apiToken = json['api_token'];
     phone = json['phone'];
+    if (json['distributors'] != null) {
+      distributors = new List<Distributor>();
+      json['distributors'].forEach((v) {
+        distributors.add(new Distributor.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -1,5 +1,6 @@
 class Constants {
   static final String callServerToken = 'abcdefghij';
+  static final int callWaitSec = 22;
 }
 
 class SellerType {

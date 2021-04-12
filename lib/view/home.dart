@@ -74,7 +74,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
             body: Center(
-              child: Text('This is home page'),
+              child: Text(
+                'You are near: Khadka Store',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
           );
         },

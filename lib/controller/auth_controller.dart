@@ -21,6 +21,7 @@ class AuthController extends GetxController {
       if (value != null) {
         isLoggedIn = true;
         _officer = SalesOfficer.fromJson(json.decode(value));
+        print(_officer.toJson());
         update();
       }
     });
@@ -35,6 +36,7 @@ class AuthController extends GetxController {
         if (obj['success']) {
           Get.find<PreferenceController>().saveUser(json.encode(obj['data']));
           isLoggedIn = true;
+          _officer = SalesOfficer.fromJson(obj['data']);
           update();
           return SalesOfficer.fromJson(obj['data']);
         }
