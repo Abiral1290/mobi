@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
+import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -20,6 +21,7 @@ class SellProductPage extends StatelessWidget {
   int quantity = 0;
   var selectedOutlet = Outlet().obs;
   Sales sales = Sales();
+  var distributor = Get.find<AuthController>().user.distributors.first.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +75,35 @@ class SellProductPage extends StatelessWidget {
                     });
           },
         ),
+      );
+    }
+
+    Widget buildDistributorDropdown() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Select Distributor"),
+          SizedBox(
+            width: Get.size.width * 0.1,
+          ),
+          Obx(
+            () => DropdownButton<Distributor>(
+              hint: Text(distributor.value.name),
+              items: Get.find<AuthController>().user.distributors.map((value) {
+                return DropdownMenuItem<Distributor>(
+                    value: value,
+                    child: Text(
+                      value.name,
+                      style: TextStyle(color: Colors.black),
+                    ));
+              }).toList(),
+              onChanged: (Distributor dist) {
+                distributor.value = dist;
+                sales.distributorId = dist.id;
+              },
+            ),
+          ),
+        ],
       );
     }
 
@@ -205,7 +236,7 @@ class SellProductPage extends StatelessWidget {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0))),
                   child: Container(
-                    height: Get.size.height * 0.4,
+                    height: Get.size.height * 0.2,
                     child: Column(
                       children: [
                         TextField(
@@ -221,22 +252,24 @@ class SellProductPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: Get.size.height * 0.02),
+                buildDistributorDropdown(),
                 buildQuantityField(),
                 ElevatedButton(
-                    onPressed: () {
-                      sales.distributorId =
-                          Get.find<AuthController>().user.distributors.first.id;
-                      sales.batchId = batches.id;
-                      sales.productId = products.id;
-                      sales.soldAt = DateTime.now().toString();
-                      print(sales.toJson());
-                      Get.find<ProductsController>().sellProducts(sales);
-                      Utilities.showPlatformSpecificAlert(
-                          title: "Please wait",
-                          body: "Your Transaction is being processed",
-                          context: context);
-                    },
-                    child: Text("Save"))
+                  onPressed: () {
+                    // sales.distributorId =
+                    //     Get.find<AuthController>().user.distributors.first.id;
+                    sales.batchId = batches.id;
+                    sales.productId = products.id;
+                    sales.soldAt = DateTime.now().toString();
+                    print(sales.toJson());
+                    Get.find<ProductsController>().sellProducts(sales);
+                    Utilities.showPlatformSpecificAlert(
+                        title: "Please wait",
+                        body: "Your Transaction is being processed",
+                        context: context);
+                  },
+                  child: Text("Save"),
+                )
               ],
             ),
           ),

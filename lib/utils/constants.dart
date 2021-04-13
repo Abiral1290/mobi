@@ -9,3 +9,13 @@ class SellerType {
   static final retailer = 'RETAILER';
   static final hawcker = 'HAWCKER';
 }
+
+class PaymentMode {
+  static final cash = 'CASH';
+  static final cheque = 'CHEQUE';
+}
+
+class AccountOf {
+  static final gsi = 'GSI';
+  static final gnp = 'GNP';
+}

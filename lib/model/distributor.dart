@@ -4,8 +4,8 @@ class Distributor {
   String email;
   String contact;
   String location;
-  String latitude;
-  String longitude;
+  double latitude;
+  double longitude;
 
   Distributor(
       {this.id,

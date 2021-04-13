@@ -7,6 +7,7 @@ import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
+import 'package:mobitrack_dv_flutter/view/collections/add_collections.dart';
 
 class DrawerPage extends StatelessWidget {
   final ButtonStyle buttonStyle = ButtonStyle(
@@ -126,16 +127,6 @@ class DrawerPage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: Get.size.height * 0.01),
-                // ElevatedButton(
-                //   onPressed: () {},
-                //   child: Text("Sell Product"),
-                //   style: buttonStyle,
-                // ),
-                // ElevatedButton(
-                //   onPressed: () {},
-                //   child: Text("Add Entry"),
-                //   style: buttonStyle,
-                // ),
                 ExpansionTile(
                   title: Center(
                     child: Text(
@@ -161,7 +152,6 @@ class DrawerPage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: Get.size.height * 0.01),
-
                 ExpansionTile(
                   title: Center(
                     child: Text(
@@ -185,7 +175,33 @@ class DrawerPage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: Get.size.height * 0.01),
-
+                ExpansionTile(
+                  title: Center(
+                    child: Text(
+                      "Collection",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                  collapsedBackgroundColor: Colors.green,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Get.to(() => ViewProductsPage());
+                      },
+                      child: Text("View Collection"),
+                      style: expandedButtonStyle,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => AddCollectionsPage());
+                      },
+                      child: Text("Store Collection"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
+                ),
+                SizedBox(height: Get.size.height * 0.01),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
