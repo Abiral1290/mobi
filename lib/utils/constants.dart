@@ -19,3 +19,8 @@ class AccountOf {
   static final gsi = 'GSI';
   static final gnp = 'GNP';
 }
+
+class Check {
+  static final checkIn = 'IN';
+  static final checkOut = 'OUT';
+}

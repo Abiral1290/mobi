@@ -11,6 +11,7 @@ class Collection {
   String mode;
   String bankName;
   String chequeNo;
+  String chequePhoto = '';
   int amount;
   String accountOf;
   String remarks = '';
@@ -20,6 +21,7 @@ class Collection {
       this.mode,
       this.bankName = '',
       this.chequeNo = '',
+      this.chequePhoto = '',
       this.amount = 0,
       this.accountOf,
       this.remarks = ''});
@@ -29,6 +31,7 @@ class Collection {
     mode = json['mode'];
     bankName = json['bank_name'];
     chequeNo = json['cheque_no'];
+    chequePhoto = json['cheque_photo'];
     amount = json['amount'];
     accountOf = json['account_of'];
     remarks = json['remarks'];
@@ -40,6 +43,7 @@ class Collection {
     data['mode'] = this.mode;
     data['bank_name'] = this.bankName;
     data['cheque_no'] = this.chequeNo;
+    data['cheque_photo'] = this.chequePhoto;
     data['amount'] = this.amount.toString();
     data['account_of'] = this.accountOf;
     data['remarks'] = this.remarks;

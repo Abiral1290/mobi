@@ -30,18 +30,21 @@ class _LoginPageState extends State<LoginPage> {
 
   showLoadingandCheckAPI() async {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-              title: new Text("Please Wait"),
-              content: Column(
-                children: [
-                  new Text("Your call is being validated."),
-                  CupertinoActivityIndicator()
-                ],
-              ),
-              actions: <Widget>[],
-            ));
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => WillPopScope(
+          child: CupertinoAlertDialog(
+            title: new Text("Please Wait"),
+            content: Column(
+              children: [
+                new Text("Your call is being validated."),
+                CupertinoActivityIndicator()
+              ],
+            ),
+            actions: <Widget>[],
+          ),
+          onWillPop: () {}),
+    );
 
     await Future.delayed(Duration(seconds: Constants.callWaitSec));
 
@@ -97,27 +100,39 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
         backgroundColor: Colors.white,
-        body: Container(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              onChanged: (s) => _userNUmber = s,
-              maxLength: 10,
-              style: TextStyle(fontSize: 25),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              decoration: InputDecoration(
-                  labelText: "Phone Number",
-                  prefixText: '+977 ',
-                  prefixIcon: Icon(
-                    Icons.phone_android_rounded,
-                    color: Colors.black,
-                  )),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(22.0),
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/DV_logo.png'),
+                backgroundColor: Colors.black12,
+                radius: 80,
+              ),
             ),
-          ),
+            Container(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: TextField(
+                  onChanged: (s) => _userNUmber = s,
+                  maxLength: 10,
+                  style: TextStyle(fontSize: 25),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                  decoration: InputDecoration(
+                      labelText: "Phone Number",
+                      prefixText: '+977 ',
+                      prefixIcon: Icon(
+                        Icons.phone_android_rounded,
+                        color: Colors.black,
+                      )),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

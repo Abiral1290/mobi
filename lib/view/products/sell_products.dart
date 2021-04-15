@@ -21,10 +21,12 @@ class SellProductPage extends StatelessWidget {
   int quantity = 0;
   var selectedOutlet = Outlet().obs;
   Sales sales = Sales();
+
   var distributor = Get.find<AuthController>().user.distributors.first.obs;
 
   @override
   Widget build(BuildContext context) {
+    sales.distributorId = distributor.value.id;
     Widget buildOutletList() {
       return Expanded(
         child: GetBuilder<OutletsController>(
@@ -256,14 +258,16 @@ class SellProductPage extends StatelessWidget {
                 buildQuantityField(),
                 ElevatedButton(
                   onPressed: () {
-                    // sales.distributorId =
-                    //     Get.find<AuthController>().user.distributors.first.id;
+                    sales.distributorId =
+                        Get.find<AuthController>().user.distributors.first.id;
                     sales.batchId = batches.id;
                     sales.productId = products.id;
                     sales.soldAt = DateTime.now().toString();
                     print(sales.toJson());
                     Get.find<ProductsController>().sellProducts(sales);
                     Utilities.showPlatformSpecificAlert(
+                        canclose: false,
+                        dismissable: false,
                         title: "Please wait",
                         body: "Your Transaction is being processed",
                         context: context);

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
@@ -7,23 +10,67 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:get/get.dart';
 
-class AddCollectionsPage extends StatefulWidget {
-  @override
-  _AddCollectionsPageState createState() => _AddCollectionsPageState();
-}
-
-class _AddCollectionsPageState extends State<AddCollectionsPage> {
-  var collection =
-      Collection(mode: PaymentMode.cash, accountOf: AccountOf.gnp).obs;
+class AddCollectionsPage extends StatelessWidget {
   TextEditingController amtCntrl = new TextEditingController(text: '0');
-  var db = Get.find<AuthController>().user.distributors.first.obs;
-
+  static var db = Get.find<AuthController>().user.distributors.first.obs;
+  var collection = Collection(
+          mode: PaymentMode.cash,
+          accountOf: AccountOf.gnp,
+          distributorId: db.value.id)
+      .obs;
   bool validator() {
-    return (collection.value.amount > 0) ? true : false;
+    return (collection.value.amount > 0 &&
+            collection.value.chequePhoto.isNotEmpty)
+        ? true
+        : false;
   }
 
   @override
   Widget build(BuildContext context) {
+    Future<String> _getImg(ImageSource src) async {
+      String base64Image = '';
+      var img = await ImagePicker().getImage(source: src, imageQuality: 25);
+      if (img != null) {
+        List<int> imageBytes = await img.readAsBytes();
+        base64Image = base64Encode(imageBytes);
+      }
+      Navigator.pop(context, base64Image);
+
+      //1400
+
+      return base64Image;
+    }
+
+    Future<String> _showPicker(context) async {
+      return await showModalBottomSheet<String>(
+          context: context,
+          builder: (BuildContext bc) {
+            return SafeArea(
+              child: Container(
+                child: new Wrap(
+                  children: <Widget>[
+                    new ListTile(
+                        leading: new Icon(Icons.photo_library),
+                        title: new Text('Photo Library'),
+                        onTap: () async {
+                          var resp = await _getImg(ImageSource.gallery);
+                          return resp;
+                        }),
+                    new ListTile(
+                      leading: new Icon(Icons.photo_camera),
+                      title: new Text('Camera'),
+                      onTap: () async {
+                        var resp = await _getImg(ImageSource.camera);
+                        return resp;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Store Collection'),
@@ -46,7 +93,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                   Utilities.showInToast('Collection Uploaded succesfully',
                       toastType: ToastType.SUCCESS);
 
-                  Navigator.pop(context);
+                  Get.back();
                 } else {
                   Utilities.showInToast(resp.message,
                       toastType: ToastType.ERROR);
@@ -64,8 +111,12 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
         child: Column(
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Select Ditributor"),
+                SizedBox(
+                  width: Get.size.width * 0.15,
+                ),
                 Obx(
                   () => DropdownButton<Distributor>(
                     hint: Text(db.value.name),
@@ -106,6 +157,36 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                     prefixIcon: Icon(Icons.credit_card)),
               ),
             ),
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: 'Cheque Photo',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: GestureDetector(
+                  onTap: () async {
+                    var res = await _showPicker(context);
+                    if (res != null) {
+                      collection.value.chequePhoto = res;
+                    }
+                  },
+                  child: Obx(
+                    () => collection.value.chequePhoto != null &&
+                            collection.value.chequePhoto.isNotEmpty
+                        ? Image.memory(
+                            base64Decode(collection.value.chequePhoto))
+                        : Row(children: [
+                            Icon(Icons.photo),
+                            SizedBox(width: 6),
+                            Text('Tap to Choose Image')
+                          ]),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
@@ -130,6 +211,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Obx(
                     () => DropdownButton<String>(

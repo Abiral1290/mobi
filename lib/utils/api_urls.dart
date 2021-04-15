@@ -7,6 +7,7 @@ class ApiUrls {
   static final String products = _endPoint + 'products';
   static final String sales = _endPoint + 'sales';
   static final String collections = _endPoint + 'collections';
+  static final String checkInOuts = _endPoint + 'check_in_outs';
 
   /*
       CallServer URLs

@@ -17,7 +17,6 @@ class Utilities {
       }
     } on SocketException catch (_) {
       condition1 = false;
-      // showInToast(MessagePrompts.NO_INTERNET);
     }
 
     //----------------------------------------------------------------------//
@@ -31,7 +30,6 @@ class Utilities {
       } else
         condition2 = false;
     } on SocketException {
-      //showInToast(MessagePrompts.NO_INTERNET);
       condition2 = false;
     }
 
@@ -46,7 +44,6 @@ class Utilities {
         break;
 
       case HttpStatus.internalServerError:
-        // showInToast(MessagePrompts.SERVER_ERROR);
         break;
 
       case HttpStatus.connectionClosedWithoutResponse:
