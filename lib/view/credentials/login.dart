@@ -52,7 +52,10 @@ class _LoginPageState extends State<LoginPage> {
     Get.back();
 
     if (res) {
-      await Get.find<AuthController>().signIn(_userNUmber);
+      var resp = await Get.find<AuthController>().signIn(_userNUmber);
+      Utilities.showInToast(
+        resp,
+      );
     } else {
       showDialog(
           context: context,

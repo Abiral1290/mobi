@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -18,8 +17,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
   var collection =
       Collection(mode: PaymentMode.cash, accountOf: AccountOf.gnp).obs;
   TextEditingController amtCntrl = new TextEditingController(text: '0');
-  var db = Get.find<AuthController>().user.distributors.first.obs;
-  var checkNo = "".obs;
+
+  var chequeImage = "".obs;
 
   bool validator() {
     return (collection.value.amount > 0 &&
@@ -158,12 +157,13 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                         onTap: () async {
                           var res = await _showPicker(context);
                           if (res != null) {
-                            checkNo.value = res;
+                            chequeImage.value = res;
                             collection.value.chequePhoto = res;
                           }
                         },
-                        child: checkNo.value != null && checkNo.value.isNotEmpty
-                            ? Image.memory(base64Decode(checkNo.value))
+                        child: chequeImage.value != null &&
+                                chequeImage.value.isNotEmpty
+                            ? Image.memory(base64Decode(chequeImage.value))
                             : Row(children: [
                                 Icon(Icons.photo),
                                 SizedBox(width: 6),

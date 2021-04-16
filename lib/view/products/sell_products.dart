@@ -25,11 +25,11 @@ class SellProductPage extends StatelessWidget {
   var selectedOutlet = Outlet().obs;
   var selectedIndex = 0.obs;
 
-  var distributor = Get.find<AuthController>().user.distributors.first.obs;
+  // var distributor = Get.find<AuthController>().user.distributors.first.obs;
 
   @override
   Widget build(BuildContext context) {
-    sales.distributorId = distributor.value.id;
+    // sales.distributorId = distributor.value.id;
     Widget buildOutletList() {
       return Expanded(
         child: GetBuilder<OutletsController>(
@@ -88,34 +88,34 @@ class SellProductPage extends StatelessWidget {
       );
     }
 
-    Widget buildDistributorDropdown() {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("Select Distributor"),
-          SizedBox(
-            width: Get.size.width * 0.1,
-          ),
-          Obx(
-            () => DropdownButton<Distributor>(
-              hint: Text(distributor.value.name),
-              items: Get.find<AuthController>().user.distributors.map((value) {
-                return DropdownMenuItem<Distributor>(
-                    value: value,
-                    child: Text(
-                      value.name,
-                      style: TextStyle(color: Colors.black),
-                    ));
-              }).toList(),
-              onChanged: (Distributor dist) {
-                distributor.value = dist;
-                sales.distributorId = dist.id;
-              },
-            ),
-          ),
-        ],
-      );
-    }
+    // Widget buildDistributorDropdown() {
+    //   return Row(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     children: [
+    //       Text("Select Distributor"),
+    //       SizedBox(
+    //         width: Get.size.width * 0.1,
+    //       ),
+    //       Obx(
+    //         () => DropdownButton<Distributor>(
+    //           hint: Text(distributor.value.name),
+    //           items: Get.find<AuthController>().user.distributors.map((value) {
+    //             return DropdownMenuItem<Distributor>(
+    //                 value: value,
+    //                 child: Text(
+    //                   value.name,
+    //                   style: TextStyle(color: Colors.black),
+    //                 ));
+    //           }).toList(),
+    //           onChanged: (Distributor dist) {
+    //             distributor.value = dist;
+    //             sales.distributorId = dist.id;
+    //           },
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // }
 
     Widget buildQuantityField() {
       return Container(
