@@ -12,18 +12,25 @@ class ProductsController extends GetxController {
 
   getProductList() {
     fetchProducts().then((value) {
-      productList = value;
-      update();
+      if (value.success) {
+        productList = value.response;
+        update();
+      } else {
+        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+        productList = [];
+        update();
+      }
     });
   }
 
-  sellProducts(Sales sales) {
+  sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {
+      Get.back();
       if (value.success) {
         salesList.add(value.response);
         Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
         Get.back();
-        Get.back();
+
         update();
       } else {
         Utilities.showInToast(value.message, toastType: ToastType.ERROR);

@@ -152,37 +152,30 @@ class Sales {
   }
 }
 
-Future<List<Products>> fetchProducts() async {
+Future<ApiResponse<List<Products>>> fetchProducts() async {
   var headers = {
     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
     'Accept': 'application/json'
   };
 
-  List<Products> products = [];
-
   try {
-    var resp = await http.get(
-      Uri.parse(ApiUrls.products),
-      headers: headers,
-    );
-    Map<String, dynamic> obj = json.decode(resp.body);
+    var res = await http.get(Uri.parse(ApiUrls.products), headers: headers);
+    Map<String, dynamic> obj = json.decode(res.body);
 
-    if (resp.statusCode == 200 && obj['success']) {
+    if (res.statusCode == 200) {
       final data = obj["data"].cast<Map<String, dynamic>>();
-      products = await data.map<Products>((json) {
+      List<Products> products = await data.map<Products>((json) {
         return Products.fromJson(json);
       }).toList();
-      return products;
-      // return ApiResponse(obj['success'], obj['message'], null);
+      return ApiResponse(true, obj['message'], products);
     } else {
-      return products;
-      // return ApiResponse(
-      //     obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+      print(obj);
+      return ApiResponse(
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
     }
   } catch (e) {
     print(e.toString());
-    return products;
-    // return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null);
   }
 }
 

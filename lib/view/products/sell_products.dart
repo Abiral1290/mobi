@@ -7,6 +7,7 @@ import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class SellProductPage extends StatelessWidget {
@@ -18,9 +19,11 @@ class SellProductPage extends StatelessWidget {
   TextEditingController outletTextController = TextEditingController();
   TextEditingController quantityTextController = TextEditingController();
 
-  int quantity = 0;
-  var selectedOutlet = Outlet().obs;
   Sales sales = Sales();
+  int quantity = 0;
+
+  var selectedOutlet = Outlet().obs;
+  var selectedIndex = 0.obs;
   var distributor = Get.find<AuthController>().user.distributors.first.obs;
 
   @override
@@ -36,19 +39,21 @@ class SellProductPage extends StatelessWidget {
                     : ListView.builder(
                         itemCount: outletsController.outletList.length,
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              selectedOutlet.value =
-                                  outletsController.outletList[index];
-                              sales.outletId =
-                                  outletsController.outletList[index].id;
-                            },
-                            child: Card(
+                          return Obx(
+                            () => Card(
                               child: ListTile(
+                                selected: index == selectedIndex.value,
                                 title: Text(
                                     outletsController.outletList[index].name),
                                 subtitle: Text(
                                     outletsController.outletList[index].type),
+                                onTap: () {
+                                  selectedOutlet.value =
+                                      outletsController.outletList[index];
+                                  sales.outletId =
+                                      outletsController.outletList[index].id;
+                                  selectedIndex.value = index;
+                                },
                               ),
                             ),
                           );
@@ -56,19 +61,22 @@ class SellProductPage extends StatelessWidget {
                 : ListView.builder(
                     itemCount: outletsController.searchList.length,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          selectedOutlet.value =
-                              outletsController.searchList[index];
-                          sales.outletId =
-                              outletsController.searchList[index].id;
-                        },
-                        child: Card(
+                      return Obx(
+                        () => Card(
                           child: ListTile(
+                            selected: index == selectedIndex.value,
                             title:
                                 Text(outletsController.searchList[index].name),
                             subtitle:
                                 Text(outletsController.searchList[index].type),
+                            onTap: () {
+                              selectedOutlet.value =
+                                  outletsController.searchList[index];
+                              sales.outletId =
+                                  outletsController.searchList[index].id;
+                              selectedIndex.value = index;
+                            },
+                            // selectedTileColor: Colors.green,
                           ),
                         ),
                       );
@@ -127,11 +135,10 @@ class SellProductPage extends StatelessWidget {
                   ),
                 ),
                 onChanged: (text) {
-                  if (text.isNotEmpty) if (int.parse(text) > batches.stock) {
-                    quantityTextController.text = batches.stock.toString();
+                  if (text.isNotEmpty) {
                     quantity = int.parse(quantityTextController.text);
+                    sales.quantity = int.parse(quantityTextController.text);
                   }
-                  sales.quantity = int.parse(quantityTextController.text);
                 },
                 controller: quantityTextController,
                 keyboardType: TextInputType.numberWithOptions(
@@ -169,14 +176,13 @@ class SellProductPage extends StatelessWidget {
                         int currentValue =
                             int.parse(quantityTextController.text);
 
-                        if (currentValue < batches.stock) {
-                          currentValue++;
-                          quantity = currentValue;
-                          sales.quantity = currentValue;
+                        // if (currentValue < batches.stock) {
+                        currentValue++;
+                        quantity = currentValue;
+                        sales.quantity = currentValue;
 
-                          quantityTextController.text =
-                              (currentValue).toString();
-                        }
+                        quantityTextController.text = (currentValue).toString();
+                        // }
                       },
                     ),
                   ),
@@ -222,8 +228,14 @@ class SellProductPage extends StatelessWidget {
                   products.name,
                   style: TextStyle(fontSize: 20.0),
                 ),
-                Text("Batch Number: ${batches.id}"),
-                Text("Available Quantity: ${batches.stock}"),
+                Text(
+                  "Batch Number: ${batches.id}",
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                Text(
+                  "Distributor: ${Constants.selectedDistributor.name}",
+                  style: TextStyle(fontSize: 18.0),
+                ),
                 Obx(() => selectedOutlet.value.name != null
                     ? Text("Selected Outlet: " + selectedOutlet.value.name)
                     : SizedBox()),
@@ -236,7 +248,7 @@ class SellProductPage extends StatelessWidget {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0))),
                   child: Container(
-                    height: Get.size.height * 0.2,
+                    height: Get.size.height * 0.45,
                     child: Column(
                       children: [
                         TextField(
@@ -252,21 +264,33 @@ class SellProductPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: Get.size.height * 0.02),
-                buildDistributorDropdown(),
+                // buildDistributorDropdown(),
                 buildQuantityField(),
                 ElevatedButton(
                   onPressed: () {
-                    // sales.distributorId =
-                    //     Get.find<AuthController>().user.distributors.first.id;
-                    sales.batchId = batches.id;
-                    sales.productId = products.id;
-                    sales.soldAt = DateTime.now().toString();
-                    print(sales.toJson());
-                    Get.find<ProductsController>().sellProducts(sales);
-                    Utilities.showPlatformSpecificAlert(
-                        title: "Please wait",
-                        body: "Your Transaction is being processed",
-                        context: context);
+                    if (sales.outletId != null && sales.quantity != null) {
+                      if (Constants.selectedDistributor != null) {
+                        sales.distributorId = Constants.selectedDistributor.id;
+                        sales.batchId = batches.id;
+                        sales.productId = products.id;
+                        sales.soldAt = DateTime.now().toString();
+                        print(sales.toJson());
+                        Get.find<ProductsController>().sellProducts(sales);
+                        Utilities.showPlatformSpecificAlert(
+                            canclose: false,
+                            dismissable: false,
+                            title: "Please wait",
+                            body: "Your Transaction is being processed",
+                            context: context);
+                      } else {
+                        Utilities.showInToast(
+                            "Please choose your distributor first",
+                            toastType: ToastType.ERROR);
+                      }
+                    } else {
+                      Utilities.showInToast("Please Complete form",
+                          toastType: ToastType.ERROR);
+                    }
                   },
                   child: Text("Save"),
                 )

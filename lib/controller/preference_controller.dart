@@ -5,6 +5,7 @@ class PreferenceController extends GetxController {
   String checkIn = "checkIn";
   String logIn = "logIn";
   String user = "user";
+  String distributors = "distributors";
   bool isCheckedIn = false;
 
   clear() async {
@@ -57,6 +58,27 @@ class PreferenceController extends GetxController {
       });
     } catch (e) {
       print("error fetching data");
+    }
+  }
+
+  setDistributor(String distributorData) async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      pref.setString(distributors, distributorData);
+    } catch (e) {
+      print("failed to store distributor");
+      print(e);
+    }
+  }
+
+  Future<String> getDistributor() async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      return pref.getString(distributors) ?? "";
+    } catch (e) {
+      print("failed to get distributors");
+      print(e);
+      return null;
     }
   }
 }

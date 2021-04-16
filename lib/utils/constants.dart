@@ -1,6 +1,9 @@
+import 'package:mobitrack_dv_flutter/model/distributor.dart';
+
 class Constants {
   static final String callServerToken = 'abcdefghij';
   static final int callWaitSec = 22;
+  static Distributor selectedDistributor;
 }
 
 class SellerType {
@@ -18,4 +21,9 @@ class PaymentMode {
 class AccountOf {
   static final gsi = 'GSI';
   static final gnp = 'GNP';
+}
+
+class Check {
+  static final checkIn = 'IN';
+  static final checkOut = 'OUT';
 }

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
@@ -13,5 +14,6 @@ class ControllerBindings implements Bindings {
     Get.put<LocationController>(LocationController());
     Get.lazyPut<ProductsController>(() => ProductsController());
     Get.lazyPut<OutletsController>(() => OutletsController());
+    Get.lazyPut<DistributorController>(() => DistributorController());
   }
 }

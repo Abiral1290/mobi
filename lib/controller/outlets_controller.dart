@@ -1,18 +1,23 @@
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
+import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class OutletsController extends GetxController {
   List<Outlet> outletList;
   List<Outlet> searchList = [];
 
   OutletsController() {
-    getOutlets();
+    fetchOutlets();
   }
 
-  getOutlets() {
+  fetchOutlets() {
     fetchOutletsApi().then((value) {
-      if (value.response != null) {
+      if (value.success) {
         outletList = value.response;
+        update();
+      } else {
+        Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
+        outletList = [];
         update();
       }
     });

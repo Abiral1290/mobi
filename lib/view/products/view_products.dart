@@ -42,17 +42,6 @@ class ViewProductsPage extends StatelessWidget {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  Text("Stock:", style: contentStyle),
-                  Spacer(),
-                  Text(
-                    batches.stock.toString(),
-                    style: contentStyle.copyWith(
-                        fontSize: 20, color: Colors.red[900]),
-                  ),
-                ],
-              ),
               ElevatedButton(
                 onPressed: () {
                   Get.to(() => SellProductPage(

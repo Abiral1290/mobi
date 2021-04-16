@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_flexible_toast/flutter_flexible_toast.dart';
+import 'package:get/get.dart';
 
 class Utilities {
   static Future<bool> isInternetWorking() async {
@@ -137,7 +138,7 @@ class Utilities {
                         onDismiss();
                       }
                       if (canclose) {
-                        Navigator.of(context).pop();
+                        Get.back();
                       }
                     },
                   ),
@@ -166,7 +167,7 @@ class Utilities {
                         onDismiss();
                       }
                       if (canclose) {
-                        Navigator.of(context).pop();
+                        Get.back();
                       }
                     },
                   ),

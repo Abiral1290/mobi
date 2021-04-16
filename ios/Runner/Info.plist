@@ -9,6 +9,8 @@
 	<string>This app needs access to location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location.</string>
+	<key>NSLocationUsageDescription</key>
+    <string>Older devices need location.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -3,11 +3,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
 import 'package:mobitrack_dv_flutter/view/collections/add_collections.dart';
+import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 
 class DrawerPage extends StatelessWidget {
   final ButtonStyle buttonStyle = ButtonStyle(
@@ -17,7 +19,7 @@ class DrawerPage extends StatelessWidget {
   );
 
   final ButtonStyle expandedButtonStyle = ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.green[900]),
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue[900]),
     minimumSize: MaterialStateProperty.all<Size>(
         Size(Get.size.width, Get.size.height * 0.05)),
     elevation: MaterialStateProperty.all<double>(10.0),
@@ -31,12 +33,6 @@ class DrawerPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                    icon: Icon(Icons.remove_red_eye),
-                    onPressed: () => Get.to(() => ProfilePage())),
-              ),
               GestureDetector(
                 onTap: () => Get.to(() => ProfilePage()),
                 child: CircleAvatar(
@@ -80,14 +76,23 @@ class DrawerPage extends StatelessWidget {
                   thickness: 5.0,
                 ),
                 ExpansionTile(
-                  title: Center(
-                    child: Text(
-                      "Shop",
-                      style: TextStyle(color: Colors.white),
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.shopping_bag_outlined),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Outlet",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
                     ),
                   ),
-                  backgroundColor: Colors.green,
-                  collapsedBackgroundColor: Colors.green,
+                  // backgroundColor: Colors.green,
+                  // collapsedBackgroundColor: Colors.green,
                   children: [
                     ElevatedButton(
                       onPressed: () async {
@@ -128,14 +133,21 @@ class DrawerPage extends StatelessWidget {
                 ),
                 SizedBox(height: Get.size.height * 0.01),
                 ExpansionTile(
-                  title: Center(
-                    child: Text(
-                      "Products",
-                      style: TextStyle(color: Colors.white),
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.category_outlined),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Products",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
                     ),
                   ),
-                  backgroundColor: Colors.green,
-                  collapsedBackgroundColor: Colors.green,
                   children: [
                     ElevatedButton(
                       onPressed: () {
@@ -144,23 +156,25 @@ class DrawerPage extends StatelessWidget {
                       child: Text("View Products"),
                       style: expandedButtonStyle,
                     ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Sell Products"),
-                      style: expandedButtonStyle,
-                    ),
                   ],
                 ),
                 SizedBox(height: Get.size.height * 0.01),
                 ExpansionTile(
-                  title: Center(
-                    child: Text(
-                      "Report",
-                      style: TextStyle(color: Colors.white),
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.file_present),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Report",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
                     ),
                   ),
-                  backgroundColor: Colors.green,
-                  collapsedBackgroundColor: Colors.green,
                   children: [
                     ElevatedButton(
                       onPressed: () {},
@@ -168,22 +182,31 @@ class DrawerPage extends StatelessWidget {
                       style: expandedButtonStyle,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Attandance"),
+                      onPressed: () {
+                        Get.to(() => AttendancePage());
+                      },
+                      child: Text("Attendance"),
                       style: expandedButtonStyle,
                     ),
                   ],
                 ),
                 SizedBox(height: Get.size.height * 0.01),
                 ExpansionTile(
-                  title: Center(
-                    child: Text(
-                      "Collection",
-                      style: TextStyle(color: Colors.white),
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.collections_bookmark),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Collection",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
                     ),
                   ),
-                  backgroundColor: Colors.green,
-                  collapsedBackgroundColor: Colors.green,
                   children: [
                     ElevatedButton(
                       onPressed: () {
@@ -197,6 +220,33 @@ class DrawerPage extends StatelessWidget {
                         Get.to(() => AddCollectionsPage());
                       },
                       child: Text("Store Collection"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
+                ),
+                SizedBox(height: Get.size.height * 0.01),
+                ExpansionTile(
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.select_all),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Distributor",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => ViewDistributorPage());
+                      },
+                      child: Text("View Distributor"),
                       style: expandedButtonStyle,
                     ),
                   ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobitrack_dv_flutter/view/checkauth.dart';
+import 'package:mobitrack_dv_flutter/view/credentials/checkauth.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

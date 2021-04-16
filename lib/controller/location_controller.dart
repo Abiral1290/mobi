@@ -14,29 +14,45 @@ class LocationController extends GetxController {
   Position userPosition;
   StreamSubscription<Position> positionStream;
 
-  // LocationController() {
-  //   getLocationData();
-  //   getCurrentPosition();
-  // }
+  Future<bool> _checkLocation() async {
+    bool isLocationOpened = await Geolocator.isLocationServiceEnabled();
+    bool hasPerm = false;
 
-  LocationController() {
-    Geolocator.checkPermission().then((value) {
-      if (value == LocationPermission.always ||
-          value == LocationPermission.whileInUse) {
+    if (!isLocationOpened) {
+      Utilities.showInToast('Please enable location!',
+          toastType: ToastType.INFO);
+      // Geolocator.openAppSettings();
+      await Geolocator.openLocationSettings();
+    } else {
+      hasPerm = await Geolocator.checkPermission().then((value) {
+        return (value == LocationPermission.always ||
+            value == LocationPermission.whileInUse);
+      });
+      if (!hasPerm) {
+        bool hasPerm = await Geolocator.requestPermission().then((value) {
+          return (value == LocationPermission.always ||
+              value == LocationPermission.whileInUse);
+        });
+        if (!hasPerm) {
+          await Geolocator.openAppSettings();
+        }
+        print(hasPerm);
+      }
+    }
+    return hasPerm && isLocationOpened;
+  }
+
+  _init() async {
+    _checkLocation().then((value) {
+      if (value) {
         getLocationData();
         getCurrentPosition();
-      } else {
-        Utilities.showInToast('Please enable location permission',
-            toastType: ToastType.INFO);
-        GeolocatorPlatform.instance.requestPermission().then((value) {
-          if (value == LocationPermission.always ||
-              value == LocationPermission.whileInUse) {
-            getLocationData();
-            getCurrentPosition();
-          }
-        });
       }
     });
+  }
+
+  LocationController() {
+    _init();
   }
 
   getPositionStream() async {

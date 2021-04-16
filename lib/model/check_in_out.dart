@@ -1,44 +1,35 @@
 import 'dart:convert';
 
-import 'package:get/get.dart';
+import 'package:get/instance_manager.dart';
+import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
-import 'package:http/http.dart' as http;
 
-class Distributor {
+class CheckInOut {
   int id;
-  String name;
-  String email;
-  String contact;
-  String location;
+  int salesOfficerId;
+  String checkType;
   double latitude;
   double longitude;
-  int salesOfficerId;
   String createdAt;
   String updatedAt;
 
-  Distributor(
+  CheckInOut(
       {this.id,
-      this.name,
-      this.email,
-      this.contact,
-      this.location,
+      this.salesOfficerId,
+      this.checkType,
       this.latitude,
       this.longitude,
-      this.salesOfficerId,
       this.createdAt,
       this.updatedAt});
 
-  Distributor.fromJson(Map<String, dynamic> json) {
+  CheckInOut.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    email = json['email'];
-    contact = json['contact'];
-    location = json['location'];
+    salesOfficerId = json['sales_officer_id'];
+    checkType = json['check_type'];
     latitude = json['latitude'];
     longitude = json['longitude'];
-    salesOfficerId = json['sales_officer_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -46,35 +37,32 @@ class Distributor {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['contact'] = this.contact;
-    data['location'] = this.location;
+    data['sales_officer_id'] = this.salesOfficerId;
+    data['check_type'] = this.checkType;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
-    data['sales_officer_id'] = this.salesOfficerId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;
   }
 }
 
-Future<ApiResponse<List<Distributor>>> fetchDistributorsApi() async {
+Future<ApiResponse<List<CheckInOut>>> fetchcheckDataApi() async {
   var headers = {
     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
     'Accept': 'application/json'
   };
 
   try {
-    var res = await http.get(Uri.parse(ApiUrls.distributors), headers: headers);
+    var res = await http.get(Uri.parse(ApiUrls.checkInOuts), headers: headers);
     Map<String, dynamic> obj = json.decode(res.body);
 
     if (res.statusCode == 200) {
       final data = obj["data"].cast<Map<String, dynamic>>();
-      List<Distributor> distributors = await data.map<Distributor>((json) {
-        return Distributor.fromJson(json);
+      List<CheckInOut> checkData = await data.map<CheckInOut>((json) {
+        return CheckInOut.fromJson(json);
       }).toList();
-      return ApiResponse(true, obj['message'], distributors);
+      return ApiResponse(true, obj['message'], checkData);
     } else {
       print(obj);
       return ApiResponse(

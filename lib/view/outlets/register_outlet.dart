@@ -196,14 +196,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                     salesOfficerId:
                                         Get.find<AuthController>().user.id,
                                     longitude: pos.longitude));
-                                Navigator.of(context).pop();
+                                Get.back();
                                 Utilities.showInToast(response.message,
                                     toastType: response.success
                                         ? ToastType.SUCCESS
                                         : ToastType.ERROR);
 
                                 if (response.success) {
-                                  Navigator.of(context).pop();
+                                  Get.back();
                                 }
                               } else {
                                 //TODO: offline db storage
