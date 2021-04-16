@@ -14,6 +14,12 @@ class LocationController extends GetxController {
   Position userPosition;
   StreamSubscription<Position> positionStream;
 
+  // LocationController() {
+  //   getLocationData();
+  //   getCurrentPosition();
+  // }
+  //
+  //
   Future<bool> _checkLocation() async {
     bool isLocationOpened = await Geolocator.isLocationServiceEnabled();
     bool hasPerm = false;

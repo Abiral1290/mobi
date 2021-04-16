@@ -195,6 +195,7 @@ Future<ApiResponse<Sales>> sellProductApi(Sales sales) async {
     if (resp.statusCode == 200) {
       return ApiResponse(obj['success'], obj['message'], null);
     } else {
+      print(obj);
       return ApiResponse(
           obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
     }

@@ -26,6 +26,7 @@ class ProductsController extends GetxController {
   sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {
       Get.back();
+
       if (value.success) {
         salesList.add(value.response);
         Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);

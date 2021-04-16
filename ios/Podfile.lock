@@ -12,6 +12,8 @@ PODS:
   - FMDB/standard (2.7.5)
   - geolocator (6.2.0):
     - Flutter
+  - image_picker (0.0.1):
+    - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
   - Reachability (3.2)
@@ -29,6 +31,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_flexible_toast (from `.symlinks/plugins/flutter_flexible_toast/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -50,6 +53,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_flexible_toast/ios"
   geolocator:
     :path: ".symlinks/plugins/geolocator/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   shared_preferences:
@@ -66,6 +71,7 @@ SPEC CHECKSUMS:
   flutter_flexible_toast: 0547e740cae0c33bb7c51bcd931233f4584e1143
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator: f5e3de65e241caba7ce3e8a618803387bda73384
+  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
