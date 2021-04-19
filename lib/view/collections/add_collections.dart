@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
 import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -15,16 +16,18 @@ class AddCollectionsPage extends StatefulWidget {
 
 class _AddCollectionsPageState extends State<AddCollectionsPage> {
   var collection =
-      Collection(mode: PaymentMode.cash, accountOf: AccountOf.gnp).obs;
+      Collections(mode: PaymentMode.cash, accountOf: AccountOf.gnp).obs;
   TextEditingController amtCntrl = new TextEditingController(text: '0');
 
   var chequeImage = "".obs;
 
   bool validator() {
-    return (collection.value.amount > 0 &&
-            collection.value.chequePhoto.isNotEmpty)
-        ? true
-        : false;
+    return collection.value.mode == PaymentMode.cheque
+        ? (collection.value.chequePhoto.isNotEmpty &&
+                collection.value.chequeNo.isNotEmpty)
+            ? true
+            : false
+        : true;
   }
 
   Future<String> _getImg(ImageSource src) async {
@@ -80,7 +83,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
             FocusScope.of(context).unfocus();
-            if (validator()) {
+            if (validator() && collection.value.amount > 0) {
               if (Constants.selectedDistributor != null) {
                 Utilities.showPlatformSpecificAlert(
                     canclose: false,
@@ -90,23 +93,24 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                     dismissable: false);
                 collection.value.distributorId =
                     Constants.selectedDistributor.id;
+                collection.value.id = DateTime.now().microsecondsSinceEpoch;
+                collection.value.createdAt = DateTime.now().toString();
+                collection.value.updatedAt = DateTime.now().toString();
+
                 var conn = await Utilities.isInternetWorking();
                 if (conn) {
-                  var resp = await storeCollectionAPI(collection.value);
-                  Get.back();
-                  if (resp.success) {
-                    Utilities.showInToast('Collection Uploaded succesfully',
-                        toastType: ToastType.SUCCESS);
+                  collection.value.synced = 1;
 
-                    Get.back();
-                  } else {
-                    print(resp.message);
-                    Utilities.showInToast(resp.message,
-                        toastType: ToastType.ERROR);
-                  }
+                  Get.find<CollectionController>()
+                      .storeCollection(collection.value);
                 } else {
-                  //TODO: Store offline
+                  collection.value.synced = 0;
+                  Utilities.showInToast('Storing Offline',
+                      toastType: ToastType.INFO);
+                  Get.find<CollectionController>()
+                      .storeOfflineCollection(collection.value);
                 }
+                Get.back();
               } else {
                 Utilities.showInToast('Please select your distributor first!',
                     toastType: ToastType.ERROR);

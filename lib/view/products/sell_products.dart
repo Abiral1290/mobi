@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
-import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
@@ -25,11 +24,8 @@ class SellProductPage extends StatelessWidget {
   var selectedOutlet = Outlet().obs;
   var selectedIndex = 0.obs;
 
-  // var distributor = Get.find<AuthController>().user.distributors.first.obs;
-
   @override
   Widget build(BuildContext context) {
-    // sales.distributorId = distributor.value.id;
     Widget buildOutletList() {
       return Expanded(
         child: GetBuilder<OutletsController>(

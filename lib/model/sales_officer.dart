@@ -47,15 +47,15 @@ class SalesOfficer {
     apiToken = json['api_token'];
     phone = json['phone'];
     if (json['distributors'] != null) {
-      distributors = new List<Distributor>();
+      distributors = [];
       json['distributors'].forEach((v) {
-        distributors.add(new Distributor.fromJson(v));
+        distributors.add(Distributor.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['email'] = this.email;

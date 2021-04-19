@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -179,36 +181,44 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                       ),
                                     );
                                   });
-                              await Future.delayed(Duration(seconds: 2));
-                              if (conn) {
-                                //online store
-                                var pos = await GeolocatorPlatform.instance
-                                    .getCurrentPosition(
-                                        desiredAccuracy:
-                                            LocationAccuracy.bestForNavigation);
+                              var pos = await GeolocatorPlatform.instance
+                                  .getCurrentPosition(
+                                      desiredAccuracy:
+                                          LocationAccuracy.bestForNavigation);
+                              var outlet = Outlet(
+                                  id: DateTime.now().millisecondsSinceEpoch,
+                                  contact: _phoneCntrl.text,
+                                  latitude: pos.latitude,
+                                  name: _nameCntrl.text,
+                                  ownerName: _ownerCntrl.text,
+                                  type: _type,
+                                  salesOfficerId:
+                                      Get.find<AuthController>().user.id,
+                                  longitude: pos.longitude);
 
-                                var response = await registerOutlet(Outlet(
-                                    contact: _phoneCntrl.text,
-                                    latitude: pos.latitude,
-                                    name: _nameCntrl.text,
-                                    ownerName: _ownerCntrl.text,
-                                    type: _type,
-                                    salesOfficerId:
-                                        Get.find<AuthController>().user.id,
-                                    longitude: pos.longitude));
+                              if (conn) {
+                                var response = await registerOutlet(outlet);
                                 Get.back();
+
                                 Utilities.showInToast(response.message,
                                     toastType: response.success
                                         ? ToastType.SUCCESS
                                         : ToastType.ERROR);
 
                                 if (response.success) {
+                                  outlet.synced = true;
                                   Get.back();
                                 }
                               } else {
-                                //TODO: offline db storage
+                                Get.back();
 
+                                Utilities.showInToast('Storing Offline',
+                                    toastType: ToastType.INFO);
                               }
+                              await DatabaseHelper.instance
+                                  .insertOutlet(outlet);
+                              Get.find<OutletsController>().addOutlet(outlet);
+                              Get.back();
                             } else {
                               Utilities.showInToast('Please complete the form',
                                   toastType: ToastType.ERROR);
@@ -236,24 +246,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       SizedBox(
                         height: Get.size.height * 0.02,
                       ),
-                      // Center(
-                      //   child: Text(
-                      //     Get.find<LocationController>()
-                      //             .userPosition
-                      //             .latitude
-                      //             .toString() +
-                      //         ", " +
-                      //         Get.find<LocationController>()
-                      //             .userPosition
-                      //             .longitude
-                      //             .toString(),
-                      //     style: TextStyle(
-                      //       color: Colors.red[900],
-                      //       fontStyle: FontStyle.italic,
-                      //       fontWeight: FontWeight.bold,
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   );
           },

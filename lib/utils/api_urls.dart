@@ -8,8 +8,9 @@ class ApiUrls {
   static final String sales = _endPoint + 'sales';
   static final String collections = _endPoint + 'collections';
   static final String distributors = _endPoint + 'distributors';
-
   static final String checkInOuts = _endPoint + 'check_in_outs';
+
+  static final String storageURL = _mainUrl + 'dv_group/public';
 
   /*
       CallServer URLs

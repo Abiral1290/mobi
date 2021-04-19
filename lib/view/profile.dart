@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -39,6 +40,7 @@ class ProfilePage extends StatelessWidget {
                     Spacer(),
                     Text(
                       Get.find<AuthController>().user.email,
+                      overflow: TextOverflow.visible,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     )
@@ -48,21 +50,31 @@ class ProfilePage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "Distributors:",
+                      "Distributor:",
                       style: TextStyle(fontSize: 18),
                     ),
                     Spacer(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children:
-                          Get.find<AuthController>().user.distributors.map((e) {
-                        return Text(
-                          e.name,
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        );
-                      }).toList(),
+                    Text(
+                      Constants.selectedDistributor.name,
+                      overflow: TextOverflow.visible,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                SizedBox(height: Get.size.height * 0.01),
+                Row(
+                  children: [
+                    Text(
+                      "Address:",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Spacer(),
+                    Text(
+                      Constants.selectedDistributor.location,
+                      overflow: TextOverflow.visible,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

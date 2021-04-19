@@ -1,3 +1,4 @@
+import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
@@ -8,6 +9,7 @@ class DatabaseHelper {
 
   static final locationTable = 'location';
   static final outletsTable = 'outlets';
+  static final collectionsTable = 'collections';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -42,13 +44,31 @@ class DatabaseHelper {
           ''');
     await db.execute('''
           CREATE TABLE $outletsTable (
-              id INTEGER,
+              id INTEGER PRIMARY KEY,
+              sales_officer_id INTEGER,
               name TEXT,
               owner_name TEXT,
               contact TEXT,
               type TEXT,
               latitude REAL,
-              longitude REAL
+              longitude REAL,
+              synced INTEGER
+              )
+          ''');
+    await db.execute('''
+          CREATE TABLE $collectionsTable (
+              id TEXT PRIMARY KEY,
+              distributor_id TEXT,
+              mode TEXT,
+              bank_name TEXT,
+              cheque_no TEXT,
+              cheque_photo TEXT,
+              amount TEXT,
+              account_of TEXT,
+              remarks TEXT,
+              created_at TEXT,
+              updated_at TEXT,
+              synced INTEGER
               )
           ''');
   }
@@ -58,31 +78,6 @@ class DatabaseHelper {
     await db.insert(locationTable, locationModel.toJson());
     print('inserted location data');
     return locationModel;
-  }
-
-//for outlets
-  Future<bool> insertOutlet(Outlet o) async {
-    Database db = await instance.instace;
-    var res = await db.insert(outletsTable, o.toJson());
-    print('inserted outlet data');
-    return res == 1;
-  }
-
-  Future<List<Outlet>> getAllOutletData() async {
-    Database db = await instance.instace;
-    List<Outlet> outlets = [];
-    var res = await db.query(outletsTable);
-    res.forEach((element) {
-      outlets.add(Outlet.fromJson(element));
-    });
-    return outlets;
-  }
-
-  Future<bool> deleteOutlet(Outlet o) async {
-    Database db = await instance.instace;
-    var res =
-        await db.delete(outletsTable, where: 'name = ?', whereArgs: [o.name]);
-    return res == 1;
   }
 
   Future<List<LocationModel>> getAllLocationData() async {
@@ -103,5 +98,54 @@ class DatabaseHelper {
   Future<int> removeAllLocationData() async {
     Database db = await instance.instace;
     return await db.delete(locationTable);
+  }
+
+  //for outlets
+  Future<bool> insertOutlet(Outlet o) async {
+    Database db = await instance.instace;
+    var res = await db.insert(outletsTable, o.toJson());
+    print('inserted outlet data');
+    return res == 1;
+  }
+
+  Future<List<Outlet>> getAllOutletData() async {
+    Database db = await instance.instace;
+    List<Outlet> outlets = [];
+    var res = await db.query(outletsTable);
+    res.forEach((element) {
+      outlets.add(Outlet.fromJson(element));
+    });
+    return outlets;
+  }
+
+  Future<bool> deleteOutlet(Outlet o) async {
+    Database db = await instance.instace;
+    var res = await db.delete(outletsTable, where: 'id = ?', whereArgs: [o.id]);
+    return res == 1;
+  }
+
+  //for collection
+  Future<bool> insertCollection(Collections collection) async {
+    Database db = await instance.instace;
+    var res = await db.insert(collectionsTable, collection.toJson(true));
+    print('inserted collection data');
+    return res != 0;
+  }
+
+  Future<List<Collections>> getAllCollectionData() async {
+    Database db = await instance.instace;
+    List<Collections> collections = [];
+    var res = await db.query(collectionsTable);
+    res.forEach((element) {
+      collections.add(Collections.fromJson(element));
+    });
+    return collections;
+  }
+
+  Future<bool> deleteCollection(Collections collection) async {
+    Database db = await instance.instace;
+    var res = await db
+        .delete(collectionsTable, where: 'id = ?', whereArgs: [collection.id]);
+    return res == 1;
   }
 }

@@ -33,15 +33,15 @@ class Products {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['batches'] != null) {
-      batches = new List<Batches>();
+      batches = [];
       json['batches'].forEach((v) {
-        batches.add(new Batches.fromJson(v));
+        batches.add(Batches.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['unit'] = this.unit;

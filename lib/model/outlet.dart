@@ -17,6 +17,9 @@ class Outlet {
   double longitude;
   String address;
 
+  ///flag to check if the outlet is synced with backend
+  bool synced = false;
+
   Outlet({
     this.id,
     this.name,
@@ -38,6 +41,11 @@ class Outlet {
     salesOfficerId = json['sales_officer_id'];
     latitude = json['latitude'];
     longitude = json['longitude'];
+    synced = json['synced'] == null
+        ? false
+        : json['synced'] == 1
+            ? true
+            : false;
     var street = json['street'] != null ? json['street']['name'] + ', ' : '';
     var area = json['area'] != null ? json['area']['name'] + ', ' : '';
     var district = json['district'] != null ? json['district']['name'] : '';
@@ -47,11 +55,12 @@ class Outlet {
 
   Map<String, dynamic> toJson([bool isLocalStorage = false]) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (isLocalStorage) data['id'] = this.id;
+    data['id'] = this.id.toString();
     data['name'] = this.name;
     data['owner_name'] = this.ownerName;
     data['contact'] = this.contact;
     data['type'] = this.type;
+    data['synced'] = (this.synced ? 1 : 0).toString();
     data['sales_officer_id'] = this.salesOfficerId.toString();
     data['latitude'] = this.latitude.toString();
     data['longitude'] = this.longitude.toString();
@@ -72,6 +81,7 @@ Future<ApiResponse> registerOutlet(Outlet outlet) async {
     Map<String, dynamic> obj = json.decode(resp.body);
 
     if (resp.statusCode == 200) {
+      outlet.synced = true;
       return ApiResponse(obj['success'], obj['message'], null);
     } else {
       return ApiResponse(
@@ -96,7 +106,9 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
     if (res.statusCode == 200) {
       final data = obj["data"].cast<Map<String, dynamic>>();
       List<Outlet> outlets = await data.map<Outlet>((json) {
-        return Outlet.fromJson(json);
+        var out = Outlet.fromJson(json);
+        out.synced = true;
+        return out;
       }).toList();
       return ApiResponse(true, obj['message'], outlets);
     } else {
