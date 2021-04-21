@@ -1,5 +1,6 @@
 import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
+import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 
@@ -10,6 +11,7 @@ class DatabaseHelper {
   static final locationTable = 'location';
   static final outletsTable = 'outlets';
   static final collectionsTable = 'collections';
+  static final productsTable = 'products';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -52,9 +54,11 @@ class DatabaseHelper {
               type TEXT,
               latitude REAL,
               longitude REAL,
+              address TEXT,
               synced INTEGER
               )
           ''');
+
     await db.execute('''
           CREATE TABLE $collectionsTable (
               id TEXT PRIMARY KEY,
@@ -69,6 +73,17 @@ class DatabaseHelper {
               created_at TEXT,
               updated_at TEXT,
               synced INTEGER
+              )
+          ''');
+    await db.execute('''
+          CREATE TABLE $productsTable (
+              id INTEGER PRIMARY KEY,
+              name TEXT,
+              unit TEXT,
+              value INTEGER,
+              created_at TEXT,
+              updated_at TEXT,
+              batches TEXT
               )
           ''');
   }
@@ -103,9 +118,12 @@ class DatabaseHelper {
   //for outlets
   Future<bool> insertOutlet(Outlet o) async {
     Database db = await instance.instace;
-    var res = await db.insert(outletsTable, o.toJson());
-    print('inserted outlet data');
-    return res == 1;
+    try {
+      var res = await db.insert(outletsTable, o.toJson());
+      return res == 1;
+    } catch (e) {
+      return true;
+    }
   }
 
   Future<List<Outlet>> getAllOutletData() async {
@@ -122,6 +140,12 @@ class DatabaseHelper {
     Database db = await instance.instace;
     var res = await db.delete(outletsTable, where: 'id = ?', whereArgs: [o.id]);
     return res == 1;
+  }
+
+  Future clearOutletData() async {
+    Database db = await instance.instace;
+
+    await db.delete(outletsTable);
   }
 
   //for collection
@@ -147,5 +171,29 @@ class DatabaseHelper {
     var res = await db
         .delete(collectionsTable, where: 'id = ?', whereArgs: [collection.id]);
     return res == 1;
+  }
+
+  //for products
+  Future<bool> insertProducts(Products products) async {
+    Database db = await instance.instace;
+    var res = await db.insert(productsTable, products.toJson());
+    print('inserted products data');
+    return res != 0;
+  }
+
+  Future<List<Products>> getAllProductsData() async {
+    Database db = await instance.instace;
+    List<Products> products = [];
+    var res = await db.query(productsTable);
+    res.forEach((element) {
+      products.add(Products.fromJson(element));
+    });
+    return products;
+  }
+
+  Future<bool> deleteAllProducts() async {
+    Database db = await instance.instace;
+    var res = await db.delete(productsTable);
+    return res != 0;
   }
 }

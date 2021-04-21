@@ -115,7 +115,7 @@ Future<ApiResponse> storeCollectionAPI(Collections collection) async {
     Map<String, dynamic> obj = json.decode(resp.body);
 
     if (resp.statusCode == 200) {
-      return ApiResponse(obj['success'], obj['message'], null);
+      return ApiResponse(obj['success'], obj['message'], collection);
     } else {
       return ApiResponse(
           obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);

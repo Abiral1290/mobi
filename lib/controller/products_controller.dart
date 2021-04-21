@@ -9,6 +9,39 @@ class ProductsController extends GetxController {
   ProductsController() {
     getProductList();
   }
+  // getProductListFromAPI() {
+  //   fetchProducts().then((value) {
+  //     if (value.success) {
+  //       //TODO: remove this 3 lines and uncomment below lines
+  //       var test = jsonEncode(value.response.first.batches);
+  //       print(test);
+  //       databaseHelper.deleteAllProducts().then((res) {
+  //         // if (res) {
+  //         //   for (var data in value.response) {
+  //         //     databaseHelper.insertProducts(data);
+  //         //   }
+  //         // }
+  //       });
+
+  //       // productList = value.response;
+  //       // update();
+  //     } else {
+  //       Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+  //       // productList = [];
+  //       // update();
+  //     }
+
+  //     databaseHelper.getAllProductsData().then((value) {
+  //       if (value != null) {
+  //         productList = value;
+  //         update();
+  //       } else {
+  //         productList = [];
+  //         update();
+  //       }
+  //     });
+  //   });
+  // }
 
   getProductList() {
     fetchProducts().then((value) {

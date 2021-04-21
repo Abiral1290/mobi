@@ -36,13 +36,34 @@ class ViewCollectionPage extends StatelessWidget {
                     ? ListView.builder(
                         itemCount: collectionController.collectionsList.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(collectionController
-                                .collectionsList[index].mode),
-                            subtitle: Text("Rs. " +
-                                collectionController
-                                    .collectionsList[index].amount
-                                    .toString()),
+                          var item =
+                              collectionController.collectionsList[index];
+                          return Card(
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: item.synced == 1
+                                    ? Colors.green
+                                    : Colors.grey,
+                                child: Icon(
+                                  item.synced != 1
+                                      ? Icons.cloud_off_outlined
+                                      : Icons.collections_bookmark,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              title: Text("Rs. " + item.amount.toString()),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Divider(),
+                                  Text(item.accountOf.toString()),
+                                  Text(item.createdAt.split('.').first),
+                                  if (item.remarks.isNotEmpty)
+                                    Text(item.remarks)
+                                ],
+                              ),
+                              trailing: Text(item.mode),
+                            ),
                           );
                         })
                     : Center(child: Text("No Collections Yet!!"))

@@ -37,7 +37,7 @@ class _AttendancePageState extends State<AttendancePage> {
                           title: Text(item.checkType),
                           subtitle: Text(DateFormat.yMEd()
                               .add_jms()
-                              .format(DateTime.parse(item.createdAt))),
+                              .format(item.deviceTime)),
                         ),
                       );
                     },

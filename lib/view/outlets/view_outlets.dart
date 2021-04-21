@@ -49,9 +49,16 @@ class ViewOutletsPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
-                              child: Icon(!item.synced
+                              child: CircleAvatar(
+                            backgroundColor:
+                                item.synced ? Colors.green : Colors.grey,
+                            child: Icon(
+                              !item.synced
                                   ? Icons.cloud_off_outlined
-                                  : Icons.shopping_bag_outlined)),
+                                  : Icons.shopping_bag_outlined,
+                              color: Colors.white,
+                            ),
+                          )),
                         ),
                         Center(
                           child: Text(

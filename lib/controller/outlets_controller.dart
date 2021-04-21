@@ -19,7 +19,7 @@ class OutletsController extends GetxController {
   Future<bool> syncData() async {
     var offlineList = outletList.where((element) => !element.synced).toList();
     for (var i = 0; i < offlineList.length; i++) {
-      var item = outletList[i];
+      var item = offlineList[i];
       var res = await registerOutlet(item);
       if (res.success) {
         await DatabaseHelper.instance.deleteOutlet(item);
@@ -33,7 +33,8 @@ class OutletsController extends GetxController {
   fetchOutlets() async {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
-      await fetchOutletsApi().then((value) {
+      await fetchOutletsApi().then((value) async {
+        await DatabaseHelper.instance.clearOutletData();
         if (value.success) {
           outletList = value.response;
           outletList.forEach((o) {

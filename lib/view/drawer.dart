@@ -177,11 +177,11 @@ class DrawerPage extends StatelessWidget {
                     ),
                   ),
                   children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Sales Report"),
-                      style: expandedButtonStyle,
-                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {},
+                    //   child: Text("Sales Report"),
+                    //   style: expandedButtonStyle,
+                    // ),
                     ElevatedButton(
                       onPressed: () {
                         Get.to(() => AttendancePage());

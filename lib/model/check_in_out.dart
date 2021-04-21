@@ -12,8 +12,11 @@ class CheckInOut {
   String checkType;
   double latitude;
   double longitude;
-  String createdAt;
-  String updatedAt;
+  // String createdAt;
+  // String updatedAt;
+
+  /// Check in/out check out time
+  DateTime deviceTime;
 
   CheckInOut(
       {this.id,
@@ -21,8 +24,9 @@ class CheckInOut {
       this.checkType,
       this.latitude,
       this.longitude,
-      this.createdAt,
-      this.updatedAt});
+      // this.createdAt,
+      // this.updatedAt,
+      this.deviceTime});
 
   CheckInOut.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -30,8 +34,9 @@ class CheckInOut {
     checkType = json['check_type'];
     latitude = json['latitude'];
     longitude = json['longitude'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    deviceTime = DateTime.parse(json['device_time']);
+    // createdAt = json['created_at'];
+    // updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -41,8 +46,7 @@ class CheckInOut {
     data['check_type'] = this.checkType;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    data['device_time'] = this.deviceTime.toString();
     return data;
   }
 }

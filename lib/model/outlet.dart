@@ -46,11 +46,15 @@ class Outlet {
         : json['synced'] == 1
             ? true
             : false;
-    var street = json['street'] != null ? json['street']['name'] + ', ' : '';
-    var area = json['area'] != null ? json['area']['name'] + ', ' : '';
-    var district = json['district'] != null ? json['district']['name'] : '';
 
-    address = '$street$area$district';
+    address = json['address'] ?? '';
+    if (address.isEmpty) {
+      var street = json['street'] != null ? json['street']['name'] + ', ' : '';
+      var area = json['area'] != null ? json['area']['name'] + ', ' : '';
+      var district = json['district'] != null ? json['district']['name'] : '';
+
+      address = '$street$area$district';
+    }
   }
 
   Map<String, dynamic> toJson([bool isLocalStorage = false]) {
@@ -64,6 +68,7 @@ class Outlet {
     data['sales_officer_id'] = this.salesOfficerId.toString();
     data['latitude'] = this.latitude.toString();
     data['longitude'] = this.longitude.toString();
+    if (this.address != null) data['address'] = this.address;
     return data;
   }
 }
