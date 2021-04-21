@@ -91,7 +91,7 @@ class DatabaseHelper {
   Future<LocationModel> insertLocationData(LocationModel locationModel) async {
     Database db = await instance.instace;
     await db.insert(locationTable, locationModel.toJson());
-    print('inserted location data');
+    // print('inserted location data');
     return locationModel;
   }
 
@@ -174,19 +174,19 @@ class DatabaseHelper {
   }
 
   //for products
-  Future<bool> insertProducts(Products products) async {
+  Future<bool> insertProducts(Product products) async {
     Database db = await instance.instace;
-    var res = await db.insert(productsTable, products.toJson());
+    var res = await db.insert(productsTable, products.toJson(isLocalDB: true));
     print('inserted products data');
     return res != 0;
   }
 
-  Future<List<Products>> getAllProductsData() async {
+  Future<List<Product>> getAllProductsData() async {
     Database db = await instance.instace;
-    List<Products> products = [];
+    List<Product> products = [];
     var res = await db.query(productsTable);
     res.forEach((element) {
-      products.add(Products.fromJson(element));
+      products.add(Product.fromJson(element, isLocalDB: true));
     });
     return products;
   }

@@ -12,6 +12,7 @@ Future<String> getCallServerNumber() async {
   };
   try {
     var resp = await http.get(Uri.parse(ApiUrls.getServerNum), headers: header);
+    print(resp.body);
     if (resp.statusCode == 200) {
       var jbody = json.decode(resp.body);
       var num = jbody['data']['server_number'];

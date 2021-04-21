@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     getCallServerNumber().then((value) {
+      print('call server: ' + value);
       if (value.isNotEmpty) if (this.mounted)
         setState(() => _callServerNum = value);
       else {}

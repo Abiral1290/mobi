@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../controller/auth_controller.dart';
 import '../utils/api_urls.dart';
 
-class Products {
+class Product {
   int id;
   String name;
   String unit;
@@ -16,7 +16,7 @@ class Products {
   String updatedAt;
   List<Batches> batches;
 
-  Products(
+  Product(
       {this.id,
       this.name,
       this.unit,
@@ -25,7 +25,7 @@ class Products {
       this.updatedAt,
       this.batches});
 
-  Products.fromJson(Map<String, dynamic> json) {
+  Product.fromJson(Map<String, dynamic> json, {bool isLocalDB = false}) {
     id = json['id'];
     name = json['name'];
     unit = json['unit'];
@@ -34,13 +34,25 @@ class Products {
     updatedAt = json['updated_at'];
     if (json['batches'] != null) {
       batches = [];
-      json['batches'].forEach((v) {
-        batches.add(Batches.fromJson(v));
-      });
+
+      if (isLocalDB) {
+        var data = jsonDecode(json['batches']);
+        batches = data.map<Batches>((json) {
+          return Batches.fromJson(json);
+        }).toList();
+      } else {
+        json['batches'].forEach((v) {
+          batches.add(Batches.fromJson(v));
+        });
+      }
     }
   }
 
-  Map<String, dynamic> toJson() {
+  bachesAsString() {
+    return json.encode(this.batches);
+  }
+
+  Map<String, dynamic> toJson({bool isLocalDB = false}) {
     final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
@@ -49,7 +61,10 @@ class Products {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     if (this.batches != null) {
-      data['batches'] = this.batches.map((v) => v.toJson()).toList();
+      if (isLocalDB) {
+        data['batches'] = this.bachesAsString();
+      } else
+        data['batches'] = this.batches.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -73,7 +88,9 @@ class Batches {
       this.createdAt,
       this.updatedAt});
 
-  Batches.fromJson(Map<String, dynamic> json) {
+  Batches.fromJson(
+    Map<String, dynamic> json,
+  ) {
     id = json['id'];
     productId = json['product_id'];
     expiredAt = json['expired_at'];
@@ -152,7 +169,7 @@ class Sales {
   }
 }
 
-Future<ApiResponse<List<Products>>> fetchProducts() async {
+Future<ApiResponse<List<Product>>> fetchProducts() async {
   var headers = {
     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
     'Accept': 'application/json'
@@ -164,8 +181,8 @@ Future<ApiResponse<List<Products>>> fetchProducts() async {
 
     if (res.statusCode == 200) {
       final data = obj["data"].cast<Map<String, dynamic>>();
-      List<Products> products = await data.map<Products>((json) {
-        return Products.fromJson(json);
+      List<Product> products = await data.map<Product>((json) {
+        return Product.fromJson(json);
       }).toList();
       return ApiResponse(true, obj['message'], products);
     } else {

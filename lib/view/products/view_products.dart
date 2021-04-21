@@ -15,7 +15,7 @@ class ViewProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget buildBatchTile(Batches batches, Products products) {
+    Widget buildBatchTile(Batches batches, Product products) {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(5.0),
@@ -57,7 +57,7 @@ class ViewProductsPage extends StatelessWidget {
       );
     }
 
-    Widget buildMainTile(Products products) {
+    Widget buildMainTile(Product products) {
       return Card(
         elevation: 7.0,
         child: Padding(

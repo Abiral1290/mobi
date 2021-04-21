@@ -53,7 +53,12 @@ class AuthController extends GetxController {
   }
 
   Future<ApiResponse> checkInOut(String type, String lat, String long) async {
-    var body = {'check_type': type, 'latitude': lat, 'longitude': long};
+    var body = {
+      'check_type': type,
+      'latitude': lat,
+      'longitude': long,
+      'device_time': DateTime.now().toString()
+    };
     var headers = {
       'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
       'Accept': 'application/json'

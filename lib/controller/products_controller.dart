@@ -1,60 +1,54 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class ProductsController extends GetxController {
-  List<Products> productList;
+  List<Product> productList;
   List<Sales> salesList = [];
+  DatabaseHelper databaseHelper = DatabaseHelper.instance;
 
   ProductsController() {
-    getProductList();
+    getProductListFromAPI();
   }
-  // getProductListFromAPI() {
+  getProductListFromAPI() async {
+    var conn = await Utilities.isInternetWorking();
+    if (!conn) {
+      fetchProducts().then((value) async {
+        await databaseHelper.deleteAllProducts().then((res) {
+          for (var data in value.response) {
+            databaseHelper.insertProducts(data);
+          }
+        });
+        update();
+      });
+    } else {
+      databaseHelper.getAllProductsData().then((value) {
+        if (value != null) {
+          productList = value;
+          update();
+        } else {
+          productList = [];
+          update();
+        }
+      });
+    }
+  }
+
+  // getProductList() {
   //   fetchProducts().then((value) {
   //     if (value.success) {
-  //       //TODO: remove this 3 lines and uncomment below lines
-  //       var test = jsonEncode(value.response.first.batches);
-  //       print(test);
-  //       databaseHelper.deleteAllProducts().then((res) {
-  //         // if (res) {
-  //         //   for (var data in value.response) {
-  //         //     databaseHelper.insertProducts(data);
-  //         //   }
-  //         // }
-  //       });
-
-  //       // productList = value.response;
-  //       // update();
+  //       productList = value.response;
+  //       update();
   //     } else {
   //       Utilities.showInToast(value.message, toastType: ToastType.ERROR);
-  //       // productList = [];
-  //       // update();
+  //       productList = [];
+  //       update();
   //     }
-
-  //     databaseHelper.getAllProductsData().then((value) {
-  //       if (value != null) {
-  //         productList = value;
-  //         update();
-  //       } else {
-  //         productList = [];
-  //         update();
-  //       }
-  //     });
   //   });
   // }
-
-  getProductList() {
-    fetchProducts().then((value) {
-      if (value.success) {
-        productList = value.response;
-        update();
-      } else {
-        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
-        productList = [];
-        update();
-      }
-    });
-  }
 
   sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {

@@ -8,6 +8,7 @@ import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -23,8 +24,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    Get.find<OutletsController>();
-    Get.find<CollectionController>();
+    Get
+      ..find<ProductsController>()
+      ..find<OutletsController>()
+      ..find<CollectionController>();
 
     Get.find<PreferenceController>().getCheckInValue().then((value) {
       if (value) {
@@ -138,9 +141,13 @@ class _HomePageState extends State<HomePage> {
                     ),
             ],
             body: Center(
-              child: Text(
-                'You are near: Khadka Store',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              child: GetBuilder<LocationController>(
+                builder: (controller) {
+                  return Text(
+                    'You are near: ' + controller.nearestOutlet,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  );
+                },
               ),
             ),
           );

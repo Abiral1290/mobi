@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:background_location/background_location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
+import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationController extends GetxController {
@@ -13,6 +15,7 @@ class LocationController extends GetxController {
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   Position userPosition;
   StreamSubscription<Position> positionStream;
+  String nearestOutlet = 'To be Determined';
 
   // LocationController() {
   //   getLocationData();
@@ -61,9 +64,33 @@ class LocationController extends GetxController {
     _init();
   }
 
+  setNearestOutletName(Position userPos) async {
+    var outlets = Get.find<OutletsController>().outletList;
+    if (outlets.isNotEmpty) {
+      Map<Outlet, double> values = new Map<Outlet, double>();
+
+      for (var o in outlets) {
+        var dist = Geolocator.distanceBetween(
+            o.latitude, o.longitude, userPos.latitude, userPos.longitude);
+        values[o] = dist;
+      }
+      var nearOut = values.entries.first;
+      values.forEach((key, value) {
+        if (value < nearOut.value) {
+          nearOut = MapEntry(key, value);
+        }
+      });
+      nearestOutlet = nearOut.key.name;
+
+      update();
+    }
+  }
+
   getPositionStream() async {
     positionStream = Geolocator.getPositionStream().listen((Position position) {
       if (position != null) {
+        setNearestOutletName(position);
+
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
           latitude: position.latitude,
@@ -121,7 +148,10 @@ class LocationController extends GetxController {
     BackgroundLocation.stopLocationService();
     // timer?.cancel();
     positionStream.cancel();
-    print("Timer cancelled");
+    nearestOutlet = 'To be Determined';
+    update();
+
+    print("Stream cancelled");
   }
 
   getLocationData() {
