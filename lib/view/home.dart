@@ -15,6 +15,7 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/location_status.dart';
 import 'package:mobitrack_dv_flutter/view/drawer.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
+import 'package:mobitrack_dv_flutter/view/widgets/glow.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -50,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       drawer: Drawer(
         child: DrawerPage(),
       ),
@@ -83,23 +85,28 @@ class _HomePageState extends State<HomePage> {
                       label: 'Check In',
                       ontap: () async {
                         var conn = await Utilities.isInternetWorking();
-                        if (conn) {
-                          //TODO: check in API
-                          var resp = await user.checkInOut(
-                              Check.checkIn,
-                              location.userPosition.latitude.toString(),
-                              location.userPosition.longitude.toString());
-                          if (resp.success) {
-                            location.startLocationService();
-                            Get.find<PreferenceController>()
-                                .setCheckInValue(true);
+                        if (location.userPosition != null) {
+                          if (conn) {
+                            var resp = await user.checkInOut(
+                                Check.checkIn,
+                                location.userPosition.latitude.toString(),
+                                location.userPosition.longitude.toString());
+                            if (resp.success) {
+                              location.startLocationService();
+                              Get.find<PreferenceController>()
+                                  .setCheckInValue(true);
+                              Get.to(() => ViewDistributorPage());
+                            } else {
+                              Utilities.showInToast(resp.message,
+                                  toastType: ToastType.ERROR);
+                            }
                           } else {
-                            Utilities.showInToast(resp.message,
+                            Utilities.showInToast(
+                                'Please connect to the internet to check in!',
                                 toastType: ToastType.ERROR);
                           }
                         } else {
-                          Utilities.showInToast(
-                              'Please connect to the internet to check in!',
+                          Utilities.showInToast("Could not get your location",
                               toastType: ToastType.ERROR);
                         }
                       },
@@ -112,23 +119,28 @@ class _HomePageState extends State<HomePage> {
                       label: 'Check Out',
                       ontap: () async {
                         var conn = await Utilities.isInternetWorking();
-                        if (conn) {
-                          //TODO: check in API
-                          var resp = await user.checkInOut(
-                              Check.checkOut,
-                              location.userPosition.latitude.toString(),
-                              location.userPosition.longitude.toString());
-                          if (resp.success) {
-                            location.stopBackgroundLocationService();
-                            Get.find<PreferenceController>()
-                                .setCheckInValue(false);
+
+                        if (location.userPosition != null) {
+                          if (conn) {
+                            var resp = await user.checkInOut(
+                                Check.checkOut,
+                                location.userPosition.latitude.toString(),
+                                location.userPosition.longitude.toString());
+                            if (resp.success) {
+                              location.stopBackgroundLocationService();
+                              Get.find<PreferenceController>()
+                                  .setCheckInValue(false);
+                            } else {
+                              Utilities.showInToast(resp.message,
+                                  toastType: ToastType.ERROR);
+                            }
                           } else {
-                            Utilities.showInToast(resp.message,
+                            Utilities.showInToast(
+                                'Please connect to the internet to check out!',
                                 toastType: ToastType.ERROR);
                           }
                         } else {
-                          Utilities.showInToast(
-                              'Please connect to the internet to check out!',
+                          Utilities.showInToast("Could not get your location",
                               toastType: ToastType.ERROR);
                         }
 
@@ -140,15 +152,30 @@ class _HomePageState extends State<HomePage> {
                       labelColor: Colors.white,
                     ),
             ],
-            body: Center(
-              child: GetBuilder<LocationController>(
-                builder: (controller) {
-                  return Text(
-                    'You are near: ' + controller.nearestOutlet,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  );
-                },
-              ),
+            body: Stack(
+              children: [
+                if (Get.find<PreferenceController>().isCheckedIn)
+                  Align(
+                    alignment: Alignment.center,
+                    child: Glow(
+                      child: Container(),
+                      startDelay: Duration(milliseconds: 000),
+                      glowColor: Colors.blue[500],
+                      endRadius: 200.0,
+                    ),
+                  ),
+                Center(
+                  child: GetBuilder<LocationController>(
+                    builder: (controller) {
+                      return Text(
+                        'You are near: ' + controller.nearestOutlet,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           );
         },

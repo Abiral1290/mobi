@@ -34,7 +34,7 @@ class ViewOutletsPage extends StatelessWidget {
           builder: (outletController) {
             return Container(
                 child: GridView.count(
-              childAspectRatio: 9 / 10,
+              childAspectRatio: 9 / 12,
               crossAxisCount: 2,
               shrinkWrap: true,
               mainAxisSpacing: 3,

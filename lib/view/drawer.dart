@@ -257,7 +257,6 @@ class DrawerPage extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
-                      //TODO: logout
                       Get.find<AuthController>().logout();
                     },
                     child: Text("Logout"),

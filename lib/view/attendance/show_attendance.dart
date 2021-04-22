@@ -14,6 +14,7 @@ class _AttendancePageState extends State<AttendancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: Text('Attendance'),
       ),
@@ -30,6 +31,9 @@ class _AttendancePageState extends State<AttendancePage> {
                     itemBuilder: (BuildContext context, int index) {
                       var item = data.response[index];
                       return Card(
+                        color: item.deviceTime.day % 2 == 0
+                            ? Colors.blue[200]
+                            : Colors.green[200],
                         child: ListTile(
                           leading: Icon(item.checkType == Check.checkIn
                               ? Icons.arrow_forward

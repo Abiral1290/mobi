@@ -26,6 +26,12 @@ class ViewDistributorPage extends StatelessWidget {
                 Constants.selectedDistributor = distList[index];
                 selectedDistributor.value = distList[index];
                 _selectedIndex.value = index;
+                print(Constants.selectedDistributor);
+                Get.find<PreferenceController>()
+                    .setDistributor(jsonEncode(Constants.selectedDistributor));
+                Utilities.showInToast(
+                    "Distributor : ${selectedDistributor.value.name}");
+                Get.back();
               },
               selected: index == _selectedIndex.value,
               title: Text(
@@ -56,50 +62,63 @@ class ViewDistributorPage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Distributors"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (Constants.selectedDistributor != null &&
-                  selectedDistributor.value.name != null) {
-                print(Constants.selectedDistributor);
-                Get.find<PreferenceController>()
-                    .setDistributor(jsonEncode(Constants.selectedDistributor));
-                Get.back();
-              } else {
-                Utilities.showInToast("Please select a distributor",
-                    toastType: ToastType.ERROR);
-              }
-            },
-            child: Text(
-              "Save",
-              style: TextStyle(color: Colors.white),
-            ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red, //this has no effect
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                hintText: "Search Distributor...",
-              ),
-              onChanged: (text) {
-                Get.find<DistributorController>().searchDistributor(text);
-              },
-            ),
-            distributorList(),
+    Future<bool> willPopAction() async {
+      if (selectedDistributor.value.name != null) {
+        return true;
+      } else {
+        Utilities.showInToast("You have not selected a distributor",
+            toastType: ToastType.ERROR);
+        return false;
+      }
+    }
+
+    return WillPopScope(
+      onWillPop: willPopAction,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Distributors"),
+          actions: [
+            // TextButton(
+            //   onPressed: () {
+            //     if (Constants.selectedDistributor != null &&
+            //         selectedDistributor.value.name != null) {
+            //       print(Constants.selectedDistributor);
+            //       Get.find<PreferenceController>().setDistributor(
+            //           jsonEncode(Constants.selectedDistributor));
+            //       Get.back();
+            //     } else {
+            //       Utilities.showInToast("Please select a distributor",
+            //           toastType: ToastType.ERROR);
+            //     }
+            //   },
+            //   child: Text(
+            //     "Save",
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            // )
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.red, //this has no effect
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  hintText: "Search Distributor...",
+                ),
+                onChanged: (text) {
+                  Get.find<DistributorController>().searchDistributor(text);
+                },
+              ),
+              distributorList(),
+            ],
+          ),
         ),
       ),
     );
