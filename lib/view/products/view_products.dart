@@ -4,6 +4,7 @@ import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:intl/intl.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
+import 'package:mobitrack_dv_flutter/view/products/view_sales.dart';
 
 class ViewProductsPage extends StatelessWidget {
   final TextStyle titleStyle = TextStyle(
@@ -114,20 +115,26 @@ class ViewProductsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Products"),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Get.to(() => ViewSalesPage());
+          },
+          label: Text("Unsynced sales")),
       body: GetBuilder<ProductsController>(
-        init: ProductsController(),
+        // init: ProductsController(),
         builder: (productsController) {
-          return productsController.productList == null
+          return Get.find<ProductsController>().productList == null
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : productsController.productList.isEmpty
+              : Get.find<ProductsController>().productList.isEmpty
                   ? Center(child: Text("No Products"))
                   : ListView.builder(
-                      itemCount: productsController.productList.length,
+                      itemCount:
+                          Get.find<ProductsController>().productList.length,
                       itemBuilder: (context, index) {
                         return buildMainTile(
-                            productsController.productList[index]);
+                            Get.find<ProductsController>().productList[index]);
                       });
         },
       ),

@@ -12,6 +12,7 @@ class DatabaseHelper {
   static final outletsTable = 'outlets';
   static final collectionsTable = 'collections';
   static final productsTable = 'products';
+  static final salesTable = 'sales';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -195,5 +196,30 @@ class DatabaseHelper {
     Database db = await instance.instace;
     var res = await db.delete(productsTable);
     return res != 0;
+  }
+
+  //for sales
+  Future<bool> insertSales(Sales sales) async {
+    Database db = await instance.instace;
+    var res = await db.insert(salesTable, sales.toJson(true));
+    print('inserted sales data');
+    return res != 0;
+  }
+
+  Future<List<Sales>> getAllSalesData() async {
+    Database db = await instance.instace;
+    List<Sales> sales = [];
+    var res = await db.query(salesTable);
+    res.forEach((element) {
+      sales.add(Sales.fromJson(element));
+    });
+    return sales;
+  }
+
+  Future<bool> deleteSales(Sales sales) async {
+    Database db = await instance.instace;
+    var res =
+        await db.delete(salesTable, where: 'id = ?', whereArgs: [sales.id]);
+    return res == 1;
   }
 }

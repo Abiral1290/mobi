@@ -4,6 +4,9 @@ class Constants {
   static final String callServerToken = 'abcdefghij';
   static final int callWaitSec = 22;
   static Distributor selectedDistributor;
+  static int appVerId = 0;
+  static String appVername = '';
+  static final String tempApkName = 'temp_dv.apk';
 }
 
 class SellerType {

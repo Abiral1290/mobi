@@ -1,3 +1,7 @@
+import 'package:flutter/services.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
+import 'package:yaml/yaml.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller_bindings.dart';
@@ -5,6 +9,7 @@ import 'package:mobitrack_dv_flutter/view/splash_screen.dart';
 
 void main() {
   runApp(MyApp());
+  setup();
 }
 
 class MyApp extends StatelessWidget {
@@ -16,13 +21,16 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       home: SplashScreen(),
-      // home: GetBuilder<AuthController>(
-      //   builder: (authController) {
-      //     return Get.find<AuthController>().isLoggedIn
-      //         ? HomePage()
-      //         : LoginPage();
-      //   },
-      // ),
     );
   }
+}
+
+setup() async {
+  var res = await rootBundle.loadString("pubspec.yaml");
+  Map yaml = loadYaml(res);
+
+  String ver = yaml['version'];
+  Constants.appVerId = int.parse(ver.split('+').last);
+  Constants.appVername = (ver.split('+').first);
+  print(ver);
 }

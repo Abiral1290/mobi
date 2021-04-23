@@ -126,6 +126,7 @@ class SellProductPage extends StatelessWidget {
               flex: 1,
               child: TextField(
                 textAlign: TextAlign.center,
+                maxLength: 6,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(8.0),
                   border: OutlineInputBorder(
@@ -265,7 +266,7 @@ class SellProductPage extends StatelessWidget {
                 // buildDistributorDropdown(),
                 buildQuantityField(),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (sales.outletId != null && sales.quantity != null) {
                       if (Constants.selectedDistributor != null) {
                         sales.distributorId = Constants.selectedDistributor.id;
@@ -273,13 +274,23 @@ class SellProductPage extends StatelessWidget {
                         sales.productId = products.id;
                         sales.soldAt = DateTime.now().toString();
                         print(sales.toJson());
-                        Get.find<ProductsController>().sellProducts(sales);
+
+                        var conn = await Utilities.isInternetWorking();
+                        if (conn) {
+                          Get.find<ProductsController>().sellProducts(sales);
+                        } else {
+                          Get.find<ProductsController>()
+                              .storeSalesOffline(sales);
+                        }
+
                         Utilities.showPlatformSpecificAlert(
                             canclose: false,
                             dismissable: false,
                             title: "Please wait",
                             body: "Your Transaction is being processed",
                             context: context);
+                        Get.back();
+                        Get.back();
                       } else {
                         Utilities.showInToast(
                             "Please choose your distributor first",

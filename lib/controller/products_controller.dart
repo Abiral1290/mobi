@@ -10,57 +10,78 @@ class ProductsController extends GetxController {
 
   ProductsController() {
     getProductListFromAPI();
+    fetchsales();
   }
+
   getProductListFromAPI() async {
     var conn = await Utilities.isInternetWorking();
-    if (!conn) {
+    if (conn) {
       fetchProducts().then((value) async {
+        print(value.response);
         await databaseHelper.deleteAllProducts().then((res) {
           for (var data in value.response) {
             databaseHelper.insertProducts(data);
           }
         });
-        update();
-      });
-    } else {
-      databaseHelper.getAllProductsData().then((value) {
-        if (value != null) {
-          productList = value;
-          update();
-        } else {
-          productList = [];
-          update();
-        }
       });
     }
+    databaseHelper.getAllProductsData().then((value) {
+      if (value != null) {
+        productList = value;
+        update();
+      } else {
+        productList = [];
+        update();
+      }
+    });
   }
-
-  // getProductList() {
-  //   fetchProducts().then((value) {
-  //     if (value.success) {
-  //       productList = value.response;
-  //       update();
-  //     } else {
-  //       Utilities.showInToast(value.message, toastType: ToastType.ERROR);
-  //       productList = [];
-  //       update();
-  //     }
-  //   });
-  // }
 
   sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {
-      Get.back();
-
       if (value.success) {
-        salesList.add(value.response);
         Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
-        Get.back();
-
-        update();
       } else {
         Utilities.showInToast(value.message, toastType: ToastType.ERROR);
       }
     });
+  }
+
+  fetchsales() {
+    databaseHelper.getAllSalesData().then((value) {
+      if (value != null) {
+        salesList = value;
+      }
+    });
+  }
+
+  storeSalesOffline(Sales sales) async {
+    sales.id = DateTime.now().millisecondsSinceEpoch;
+    databaseHelper.insertSales(sales).then((value) {
+      if (value) {
+        salesList.add(sales);
+        update();
+        Utilities.showInToast("Sales Stored locally",
+            toastType: ToastType.SUCCESS);
+      } else {
+        Utilities.showInToast("Error storing sales locally",
+            toastType: ToastType.ERROR);
+      }
+    });
+  }
+
+  Future<bool> syncSalesData() async {
+    for (var i = 0; i < salesList.length; i++) {
+      var item = salesList[i];
+      var res = await sellProductApi(item);
+      if (res.success) {
+        databaseHelper.deleteSales(item).then((value) {
+          if (value) {
+            salesList.remove(item);
+            update();
+          }
+        });
+      }
+    }
+    return true;
   }
 }
