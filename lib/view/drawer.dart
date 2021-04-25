@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
+import 'package:mobitrack_dv_flutter/view/info/about.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
@@ -252,7 +253,28 @@ class DrawerPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: Get.size.height * 0.01),
+                InputDecorator(
+                  decoration: InputDecoration(),
+                  child: GestureDetector(
+                    onTap: () => Get.to(() => AboutPage()),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline_rounded),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            "About",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: Get.size.height * 0.09),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
