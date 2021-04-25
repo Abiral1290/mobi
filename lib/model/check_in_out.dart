@@ -17,6 +17,7 @@ class CheckInOut {
 
   /// Check in/out check out time
   DateTime deviceTime;
+  String date;
 
   CheckInOut(
       {this.id,
@@ -26,7 +27,8 @@ class CheckInOut {
       this.longitude,
       // this.createdAt,
       // this.updatedAt,
-      this.deviceTime});
+      this.deviceTime,
+      this.date});
 
   CheckInOut.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -35,6 +37,7 @@ class CheckInOut {
     latitude = json['latitude'];
     longitude = json['longitude'];
     deviceTime = DateTime.parse(json['device_time']);
+    date = "${deviceTime.year}-${deviceTime.month}-${deviceTime.day}";
     // createdAt = json['created_at'];
     // updatedAt = json['updated_at'];
   }

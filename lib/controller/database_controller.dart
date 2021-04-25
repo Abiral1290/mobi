@@ -21,6 +21,7 @@ class DatabaseHelper {
   // only have a single app-wide reference to the database
   static Database _database;
   Future<Database> get instace async {
+    print('test');
     if (_database != null) return _database;
     // lazily instantiate the db the first time it is accessed
     _database = await _initDatabase();
@@ -30,15 +31,16 @@ class DatabaseHelper {
   // this opens the database (and creates it if it doesn't exist)
   _initDatabase() async {
     var path = await getDatabasesPath() + '/' + _databaseName;
-    return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate);
+    return await openDatabase(path, onOpen: (db) {
+      _onCreate(db, _databaseVersion);
+    }, version: _databaseVersion, onCreate: _onCreate);
   }
 
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     //create user table
     await db.execute('''
-          CREATE TABLE $locationTable (
+          CREATE TABLE IF NOT EXISTS $locationTable (
               id TEXT,
               latitude REAL,
               longitude REAL,
@@ -46,7 +48,7 @@ class DatabaseHelper {
               )
           ''');
     await db.execute('''
-          CREATE TABLE $outletsTable (
+          CREATE TABLE IF NOT EXISTS $outletsTable (
               id INTEGER PRIMARY KEY,
               sales_officer_id INTEGER,
               name TEXT,
@@ -61,7 +63,7 @@ class DatabaseHelper {
           ''');
 
     await db.execute('''
-          CREATE TABLE $collectionsTable (
+          CREATE TABLE IF NOT EXISTS $collectionsTable (
               id TEXT PRIMARY KEY,
               distributor_id TEXT,
               mode TEXT,
@@ -77,7 +79,7 @@ class DatabaseHelper {
               )
           ''');
     await db.execute('''
-          CREATE TABLE $productsTable (
+          CREATE TABLE IF NOT EXISTS $productsTable (
               id INTEGER PRIMARY KEY,
               name TEXT,
               unit TEXT,
@@ -85,6 +87,17 @@ class DatabaseHelper {
               created_at TEXT,
               updated_at TEXT,
               batches TEXT
+              )
+          ''');
+    await db.execute('''
+          CREATE TABLE IF NOT EXISTS $salesTable (
+              id INTEGER PRIMARY KEY,
+              distributor_id TEXT,
+              batch_id TEXT,
+              product_id TEXT,
+              quantity TEXT,
+              sold_at TEXT,
+              outlet_id TEXT
               )
           ''');
   }
