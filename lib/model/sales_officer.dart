@@ -39,7 +39,7 @@ class SalesOfficer {
     emailVerifiedAt = json['email_verified_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    role = json['role'];
+    // role = json['role'];
     adminId = json['admin_id'];
     marketingDirectorId = json['marketing_director_id'];
     marketingManagerId = json['marketing_manager_id'];

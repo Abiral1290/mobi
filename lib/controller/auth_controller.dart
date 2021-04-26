@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/model/sales_officer.dart';
@@ -46,8 +47,7 @@ class AuthController extends GetxController {
         return 'Unknown error occured';
       }
     } catch (e) {
-      print('Error logging in');
-      print(e.toString());
+      debugPrint(e.toString());
       return 'Unknown error occured';
     }
   }

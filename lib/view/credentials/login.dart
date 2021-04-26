@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
           onWillPop: () {}),
     );
 
-    await Future.delayed(Duration(seconds: Constants.callWaitSec));
+    await Future.delayed(Duration(seconds: 1));
 
     var res = await callServerVerify(_userNUmber, _callServerNum);
     Get.back();

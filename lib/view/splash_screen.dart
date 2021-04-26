@@ -42,8 +42,11 @@ class _SplashScreenState extends State<SplashScreen> {
     if (conn && auth) {
       var resp = await checkForUpdate();
       if (resp.success) {
-        if (resp.response.versionId != Constants.appVerId) {
+        if (resp.response.versionId > Constants.appVerId) {
           downloadApk(resp.response.url, downloadPath, context);
+        } else {
+          Future.delayed(
+              Duration(seconds: 2), () => Get.off(() => CheckAuthPage()));
         }
       } else {
         Utilities.showInToast('Failed to check for update.\n' + resp.message);
