@@ -93,6 +93,7 @@ class Utilities {
         elevation: 10,
         imageSize: 35,
         textColor: Colors.white,
+        fontSize: 14,
         backgroundColor: toastType == null
             ? Colors.black
             : toastType == ToastType.ERROR

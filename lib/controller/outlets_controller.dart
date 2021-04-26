@@ -42,7 +42,7 @@ class OutletsController extends GetxController {
           });
           update();
         } else {
-          Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
+          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
           outletList = [];
           update();
         }

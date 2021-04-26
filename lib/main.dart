@@ -9,7 +9,7 @@ import 'package:mobitrack_dv_flutter/view/splash_screen.dart';
 
 void main() {
   runApp(MyApp());
-  setup();
+  setupAppVer();
 }
 
 class MyApp extends StatelessWidget {
@@ -25,12 +25,10 @@ class MyApp extends StatelessWidget {
   }
 }
 
-setup() async {
+setupAppVer() async {
   var res = await rootBundle.loadString("pubspec.yaml");
   Map yaml = loadYaml(res);
-
   String ver = yaml['version'];
   Constants.appVerId = int.parse(ver.split('+').last);
   Constants.appVername = (ver.split('+').first);
-  print(ver);
 }

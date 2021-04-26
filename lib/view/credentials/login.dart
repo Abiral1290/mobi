@@ -20,13 +20,26 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _initFunc();
+  }
 
-    getCallServerNumber().then((value) {
+  _initFunc() async {
+    int count = 0;
+    do {
+      var value = await getCallServerNumber();
       print('call server: ' + value);
-      if (value.isNotEmpty) if (this.mounted)
+      if (value.isNotEmpty) {
         setState(() => _callServerNum = value);
-      else {}
-    });
+        break;
+      } else {
+        count++;
+      }
+    } while (count < 3);
+    if (count == 3 && _callServerNum.isEmpty) {
+      Utilities.showInToast(
+          "Coundn't fetch call server number. Please try again",
+          toastType: ToastType.ERROR);
+    }
   }
 
   showLoadingandCheckAPI() async {

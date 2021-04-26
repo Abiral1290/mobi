@@ -44,8 +44,7 @@ class AppVersion {
 
 Future<ApiResponse<AppVersion>> checkForUpdate() async {
   var headers = {
-    'Authorization': 'Bearer ' +
-        'UscHS7YoxAfzJ119HuhIQfY4eAt8W9rcetzxDaZ85CnxcJCKpiGpPdxdspeOcHLLX6MifKZfwfWwdRXZ',
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
     'Accept': 'application/json'
   };
 

@@ -19,8 +19,12 @@ class ProductsController extends GetxController {
       fetchProducts().then((value) async {
         print(value.response);
         await databaseHelper.deleteAllProducts().then((res) {
-          for (var data in value.response) {
-            databaseHelper.insertProducts(data);
+          if (value.success) {
+            for (var data in value.response) {
+              databaseHelper.insertProducts(data);
+            }
+          } else {
+            Utilities.showInToast(value.message, toastType: ToastType.ERROR);
           }
         });
       });
