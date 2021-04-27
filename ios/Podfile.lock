@@ -7,8 +7,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_flexible_toast (0.0.1):
     - Flutter
-  - flutter_update (0.0.1):
-    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -34,7 +32,6 @@ DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - Flutter (from `Flutter`)
   - flutter_flexible_toast (from `.symlinks/plugins/flutter_flexible_toast/ios`)
-  - flutter_update (from `.symlinks/plugins/flutter_update/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -57,8 +54,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_flexible_toast:
     :path: ".symlinks/plugins/flutter_flexible_toast/ios"
-  flutter_update:
-    :path: ".symlinks/plugins/flutter_update/ios"
   geolocator:
     :path: ".symlinks/plugins/geolocator/ios"
   image_picker:
@@ -79,7 +74,6 @@ SPEC CHECKSUMS:
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_flexible_toast: 0547e740cae0c33bb7c51bcd931233f4584e1143
-  flutter_update: 4ba98a6c795e46127f599531847fa5aa61c73b3e
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator: f5e3de65e241caba7ce3e8a618803387bda73384
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
