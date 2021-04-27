@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/model/resp.dart';
-import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import "package:collection/collection.dart";
 
 class AttendancePage extends StatefulWidget {
