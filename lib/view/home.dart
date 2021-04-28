@@ -25,10 +25,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    Get
-      ..find<ProductsController>()
-      ..find<OutletsController>()
-      ..find<CollectionController>();
+    Get.find<ProductsController>();
+    Get.find<OutletsController>();
+    Get.find<CollectionController>();
 
     Get.find<PreferenceController>().getCheckInValue().then((value) {
       if (value) {
@@ -50,135 +49,137 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[300],
-      drawer: Drawer(
-        child: DrawerPage(),
-      ),
-      appBar: AppBar(
-        title: const Text('Mobitrack'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.to(() => LocationStatusPage());
-            },
-            child: Text("Status", style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-      body: GetBuilder<PreferenceController>(
-        builder: (preferenceController) {
-          print("Checked in home: ${preferenceController.isCheckedIn}");
-          var user = Get.find<AuthController>();
-          var location = Get.find<LocationController>();
-          print(preferenceController.isCheckedIn ? 'is check' : ' not check');
-
-          return HawkFabMenu(
-            icon: AnimatedIcons.arrow_menu,
-            fabColor: Get.find<PreferenceController>().isCheckedIn
-                ? Colors.green[900]
-                : Colors.red[900],
-            iconColor: Colors.white,
-            items: [
-              !preferenceController.isCheckedIn
-                  ? HawkFabMenuItem(
-                      label: 'Check In',
-                      ontap: () async {
-                        var conn = await Utilities.isInternetWorking();
-                        if (location.userPosition != null) {
-                          if (conn) {
-                            var resp = await user.checkInOut(
-                                Check.checkIn,
-                                location.userPosition.latitude.toString(),
-                                location.userPosition.longitude.toString());
-                            if (resp.success) {
-                              location.startLocationService();
-                              Get.find<PreferenceController>()
-                                  .setCheckInValue(true);
-                              Get.to(() => ViewDistributorPage());
-                            } else {
-                              Utilities.showInToast(resp.message,
-                                  toastType: ToastType.ERROR);
-                            }
-                          } else {
-                            Utilities.showInToast(
-                                'Please connect to the internet to check in!',
-                                toastType: ToastType.ERROR);
-                          }
-                        } else {
-                          Utilities.showInToast("Could not get your location",
-                              toastType: ToastType.ERROR);
-                        }
-                      },
-                      icon: Icon(Icons.login_rounded),
-                      color: Colors.green[900],
-                      labelBackgroundColor: Colors.green[900],
-                      labelColor: Colors.white,
-                    )
-                  : HawkFabMenuItem(
-                      label: 'Check Out',
-                      ontap: () async {
-                        var conn = await Utilities.isInternetWorking();
-
-                        if (location.userPosition != null) {
-                          if (conn) {
-                            var resp = await user.checkInOut(
-                                Check.checkOut,
-                                location.userPosition.latitude.toString(),
-                                location.userPosition.longitude.toString());
-                            if (resp.success) {
-                              location.stopBackgroundLocationService();
-                              Get.find<PreferenceController>()
-                                  .setCheckInValue(false);
-                            } else {
-                              Utilities.showInToast(resp.message,
-                                  toastType: ToastType.ERROR);
-                            }
-                          } else {
-                            Utilities.showInToast(
-                                'Please connect to the internet to check out!',
-                                toastType: ToastType.ERROR);
-                          }
-                        } else {
-                          Utilities.showInToast("Could not get your location",
-                              toastType: ToastType.ERROR);
-                        }
-
-                        //down
-                      },
-                      icon: Icon(Icons.logout),
-                      color: Colors.red[900],
-                      labelBackgroundColor: Colors.red[900],
-                      labelColor: Colors.white,
-                    ),
-            ],
-            body: Stack(
-              children: [
-                if (Get.find<PreferenceController>().isCheckedIn)
-                  Align(
-                    alignment: Alignment.center,
-                    child: Glow(
-                      child: Container(),
-                      startDelay: Duration(milliseconds: 000),
-                      glowColor: Colors.blue[500],
-                      endRadius: 200.0,
-                    ),
-                  ),
-                Center(
-                  child: GetBuilder<LocationController>(
-                    builder: (controller) {
-                      return Text(
-                        'You are near: ' + controller.nearestOutlet,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      );
-                    },
-                  ),
-                ),
-              ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.grey[300],
+        drawer: Drawer(
+          child: DrawerPage(),
+        ),
+        appBar: AppBar(
+          title: const Text('Mobitrack'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.to(() => LocationStatusPage());
+              },
+              child: Text("Status", style: TextStyle(color: Colors.white)),
             ),
-          );
-        },
+          ],
+        ),
+        body: GetBuilder<PreferenceController>(
+          builder: (preferenceController) {
+            print("Checked in home: ${preferenceController.isCheckedIn}");
+            var user = Get.find<AuthController>();
+            var location = Get.find<LocationController>();
+            print(preferenceController.isCheckedIn ? 'is check' : ' not check');
+
+            return HawkFabMenu(
+              icon: AnimatedIcons.arrow_menu,
+              fabColor: Get.find<PreferenceController>().isCheckedIn
+                  ? Colors.green[900]
+                  : Colors.red[900],
+              iconColor: Colors.white,
+              items: [
+                !preferenceController.isCheckedIn
+                    ? HawkFabMenuItem(
+                        label: 'Check In',
+                        ontap: () async {
+                          var conn = await Utilities.isInternetWorking();
+                          if (location.userPosition != null) {
+                            if (conn) {
+                              var resp = await user.checkInOut(
+                                  Check.checkIn,
+                                  location.userPosition.latitude.toString(),
+                                  location.userPosition.longitude.toString());
+                              if (resp.success) {
+                                location.startLocationService();
+                                Get.find<PreferenceController>()
+                                    .setCheckInValue(true);
+                                Get.to(() => ViewDistributorPage());
+                              } else {
+                                Utilities.showInToast(resp.message,
+                                    toastType: ToastType.ERROR);
+                              }
+                            } else {
+                              Utilities.showInToast(
+                                  'Please connect to the internet to check in!',
+                                  toastType: ToastType.ERROR);
+                            }
+                          } else {
+                            Utilities.showInToast("Could not get your location",
+                                toastType: ToastType.ERROR);
+                          }
+                        },
+                        icon: Icon(Icons.login_rounded),
+                        color: Colors.green[900],
+                        labelBackgroundColor: Colors.green[900],
+                        labelColor: Colors.white,
+                      )
+                    : HawkFabMenuItem(
+                        label: 'Check Out',
+                        ontap: () async {
+                          var conn = await Utilities.isInternetWorking();
+
+                          if (location.userPosition != null) {
+                            if (conn) {
+                              var resp = await user.checkInOut(
+                                  Check.checkOut,
+                                  location.userPosition.latitude.toString(),
+                                  location.userPosition.longitude.toString());
+                              if (resp.success) {
+                                location.stopBackgroundLocationService();
+                                Get.find<PreferenceController>()
+                                    .setCheckInValue(false);
+                              } else {
+                                Utilities.showInToast(resp.message,
+                                    toastType: ToastType.ERROR);
+                              }
+                            } else {
+                              Utilities.showInToast(
+                                  'Please connect to the internet to check out!',
+                                  toastType: ToastType.ERROR);
+                            }
+                          } else {
+                            Utilities.showInToast("Could not get your location",
+                                toastType: ToastType.ERROR);
+                          }
+
+                          //down
+                        },
+                        icon: Icon(Icons.logout),
+                        color: Colors.red[900],
+                        labelBackgroundColor: Colors.red[900],
+                        labelColor: Colors.white,
+                      ),
+              ],
+              body: Stack(
+                children: [
+                  if (Get.find<PreferenceController>().isCheckedIn)
+                    Align(
+                      alignment: Alignment.center,
+                      child: Glow(
+                        child: Container(),
+                        startDelay: Duration(milliseconds: 000),
+                        glowColor: Colors.blue[500],
+                        endRadius: 200.0,
+                      ),
+                    ),
+                  Center(
+                    child: GetBuilder<LocationController>(
+                      builder: (controller) {
+                        return Text(
+                          'You are near: ' + controller.nearestOutlet,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

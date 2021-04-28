@@ -137,16 +137,18 @@ class Sales {
       this.createdAt,
       this.id});
 
-  Sales.fromJson(Map<String, dynamic> json) {
+  Sales.fromJson(Map<String, dynamic> json, [isLocalStorage = false]) {
     distributorId = json['distributor_id'];
     batchId = json['batch_id'];
     productId = json['product_id'];
     quantity = json['quantity'];
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
-    salesOfficerId = json['sales_officer_id'];
-    updatedAt = json['updated_at'];
-    createdAt = json['created_at'];
+    if (!isLocalStorage) {
+      salesOfficerId = json['sales_officer_id'];
+      updatedAt = json['updated_at'];
+      createdAt = json['created_at'];
+    }
     id = json['id'];
   }
 
@@ -159,9 +161,6 @@ class Sales {
     data['sold_at'] = this.soldAt.toString();
     data['outlet_id'] = this.outletId.toString();
     if (isLocalStorage) {
-      data['sales_officer_id'] = this.salesOfficerId;
-      data['updated_at'] = this.updatedAt;
-      data['created_at'] = this.createdAt;
       data['id'] = this.id;
     }
 

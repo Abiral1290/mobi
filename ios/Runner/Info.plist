@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.technosales.mobitrack-dv</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -15,11 +19,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -27,8 +31,16 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This app need access to your music to listen songs.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app need access to your bluetooth connetivity for detecting nearby sellers via bluetooths.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app need access to your calendar for selecting date for sales.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app need access to to your camera to click cheque photo.</string>
+	<string>This app need access to your camera to click cheque photo.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app need access to your contacts to call.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app requires location access for location tracking of Sales Officer.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -37,8 +49,12 @@
 	<string>This app requires location access for location tracking of Sales Officer</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app requires location access for location tracking of Sales Officer.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app need access to your motion sensors to track your movement.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app need access to to your gallery to import cheque photo.</string>
+	<string>This app need access to your gallery to import cheque photo.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app need to recognize your speech for translation.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

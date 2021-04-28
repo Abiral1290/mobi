@@ -6,15 +6,21 @@ import '../../controller/products_controller.dart';
 import '../../utils/utilities.dart';
 
 class ViewSalesPage extends StatelessWidget {
+  bool _lock = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Unsynced sales")),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          if (_lock) return;
           var conn = await Utilities.isInternetWorking();
           if (conn) {
-            Get.find<ProductsController>().syncSalesData();
+            _lock = true;
+
+            await Get.find<ProductsController>().syncSalesData();
+            _lock = false;
           } else {
             Utilities.showInToast("No Connection to internet",
                 toastType: ToastType.INFO);

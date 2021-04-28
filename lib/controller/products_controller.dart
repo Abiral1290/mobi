@@ -16,7 +16,7 @@ class ProductsController extends GetxController {
   getProductListFromAPI() async {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
-      fetchProducts().then((value) async {
+      await fetchProducts().then((value) async {
         print(value.response);
         await databaseHelper.deleteAllProducts().then((res) {
           if (value.success) {
@@ -74,11 +74,12 @@ class ProductsController extends GetxController {
   }
 
   Future<bool> syncSalesData() async {
+    Utilities.showInToast('Syncing Data', toastType: ToastType.INFO);
     for (var i = 0; i < salesList.length; i++) {
       var item = salesList[i];
       var res = await sellProductApi(item);
       if (res.success) {
-        databaseHelper.deleteSales(item).then((value) {
+        await databaseHelper.deleteSales(item).then((value) {
           if (value) {
             salesList.remove(item);
             update();
@@ -86,6 +87,8 @@ class ProductsController extends GetxController {
         });
       }
     }
+    Utilities.showInToast('Syncing Complete', toastType: ToastType.INFO);
+
     return true;
   }
 }
