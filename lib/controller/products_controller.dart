@@ -5,12 +5,16 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class ProductsController extends GetxController {
   List<Product> productList;
+  List<Sales> localSalesList = [];
   List<Sales> salesList = [];
+  List<Sales> formattedSalesList = [];
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  DateTime selectedDate = DateTime.now();
 
   ProductsController() {
     getProductListFromAPI();
-    fetchsales();
+    fetchLocalSales();
+    fetchSalesFromAPI();
   }
 
   getProductListFromAPI() async {
@@ -50,10 +54,42 @@ class ProductsController extends GetxController {
     });
   }
 
-  fetchsales() {
+  // sales data from API
+  fetchSalesFromAPI() async {
+    var conn = await Utilities.isInternetWorking();
+    if (conn) {
+      fetchSales().then((value) {
+        if (value.success) {
+          salesList = value.response;
+          update();
+          formatSalesDate(DateTime.now());
+        } else {
+          print("Error fetching sales");
+        }
+      });
+    } else {}
+  }
+
+  // format sales list according to selected date from user
+  formatSalesDate(DateTime datetime) {
+    var formattedDate = DateTime(datetime.year, datetime.month, datetime.day);
+    formattedSalesList = salesList
+        .where((element) =>
+            DateTime(
+                DateTime.parse(element.soldAt).year,
+                DateTime.parse(element.soldAt).month,
+                DateTime.parse(element.soldAt).day) ==
+            formattedDate)
+        .toList();
+    selectedDate = datetime;
+    update();
+  }
+
+  // local sales data
+  fetchLocalSales() {
     databaseHelper.getAllSalesData().then((value) {
       if (value != null) {
-        salesList = value;
+        localSalesList = value;
       }
     });
   }
@@ -62,7 +98,7 @@ class ProductsController extends GetxController {
     sales.id = DateTime.now().millisecondsSinceEpoch;
     databaseHelper.insertSales(sales).then((value) {
       if (value) {
-        salesList.add(sales);
+        localSalesList.add(sales);
         update();
         Utilities.showInToast("Sales Stored locally",
             toastType: ToastType.SUCCESS);
@@ -75,13 +111,13 @@ class ProductsController extends GetxController {
 
   Future<bool> syncSalesData() async {
     Utilities.showInToast('Syncing Data', toastType: ToastType.INFO);
-    for (var i = 0; i < salesList.length; i++) {
-      var item = salesList[i];
+    for (var i = 0; i < localSalesList.length; i++) {
+      var item = localSalesList[i];
       var res = await sellProductApi(item);
       if (res.success) {
         await databaseHelper.deleteSales(item).then((value) {
           if (value) {
-            salesList.remove(item);
+            localSalesList.remove(item);
             update();
           }
         });

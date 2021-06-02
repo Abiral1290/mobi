@@ -11,6 +11,7 @@ import 'package:mobitrack_dv_flutter/view/profile.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
 import 'package:mobitrack_dv_flutter/view/collections/add_collections.dart';
 import 'package:mobitrack_dv_flutter/view/collections/view_collection.dart';
+import 'package:mobitrack_dv_flutter/view/report/sales_report.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 
 class DrawerPage extends StatelessWidget {
@@ -178,16 +179,18 @@ class DrawerPage extends StatelessWidget {
                     ),
                   ),
                   children: [
-                    // ElevatedButton(
-                    //   onPressed: () {},
-                    //   child: Text("Sales Report"),
-                    //   style: expandedButtonStyle,
-                    // ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => SalesReportPage());
+                      },
+                      child: Text("Sales Report"),
+                      style: expandedButtonStyle,
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         Get.to(() => AttendancePage());
                       },
-                      child: Text("Attendance"),
+                      child: Text("Attendance Report"),
                       style: expandedButtonStyle,
                     ),
                   ],

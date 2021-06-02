@@ -42,6 +42,28 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  byPassCallServer() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => WillPopScope(
+          child: CupertinoAlertDialog(
+            title: new Text("Please Wait"),
+            content: Column(
+              children: [new Text("Logging in."), CupertinoActivityIndicator()],
+            ),
+            actions: <Widget>[],
+          ),
+          onWillPop: () {}),
+    );
+
+    var resp = await Get.find<AuthController>().signIn(_userNUmber);
+    Get.back();
+    Utilities.showInToast(
+      resp,
+    );
+  }
+
   showLoadingandCheckAPI() async {
     showDialog(
       context: context,
@@ -106,9 +128,12 @@ class _LoginPageState extends State<LoginPage> {
                   } else {
                     var conn = await Utilities.isInternetWorking();
                     if (conn) {
-                      launch('tel://$_callServerNum');
+                      // code to bypass call server
+                      byPassCallServer();
 
-                      showLoadingandCheckAPI();
+                      // code to verify call server
+                      // launch('tel://$_callServerNum');
+                      // showLoadingandCheckAPI();
                     } else {
                       Utilities.showInToast('No internet',
                           toastType: ToastType.ERROR);

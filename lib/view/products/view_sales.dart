@@ -31,11 +31,13 @@ class ViewSalesPage extends StatelessWidget {
       body: GetBuilder<ProductsController>(
         builder: (productsController) {
           return ListView.builder(
-              itemCount: Get.find<ProductsController>().salesList.length,
+              itemCount: Get.find<ProductsController>().localSalesList.length,
               itemBuilder: (builder, index) {
                 return ListTile(
                   title: Text(DateFormat().add_yMEd().format(DateTime.parse(
-                      Get.find<ProductsController>().salesList[index].soldAt))),
+                      Get.find<ProductsController>()
+                          .localSalesList[index]
+                          .soldAt))),
                 );
               });
         },

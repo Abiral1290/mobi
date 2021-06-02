@@ -33,11 +33,11 @@ class Distributor {
   Distributor.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    email = json['email'];
-    contact = json['contact'];
-    location = json['location'];
-    latitude = json['latitude'];
-    longitude = json['longitude'];
+    email = json['email'].toString();
+    contact = json['contact'].toString();
+    location = json['location'].toString();
+    latitude = json['latitude'] == null ? 0.0 : json['latitude'].toDouble();
+    longitude = json['longitude'] == null ? 0.0 : json['longitude'].toDouble();
     salesOfficerId = json['sales_officer_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -65,23 +65,23 @@ Future<ApiResponse<List<Distributor>>> fetchDistributorsApi() async {
     'Accept': 'application/json'
   };
 
-  try {
-    var res = await http.get(Uri.parse(ApiUrls.distributors), headers: headers);
-    Map<String, dynamic> obj = json.decode(res.body);
+  // try {
+  var res = await http.get(Uri.parse(ApiUrls.distributors), headers: headers);
+  Map<String, dynamic> obj = json.decode(res.body);
 
-    if (res.statusCode == 200) {
-      final data = obj["data"].cast<Map<String, dynamic>>();
-      List<Distributor> distributors = await data.map<Distributor>((json) {
-        return Distributor.fromJson(json);
-      }).toList();
-      return ApiResponse(true, obj['message'], distributors);
-    } else {
-      print(obj);
-      return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
-    }
-  } catch (e) {
-    print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+  if (res.statusCode == 200) {
+    final data = obj["data"].cast<Map<String, dynamic>>();
+    List<Distributor> distributors = await data.map<Distributor>((json) {
+      return Distributor.fromJson(json);
+    }).toList();
+    return ApiResponse(true, obj['message'], distributors);
+  } else {
+    print(obj);
+    return ApiResponse(
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
   }
+  // } catch (e) {
+  //   print(e.toString());
+  //   return ApiResponse(false, e.toString(), null);
+  // }
 }

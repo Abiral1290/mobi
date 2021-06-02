@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/bank_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     Get.find<ProductsController>();
+    Get.find<BankController>();
     Get.find<OutletsController>();
     Get.find<CollectionController>();
 

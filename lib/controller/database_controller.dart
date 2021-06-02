@@ -1,3 +1,4 @@
+import 'package:mobitrack_dv_flutter/model/bank.dart';
 import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
@@ -13,6 +14,7 @@ class DatabaseHelper {
   static final collectionsTable = 'collections';
   static final productsTable = 'products';
   static final salesTable = 'sales';
+  static final bankTable = 'banks';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
@@ -47,6 +49,15 @@ class DatabaseHelper {
               )
           ''');
     await db.execute('''
+          CREATE TABLE IF NOT EXISTS $bankTable (
+              id INTEGER,
+              bank_name TEXT,
+              bank_code TEXT,
+              created_at TEXT,
+              updated_at TEXT
+              )
+          ''');
+    await db.execute('''
           CREATE TABLE IF NOT EXISTS $outletsTable (
               id INTEGER PRIMARY KEY,
               sales_officer_id INTEGER,
@@ -72,6 +83,7 @@ class DatabaseHelper {
               amount TEXT,
               account_of TEXT,
               remarks TEXT,
+              device_time TEXT,
               created_at TEXT,
               updated_at TEXT,
               synced INTEGER
@@ -164,9 +176,14 @@ class DatabaseHelper {
   //for collection
   Future<bool> insertCollection(Collections collection) async {
     Database db = await instance.instace;
-    var res = await db.insert(collectionsTable, collection.toJson(true));
-    print('inserted collection data');
-    return res != 0;
+    try {
+      var res = await db.insert(collectionsTable, collection.toJson(true));
+      print('inserted collection data');
+      return res != 0;
+    } catch (e) {
+      print(e.message);
+      return false;
+    }
   }
 
   Future<List<Collections>> getAllCollectionData() async {
@@ -207,6 +224,30 @@ class DatabaseHelper {
   Future<bool> deleteAllProducts() async {
     Database db = await instance.instace;
     var res = await db.delete(productsTable);
+    return res != 0;
+  }
+
+  //for bank
+  Future<bool> insertBank(Bank bank) async {
+    Database db = await instance.instace;
+    var res = await db.insert(bankTable, bank.toJson());
+    print('inserted bank data');
+    return res != 0;
+  }
+
+  Future<List<Bank>> getAllBankData() async {
+    Database db = await instance.instace;
+    List<Bank> bank = [];
+    var res = await db.query(bankTable);
+    res.forEach((element) {
+      bank.add(Bank.fromJson(element));
+    });
+    return bank;
+  }
+
+  Future<bool> deleteAllBanks() async {
+    Database db = await instance.instace;
+    var res = await db.delete(bankTable);
     return res != 0;
   }
 

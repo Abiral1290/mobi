@@ -17,6 +17,7 @@ class Collections {
   int salesOfficerId;
   String accountOf;
   String remarks;
+  String deviceTime;
   String createdAt;
   String updatedAt;
   int synced;
@@ -32,6 +33,7 @@ class Collections {
       this.salesOfficerId,
       this.accountOf,
       this.remarks = "",
+      this.deviceTime,
       this.createdAt,
       this.updatedAt,
       this.synced});
@@ -47,6 +49,7 @@ class Collections {
     salesOfficerId = json['sales_officer_id'];
     accountOf = json['account_of'];
     remarks = json['remarks'];
+    deviceTime = json['device_time'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     synced = json['synced'] ?? 0;
@@ -64,6 +67,7 @@ class Collections {
     if (!isLocal) data['sales_officer_id'] = this.salesOfficerId.toString();
     data['account_of'] = this.accountOf.toString();
     data['remarks'] = this.remarks.toString();
+    data['device_time'] = this.deviceTime.toString();
     data['created_at'] = this.createdAt.toString();
     data['updated_at'] = this.updatedAt.toString();
     if (isLocal) data['synced'] = this.synced;

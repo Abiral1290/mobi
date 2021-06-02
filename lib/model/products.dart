@@ -195,6 +195,33 @@ Future<ApiResponse<List<Product>>> fetchProducts() async {
   }
 }
 
+Future<ApiResponse<List<Sales>>> fetchSales() async {
+  var headers = {
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Accept': 'application/json'
+  };
+
+  try {
+    var res = await http.get(Uri.parse(ApiUrls.sales), headers: headers);
+    Map<String, dynamic> obj = json.decode(res.body);
+
+    if (res.statusCode == 200) {
+      final data = obj["data"].cast<Map<String, dynamic>>();
+      List<Sales> sales = await data.map<Sales>((json) {
+        return Sales.fromJson(json);
+      }).toList();
+      return ApiResponse(true, obj['message'], sales);
+    } else {
+      print(obj);
+      return ApiResponse(
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+    }
+  } catch (e) {
+    print(e.toString());
+    return ApiResponse(false, e.toString(), null);
+  }
+}
+
 Future<ApiResponse<Sales>> sellProductApi(Sales sales) async {
   var body = sales.toJson();
   var headers = {
