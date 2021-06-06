@@ -11,7 +11,7 @@ import 'package:mobitrack_dv_flutter/view/profile.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
 import 'package:mobitrack_dv_flutter/view/collections/add_collections.dart';
 import 'package:mobitrack_dv_flutter/view/collections/view_collection.dart';
-import 'package:mobitrack_dv_flutter/view/report/sales_report.dart';
+import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 
 class DrawerPage extends StatelessWidget {

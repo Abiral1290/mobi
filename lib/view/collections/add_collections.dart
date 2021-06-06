@@ -215,7 +215,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: amtCntrl,
-                  maxLength: 6,
+                  maxLength: 9,
                   onChanged: (s) {
                     try {
                       collection.value.amount = int.parse(s);

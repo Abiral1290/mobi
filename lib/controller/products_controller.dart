@@ -5,16 +5,13 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class ProductsController extends GetxController {
   List<Product> productList;
+  List<Product> searchProductList;
   List<Sales> localSalesList = [];
-  List<Sales> salesList = [];
-  List<Sales> formattedSalesList = [];
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  DateTime selectedDate = DateTime.now();
 
   ProductsController() {
     getProductListFromAPI();
     fetchLocalSales();
-    fetchSalesFromAPI();
   }
 
   getProductListFromAPI() async {
@@ -44,45 +41,25 @@ class ProductsController extends GetxController {
     });
   }
 
+  searchProducts(String text) {
+    if (productList != null && productList.isNotEmpty) {
+      searchProductList = productList
+          .where((element) =>
+              element.name.toLowerCase().contains(text.toLowerCase()))
+          .toList();
+      update();
+    }
+  }
+
   sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {
       if (value.success) {
         Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
+        Get.back();
       } else {
         Utilities.showInToast(value.message, toastType: ToastType.ERROR);
       }
     });
-  }
-
-  // sales data from API
-  fetchSalesFromAPI() async {
-    var conn = await Utilities.isInternetWorking();
-    if (conn) {
-      fetchSales().then((value) {
-        if (value.success) {
-          salesList = value.response;
-          update();
-          formatSalesDate(DateTime.now());
-        } else {
-          print("Error fetching sales");
-        }
-      });
-    } else {}
-  }
-
-  // format sales list according to selected date from user
-  formatSalesDate(DateTime datetime) {
-    var formattedDate = DateTime(datetime.year, datetime.month, datetime.day);
-    formattedSalesList = salesList
-        .where((element) =>
-            DateTime(
-                DateTime.parse(element.soldAt).year,
-                DateTime.parse(element.soldAt).month,
-                DateTime.parse(element.soldAt).day) ==
-            formattedDate)
-        .toList();
-    selectedDate = datetime;
-    update();
   }
 
   // local sales data
@@ -102,6 +79,7 @@ class ProductsController extends GetxController {
         update();
         Utilities.showInToast("Sales Stored locally",
             toastType: ToastType.SUCCESS);
+        Get.back();
       } else {
         Utilities.showInToast("Error storing sales locally",
             toastType: ToastType.ERROR);

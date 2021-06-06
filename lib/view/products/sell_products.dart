@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
@@ -9,212 +12,275 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class SellProductPage extends StatelessWidget {
-  final Product products;
-  final Batches batches;
+  final Outlet outlet;
 
-  SellProductPage({@required this.products, @required this.batches});
+  SellProductPage({@required this.outlet});
 
   TextEditingController outletTextController = TextEditingController();
   TextEditingController quantityTextController = TextEditingController();
 
   Sales sales = Sales();
-  int quantity = 0;
 
-  var selectedOutlet = Outlet().obs;
-  var selectedIndex = 0.obs;
+  var selectedProductList = [].obs; //List<Map<String, String>>
+  Map<String, String> selectedProducts = {};
+
+  final TextStyle titleStyle = TextStyle(
+    fontSize: 18,
+  );
+  final TextStyle contentStyle = TextStyle(
+    fontSize: 17,
+  );
+
+  InputDecoration decoration(String labelText) {
+    return InputDecoration(
+      labelText: labelText,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    );
+  }
+
+  void showQuantityBottomSheet(String batchId, String productId) {
+    String addedQuantity;
+    showModalBottomSheet(
+        context: Get.context,
+        shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+        builder: (builder) {
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: decoration("Add Quantity"),
+                  onChanged: (quantity) {
+                    addedQuantity = quantity;
+                  },
+                  keyboardType: TextInputType.number,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (addedQuantity != null) {
+                      selectedProductList.add(
+                          {"product_id": productId, "quantity": addedQuantity});
+                    } else {
+                      Utilities.showInToast("Please add quantity");
+                    }
+                    // Utilities.showInToast(
+                    //     "Quantity: $addedQuantity, ProductId: $productId, BatchId: $batchId");
+                    Get.back();
+                  },
+                  child: Text("Add"),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  void showInfoBottomSheet() {
+    showModalBottomSheet(
+        shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+        context: Get.context,
+        enableDrag: true,
+        builder: (builder) {
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Selected Products",
+                      style: TextStyle(
+                          fontSize: 25.0, fontWeight: FontWeight.bold),
+                    ),
+                    Spacer(),
+                    IconButton(
+                        icon: Icon(Icons.close), onPressed: () => Get.back()),
+                  ],
+                ),
+                selectedProductList.isEmpty
+                    ? Center(
+                        child: Text("No Products"),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                          itemCount: selectedProductList.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(Get.find<ProductsController>()
+                                  .productList
+                                  .where((element) =>
+                                      element.id ==
+                                      int.parse(selectedProductList[index]
+                                          .values
+                                          .elementAt(0)))
+                                  .toList()
+                                  .first
+                                  .name),
+                              subtitle: Text("Quantity: " +
+                                  selectedProductList[index]
+                                      .values
+                                      .elementAt(1)),
+                            );
+                          },
+                        ),
+                      ),
+              ],
+            ),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget buildOutletList() {
-      return Expanded(
-        child: GetBuilder<OutletsController>(
-          init: OutletsController(),
-          builder: (outletsController) {
-            return outletsController.searchList.isEmpty
-                ? outletsController.outletList == null
-                    ? Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                        itemCount: outletsController.outletList.length,
-                        itemBuilder: (context, index) {
-                          return Obx(
-                            () => Card(
-                              child: ListTile(
-                                selected: index == selectedIndex.value,
-                                title: Text(
-                                    outletsController.outletList[index].name),
-                                subtitle: Text(
-                                    outletsController.outletList[index].type),
-                                onTap: () {
-                                  selectedOutlet.value =
-                                      outletsController.outletList[index];
-                                  sales.outletId =
-                                      outletsController.outletList[index].id;
-                                  selectedIndex.value = index;
-                                },
-                              ),
-                            ),
-                          );
-                        })
-                : ListView.builder(
-                    itemCount: outletsController.searchList.length,
-                    itemBuilder: (context, index) {
-                      return Obx(
-                        () => Card(
-                          child: ListTile(
-                            selected: index == selectedIndex.value,
-                            title:
-                                Text(outletsController.searchList[index].name),
-                            subtitle:
-                                Text(outletsController.searchList[index].type),
-                            onTap: () {
-                              selectedOutlet.value =
-                                  outletsController.searchList[index];
-                              sales.outletId =
-                                  outletsController.searchList[index].id;
-                              selectedIndex.value = index;
-                            },
-                            // selectedTileColor: Colors.green,
-                          ),
-                        ),
-                      );
-                    });
-          },
+    Widget buildBatchTile(Batches batches, Product products) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text("Manufacture:", style: contentStyle),
+                  Spacer(),
+                  Text(
+                    DateFormat.yMEd()
+                        .format(DateTime.parse(batches.manufacturedAt)),
+                    style: contentStyle,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text("Expire:", style: contentStyle),
+                  Spacer(),
+                  Text(
+                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt)),
+                    style: contentStyle,
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  showQuantityBottomSheet(
+                      batches.id.toString(), batches.productId.toString());
+                },
+                child: Text("Sell"),
+              ),
+            ],
+          ),
         ),
       );
     }
 
-    // Widget buildDistributorDropdown() {
-    //   return Row(
-    //     mainAxisAlignment: MainAxisAlignment.center,
-    //     children: [
-    //       Text("Select Distributor"),
-    //       SizedBox(
-    //         width: Get.size.width * 0.1,
-    //       ),
-    //       Obx(
-    //         () => DropdownButton<Distributor>(
-    //           hint: Text(distributor.value.name),
-    //           items: Get.find<AuthController>().user.distributors.map((value) {
-    //             return DropdownMenuItem<Distributor>(
-    //                 value: value,
-    //                 child: Text(
-    //                   value.name,
-    //                   style: TextStyle(color: Colors.black),
-    //                 ));
-    //           }).toList(),
-    //           onChanged: (Distributor dist) {
-    //             distributor.value = dist;
-    //             sales.distributorId = dist.id;
-    //           },
-    //         ),
-    //       ),
-    //     ],
-    //   );
-    // }
-
-    Widget buildQuantityField() {
-      return Container(
-        width: Get.size.width * 0.7,
-        child: Row(
-          children: <Widget>[
-            Text("Quantity"),
-            SizedBox(
-              width: Get.size.width * 0.1,
-            ),
-            Expanded(
-              flex: 1,
-              child: TextField(
-                textAlign: TextAlign.center,
-                maxLength: 6,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(8.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+    Widget buildMainTile(Product products) {
+      return Card(
+        elevation: 7.0,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Name:",
+                    style: titleStyle,
                   ),
-                ),
-                onChanged: (text) {
-                  if (text.isNotEmpty) {
-                    quantity = int.parse(quantityTextController.text);
-                    sales.quantity = int.parse(quantityTextController.text);
-                  }
-                },
-                controller: quantityTextController,
-                keyboardType: TextInputType.numberWithOptions(
-                  decimal: false,
-                  signed: true,
-                ),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+                  Spacer(),
+                  Expanded(
+                    child: Text(
+                      products.name,
+                      overflow: TextOverflow.visible,
+                      maxLines: null,
+                      style: contentStyle,
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Container(
-              height: 38.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 0.5,
-                        ),
-                      ),
-                    ),
-                    child: InkWell(
-                      child: Icon(
-                        Icons.arrow_drop_up,
-                        size: 18.0,
-                      ),
-                      onTap: () {
-                        if (quantityTextController.text == "") {
-                          quantityTextController.text = quantity.toString();
-                        }
-                        int currentValue =
-                            int.parse(quantityTextController.text);
-
-                        // if (currentValue < batches.stock) {
-                        currentValue++;
-                        quantity = currentValue;
-                        sales.quantity = currentValue;
-
-                        quantityTextController.text = (currentValue).toString();
-                        // }
+              Row(
+                children: [
+                  Text("Unit:", style: titleStyle),
+                  Spacer(),
+                  Text(
+                    products.unit,
+                    style: contentStyle,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text("Price:", style: titleStyle),
+                  Spacer(),
+                  Text(
+                    products.value.toString(),
+                    style: contentStyle.copyWith(
+                        color: Colors.red[900], fontSize: 20),
+                  ),
+                ],
+              ),
+              products.batches.isEmpty
+                  ? ElevatedButton(
+                      onPressed: () {
+                        showQuantityBottomSheet(
+                            null.toString(), products.id.toString());
                       },
+                      child: Text("Sell"),
+                    )
+                  : ExpansionTile(
+                      title: Text("Batches"),
+                      children: products.batches.map((batch) {
+                        return buildBatchTile(batch, products);
+                      }).toList(),
                     ),
-                  ),
-                  InkWell(
-                    child: Icon(
-                      Icons.arrow_drop_down,
-                      size: 18.0,
-                    ),
-                    onTap: () {
-                      if (quantityTextController.text == "") {
-                        quantityTextController.text = quantity.toString();
-                      }
-                      int currentValue = int.parse(quantityTextController.text);
-                      if (currentValue >= 0) {
-                        currentValue--;
-                        quantity = currentValue;
-                        sales.quantity = currentValue;
-
-                        quantityTextController.text =
-                            (currentValue > 0 ? currentValue : 0).toString();
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
+    }
+
+    Widget _buildListViewWidget(List<Product> productList) {
+      return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: productList.length,
+          itemBuilder: (context, index) {
+            return buildMainTile(productList[index]);
+          });
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Sell"),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          if (selectedProductList.isEmpty) {
+            Utilities.showInToast("Please add a product");
+            return;
+          }
+
+          sales.orders = jsonEncode(selectedProductList);
+          sales.distributorId = Constants.selectedDistributor.id.toString();
+          sales.soldAt = DateTime.now().toString();
+          sales.outletId = outlet.id.toString();
+
+          var conn = await Utilities.isInternetWorking();
+          if (conn) {
+            Get.find<ProductsController>().sellProducts(sales);
+          } else {
+            Get.find<ProductsController>().storeSalesOffline(sales);
+          }
+
+          // Get.back();
+        },
+        label: Row(
+          children: [
+            Icon(Icons.check_circle),
+            Text("Save"),
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -222,86 +288,72 @@ class SellProductPage extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
-                Text(
-                  products.name,
-                  style: TextStyle(fontSize: 20.0),
-                ),
-                Text(
-                  "Batch Number: ${batches.id}",
-                  style: TextStyle(fontSize: 18.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      outlet.name,
+                      style: TextStyle(fontSize: 20.0),
+                    ),
+                    Obx(
+                      () => IconButton(
+                          icon: Icon(Icons.info),
+                          onPressed: selectedProductList.isEmpty
+                              ? null
+                              : () {
+                                  showInfoBottomSheet();
+                                }),
+                    ),
+                  ],
                 ),
                 Text(
                   "Distributor: ${Constants.selectedDistributor.name}",
                   style: TextStyle(fontSize: 18.0),
                 ),
-                Obx(() => selectedOutlet.value.name != null
-                    ? Text("Selected Outlet: " + selectedOutlet.value.name)
-                    : SizedBox()),
                 SizedBox(
                   height: Get.size.height * 0.03,
                 ),
                 InputDecorator(
-                  decoration: InputDecoration(
-                      labelText: "Select Company",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0))),
-                  child: Container(
-                    height: Get.size.height * 0.45,
-                    child: Column(
-                      children: [
-                        TextField(
-                            controller: outletTextController,
-                            decoration: InputDecoration(
-                                enabled: true, hintText: "Search  Outlets"),
-                            onChanged: (text) {
-                              Get.find<OutletsController>().searchOutlets(text);
-                            }),
-                        buildOutletList(),
-                      ],
-                    ),
+                  decoration: decoration("Products"),
+                  child: Column(
+                    children: [
+                      TextField(
+                        decoration: decoration("Search Product"),
+                        onChanged: (text) {
+                          Get.find<ProductsController>().searchProducts(text);
+                        },
+                      ),
+                      GetBuilder<ProductsController>(
+                        // init: ProductsController(),
+                        builder: (productsController) {
+                          return Get.find<ProductsController>()
+                                      .searchProductList !=
+                                  null
+                              ? Get.find<ProductsController>()
+                                      .searchProductList
+                                      .isNotEmpty
+                                  ? _buildListViewWidget(
+                                      Get.find<ProductsController>()
+                                          .searchProductList)
+                                  : Center(child: Text("No Products"))
+                              : Get.find<ProductsController>().productList ==
+                                      null
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : Get.find<ProductsController>()
+                                          .productList
+                                          .isEmpty
+                                      ? Center(child: Text("No Products"))
+                                      : _buildListViewWidget(
+                                          Get.find<ProductsController>()
+                                              .productList);
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: Get.size.height * 0.02),
-                // buildDistributorDropdown(),
-                buildQuantityField(),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (sales.outletId != null && sales.quantity != null) {
-                      if (Constants.selectedDistributor != null) {
-                        sales.distributorId = Constants.selectedDistributor.id;
-                        sales.batchId = batches.id;
-                        sales.productId = products.id;
-                        sales.soldAt = DateTime.now().toString();
-                        print(sales.toJson());
-
-                        var conn = await Utilities.isInternetWorking();
-                        if (conn) {
-                          Get.find<ProductsController>().sellProducts(sales);
-                        } else {
-                          Get.find<ProductsController>()
-                              .storeSalesOffline(sales);
-                        }
-
-                        Utilities.showPlatformSpecificAlert(
-                            canclose: false,
-                            dismissable: false,
-                            title: "Please wait",
-                            body: "Your Transaction is being processed",
-                            context: context);
-                        Get.back();
-                        Get.back();
-                      } else {
-                        Utilities.showInToast(
-                            "Please choose your distributor first",
-                            toastType: ToastType.ERROR);
-                      }
-                    } else {
-                      Utilities.showInToast("Please Complete form",
-                          toastType: ToastType.ERROR);
-                    }
-                  },
-                  child: Text("Save"),
-                )
               ],
             ),
           ),

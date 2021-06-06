@@ -101,7 +101,7 @@ class Batches {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['id'] = this.id;
     data['product_id'] = this.productId;
     data['expired_at'] = this.expiredAt;
@@ -114,52 +114,30 @@ class Batches {
 }
 
 class Sales {
-  int distributorId;
-  int batchId;
-  int productId;
-  int quantity;
+  String distributorId;
   String soldAt;
-  int outletId;
-  int salesOfficerId;
-  String updatedAt;
-  String createdAt;
+  String outletId;
+  String orders;
   int id;
 
-  Sales(
-      {this.distributorId,
-      this.batchId,
-      this.productId,
-      this.quantity,
-      this.soldAt,
-      this.outletId,
-      this.salesOfficerId,
-      this.updatedAt,
-      this.createdAt,
-      this.id});
+  Sales({this.distributorId, this.soldAt, this.outletId, this.orders, this.id});
 
   Sales.fromJson(Map<String, dynamic> json, [isLocalStorage = false]) {
     distributorId = json['distributor_id'];
-    batchId = json['batch_id'];
-    productId = json['product_id'];
-    quantity = json['quantity'];
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
-    if (!isLocalStorage) {
-      salesOfficerId = json['sales_officer_id'];
-      updatedAt = json['updated_at'];
-      createdAt = json['created_at'];
+    orders = json['orders'];
+    if (isLocalStorage) {
+      id = json['id'];
     }
-    id = json['id'];
   }
 
   Map<String, dynamic> toJson([bool isLocalStorage = false]) {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['distributor_id'] = this.distributorId.toString();
-    data['batch_id'] = this.batchId.toString();
-    data['product_id'] = this.productId.toString();
-    data['quantity'] = this.quantity.toString();
-    data['sold_at'] = this.soldAt.toString();
-    data['outlet_id'] = this.outletId.toString();
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['distributor_id'] = this.distributorId;
+    data['sold_at'] = this.soldAt;
+    data['outlet_id'] = this.outletId;
+    data['orders'] = this.orders;
     if (isLocalStorage) {
       data['id'] = this.id;
     }
@@ -184,33 +162,6 @@ Future<ApiResponse<List<Product>>> fetchProducts() async {
         return Product.fromJson(json);
       }).toList();
       return ApiResponse(true, obj['message'], products);
-    } else {
-      print(obj);
-      return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
-    }
-  } catch (e) {
-    print(e.toString());
-    return ApiResponse(false, e.toString(), null);
-  }
-}
-
-Future<ApiResponse<List<Sales>>> fetchSales() async {
-  var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
-    'Accept': 'application/json'
-  };
-
-  try {
-    var res = await http.get(Uri.parse(ApiUrls.sales), headers: headers);
-    Map<String, dynamic> obj = json.decode(res.body);
-
-    if (res.statusCode == 200) {
-      final data = obj["data"].cast<Map<String, dynamic>>();
-      List<Sales> sales = await data.map<Sales>((json) {
-        return Sales.fromJson(json);
-      }).toList();
-      return ApiResponse(true, obj['message'], sales);
     } else {
       print(obj);
       return ApiResponse(

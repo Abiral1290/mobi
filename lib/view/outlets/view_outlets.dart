@@ -3,14 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 
 class ViewOutletsPage extends StatelessWidget {
   bool _lock = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.sync),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Row(
+            children: [
+              Icon(Icons.sync),
+              Text("Sync Outlets"),
+            ],
+          ),
           onPressed: () async {
             if (_lock) return;
             var conn = await Utilities.isInternetWorking();
@@ -32,19 +38,16 @@ class ViewOutletsPage extends StatelessWidget {
         ),
         body: GetBuilder<OutletsController>(
           builder: (outletController) {
-            return Container(
-                child: GridView.count(
-              childAspectRatio: 9 / 12,
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              mainAxisSpacing: 3,
-              crossAxisSpacing: 1,
-              children: Get.find<OutletsController>().outletList.map((item) {
-                return Card(
-                  elevation: 7,
-                  child: Container(
+            return ListView.builder(
+              itemCount: Get.find<OutletsController>().outletList.length,
+              itemBuilder: (context, index) {
+                var item = Get.find<OutletsController>().outletList[index];
+                return Container(
+                  child: Card(
+                    elevation: 7,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -138,14 +141,26 @@ class ViewOutletsPage extends StatelessWidget {
                             ],
                           ),
                         ),
+                        MaterialButton(
+                          onPressed: () {
+                            Get.to(() => SellProductPage(
+                                outlet: Get.find<OutletsController>()
+                                    .outletList[index]));
+                          },
+                          color: Colors.green[900],
+                          minWidth: Get.size.width,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.all(10.0),
+                          child: Text("Sell Product"),
+                        ),
                       ],
                     ),
                   ),
                 );
-              }).toList(),
+              },
 
               // },
-            ));
+            );
           },
         ));
   }

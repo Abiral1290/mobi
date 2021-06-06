@@ -80,22 +80,22 @@ Future<ApiResponse> registerOutlet(Outlet outlet) async {
     'Accept': 'application/json'
   };
 
-  try {
-    var resp = await http.post(Uri.parse(ApiUrls.outlets),
-        headers: headers, body: body);
-    Map<String, dynamic> obj = json.decode(resp.body);
+  // try {
+  var resp =
+      await http.post(Uri.parse(ApiUrls.outlets), headers: headers, body: body);
+  Map<String, dynamic> obj = json.decode(resp.body);
 
-    if (resp.statusCode == 200) {
-      outlet.synced = true;
-      return ApiResponse(obj['success'], obj['message'], null);
-    } else {
-      return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
-    }
-  } catch (e) {
-    print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+  if (resp.statusCode == 200) {
+    outlet.synced = true;
+    return ApiResponse(obj['success'], obj['message'], null);
+  } else {
+    return ApiResponse(
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
   }
+  // } catch (e) {
+  //   print(e.toString());
+  //   return ApiResponse(false, e.toString(), null);
+  // }
 }
 
 Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {

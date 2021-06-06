@@ -43,15 +43,6 @@ class ViewProductsPage extends StatelessWidget {
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Get.to(() => SellProductPage(
-                        products: products,
-                        batches: batches,
-                      ));
-                },
-                child: Text("Sell"),
-              ),
             ],
           ),
         ),
@@ -72,9 +63,13 @@ class ViewProductsPage extends StatelessWidget {
                     style: titleStyle,
                   ),
                   Spacer(),
-                  Text(
-                    products.name,
-                    style: contentStyle,
+                  Expanded(
+                    child: Text(
+                      products.name,
+                      overflow: TextOverflow.visible,
+                      maxLines: null,
+                      style: contentStyle,
+                    ),
                   ),
                 ],
               ),

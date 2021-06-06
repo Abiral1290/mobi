@@ -104,10 +104,8 @@ class DatabaseHelper {
           CREATE TABLE IF NOT EXISTS $salesTable (
               id INTEGER PRIMARY KEY,
               distributor_id TEXT,
-              batch_id TEXT,
-              product_id TEXT,
-              quantity TEXT,
               sold_at TEXT,
+              orders TEXT,
               outlet_id TEXT
               )
           ''');
