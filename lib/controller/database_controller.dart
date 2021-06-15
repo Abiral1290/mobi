@@ -59,16 +59,18 @@ class DatabaseHelper {
           ''');
     await db.execute('''
           CREATE TABLE IF NOT EXISTS $outletsTable (
-              id INTEGER PRIMARY KEY,
-              sales_officer_id INTEGER,
+              id TEXT,
               name TEXT,
               owner_name TEXT,
               contact TEXT,
               type TEXT,
-              latitude REAL,
-              longitude REAL,
-              address TEXT,
-              synced INTEGER
+              latitude TEXT,
+              longitude TEXT,
+              province_id TEXT,
+              district_id TEXT,
+              area_id TEXT,
+              street_id TEXT,
+              synced TEXT
               )
           ''');
 
@@ -100,6 +102,7 @@ class DatabaseHelper {
               batches TEXT
               )
           ''');
+
     await db.execute('''
           CREATE TABLE IF NOT EXISTS $salesTable (
               id INTEGER PRIMARY KEY,
@@ -143,9 +146,9 @@ class DatabaseHelper {
     Database db = await instance.instace;
     try {
       var res = await db.insert(outletsTable, o.toJson());
-      return res == 1;
+      return res != 0;
     } catch (e) {
-      return true;
+      return false;
     }
   }
 
@@ -162,6 +165,21 @@ class DatabaseHelper {
   Future<bool> deleteOutlet(Outlet o) async {
     Database db = await instance.instace;
     var res = await db.delete(outletsTable, where: 'id = ?', whereArgs: [o.id]);
+    return res != 0;
+  }
+
+  Future<bool> deleteSyncedOutlet() async {
+    Database db = await instance.instace;
+    var res =
+        await db.rawDelete('DELETE FROM $outletsTable WHERE synced = ?', ['1']);
+    print(res);
+    return res != 0;
+  }
+
+  Future<bool> updateOutlet(Outlet o) async {
+    Database db = await instance.instace;
+    var res = await db.rawUpdate(
+        "UPDATE $outletsTable SET synced = ? WHERE id = ?", ['1', o.id]);
     return res == 1;
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
@@ -41,7 +42,58 @@ class ViewOutletsPage extends StatelessWidget {
             return ListView.builder(
               itemCount: Get.find<OutletsController>().outletList.length,
               itemBuilder: (context, index) {
+                var list = Get.find<OutletsController>().outletList;
+                print(list);
                 var item = Get.find<OutletsController>().outletList[index];
+                print(Get.find<AddressController>().addressList);
+                String province = Get.find<AddressController>()
+                    .addressList
+                    .where((element) => element.id == item.provinceId)
+                    .toList()
+                    .first
+                    .name;
+                String district = Get.find<AddressController>()
+                    .addressList
+                    .where((element) => element.id == item.provinceId)
+                    .toList()
+                    .first
+                    .districts
+                    .where((element) => element.id == item.districtId)
+                    .toList()
+                    .first
+                    .name;
+                String area = Get.find<AddressController>()
+                    .addressList
+                    .where((element) => element.id == item.provinceId)
+                    .toList()
+                    .first
+                    .districts
+                    .where((element) => element.id == item.districtId)
+                    .toList()
+                    .first
+                    .areas
+                    .where((element) => element.id == item.areaId)
+                    .toList()
+                    .first
+                    .name;
+                String street = Get.find<AddressController>()
+                    .addressList
+                    .where((element) => element.id == item.provinceId)
+                    .toList()
+                    .first
+                    .districts
+                    .where((element) => element.id == item.districtId)
+                    .toList()
+                    .first
+                    .areas
+                    .where((element) => element.id == item.areaId)
+                    .toList()
+                    .first
+                    .streets
+                    .where((element) => element.id == item.streetId)
+                    .toList()
+                    .first
+                    .name;
                 return Container(
                   child: Card(
                     elevation: 7,
@@ -117,7 +169,13 @@ class ViewOutletsPage extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  item.address ?? 'N/A',
+                                  province +
+                                      ", " +
+                                      district +
+                                      ", " +
+                                      area +
+                                      ", " +
+                                      street,
                                   overflow: TextOverflow.visible,
                                   style: TextStyle(fontSize: 12),
                                 ),

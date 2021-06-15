@@ -10,65 +10,74 @@ class Outlet {
   int id;
   String name;
   String ownerName;
+  int provinceId;
+  int districtId;
+  int areaId;
+  int streetId;
   String contact;
   String type;
-  int salesOfficerId;
   double latitude;
   double longitude;
-  String address;
+  int salesOfficerId;
+  String createdAt;
+  String updatedAt;
 
   ///flag to check if the outlet is synced with backend
-  bool synced = false;
+  bool synced = true; //default is true for data fetched from api
 
-  Outlet({
-    this.id,
-    this.name,
-    this.ownerName,
-    this.contact,
-    this.type,
-    this.salesOfficerId,
-    this.latitude,
-    this.longitude,
-    this.address,
-  });
+  Outlet(
+      {this.id,
+      this.name,
+      this.ownerName,
+      this.provinceId,
+      this.districtId,
+      this.areaId,
+      this.streetId,
+      this.contact,
+      this.type,
+      this.latitude,
+      this.longitude,
+      this.salesOfficerId,
+      this.createdAt,
+      this.updatedAt});
 
   Outlet.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = int.parse(json['id'].toString());
     name = json['name'];
     ownerName = json['owner_name'];
+    provinceId = int.parse(json['province_id'].toString());
+    districtId = int.parse(json['district_id'].toString());
+    areaId = int.parse(json['area_id'].toString());
+    streetId = int.parse(json['street_id'].toString());
     contact = json['contact'];
     type = json['type'];
+    latitude = double.parse(json['latitude'].toString());
+    longitude = double.parse(json['longitude'].toString());
     salesOfficerId = json['sales_officer_id'];
-    latitude = json['latitude'];
-    longitude = json['longitude'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
     synced = json['synced'] == null
-        ? false
-        : json['synced'] == 1
+        ? true
+        : json['synced'] == "1"
             ? true
             : false;
-
-    address = json['address'] ?? '';
-    if (address.isEmpty) {
-      var street = json['street'] != null ? json['street']['name'] + ', ' : '';
-      var area = json['area'] != null ? json['area']['name'] + ', ' : '';
-      var district = json['district'] != null ? json['district']['name'] : '';
-
-      address = '$street$area$district';
-    }
   }
 
-  Map<String, dynamic> toJson([bool isLocalStorage = false]) {
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id.toString();
-    data['name'] = this.name;
-    data['owner_name'] = this.ownerName;
-    data['contact'] = this.contact;
-    data['type'] = this.type;
-    data['synced'] = (this.synced ? 1 : 0).toString();
-    data['sales_officer_id'] = this.salesOfficerId.toString();
+    data['name'] = this.name.toString();
+    data['owner_name'] = this.ownerName.toString();
+    data['province_id'] = this.provinceId.toString();
+    data['district_id'] = this.districtId.toString();
+    data['area_id'] = this.areaId.toString();
+    data['street_id'] = this.streetId.toString();
+    data['contact'] = this.contact.toString();
+    data['type'] = this.type.toString();
     data['latitude'] = this.latitude.toString();
     data['longitude'] = this.longitude.toString();
-    if (this.address != null) data['address'] = this.address;
+    data['synced'] = (this.synced ? 1 : 0).toString();
+
     return data;
   }
 }
@@ -80,22 +89,22 @@ Future<ApiResponse> registerOutlet(Outlet outlet) async {
     'Accept': 'application/json'
   };
 
-  // try {
-  var resp =
-      await http.post(Uri.parse(ApiUrls.outlets), headers: headers, body: body);
-  Map<String, dynamic> obj = json.decode(resp.body);
+  try {
+    var resp = await http.post(Uri.parse(ApiUrls.outlets),
+        headers: headers, body: body);
+    Map<String, dynamic> obj = json.decode(resp.body);
 
-  if (resp.statusCode == 200) {
-    outlet.synced = true;
-    return ApiResponse(obj['success'], obj['message'], null);
-  } else {
-    return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+    if (resp.statusCode == 200) {
+      outlet.synced = true;
+      return ApiResponse(obj['success'], obj['message'], null);
+    } else {
+      return ApiResponse(
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+    }
+  } catch (e) {
+    print(e.toString());
+    return ApiResponse(false, e.toString(), null);
   }
-  // } catch (e) {
-  //   print(e.toString());
-  //   return ApiResponse(false, e.toString(), null);
-  // }
 }
 
 Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {

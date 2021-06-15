@@ -9,6 +9,7 @@ class ApiUrls {
   static final String products = _endPoint + 'products';
   static final String sales = _endPoint + 'sales';
   static final String banks = _endPoint + 'banks';
+  static final String address = _endPoint + 'get-locations';
   static final String collections = _endPoint + 'collections';
   static final String distributors = _endPoint + 'distributors';
   static final String checkInOuts = _endPoint + 'check_in_outs';

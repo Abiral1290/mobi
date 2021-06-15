@@ -22,8 +22,15 @@ class OutletsController extends GetxController {
       var item = offlineList[i];
       var res = await registerOutlet(item);
       if (res.success) {
-        await DatabaseHelper.instance.deleteOutlet(item);
-        await DatabaseHelper.instance.insertOutlet(item);
+        await DatabaseHelper.instance.updateOutlet(item);
+        outletList
+            .where((element) => element.id == item.id)
+            .toList()
+            .first
+            .synced = true;
+        update();
+        // await DatabaseHelper.instance.deleteOutlet(item);
+        // await DatabaseHelper.instance.insertOutlet(item);
       }
     }
     update();
@@ -34,8 +41,12 @@ class OutletsController extends GetxController {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
       await fetchOutletsApi().then((value) async {
-        await DatabaseHelper.instance.clearOutletData();
         if (value.success) {
+          await DatabaseHelper.instance.deleteSyncedOutlet();
+          // await DatabaseHelper.instance.clearOutletData();
+          // value.response.forEach((o) {
+          //   DatabaseHelper.instance.insertOutlet(o);
+          // });
           outletList = value.response;
           outletList.forEach((o) {
             DatabaseHelper.instance.insertOutlet(o);
@@ -50,6 +61,7 @@ class OutletsController extends GetxController {
     }
 
     outletList = await DatabaseHelper.instance.getAllOutletData();
+    update();
     print(outletList);
   }
 

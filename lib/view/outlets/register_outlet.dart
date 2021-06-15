@@ -4,10 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
+import 'package:mobitrack_dv_flutter/model/address.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -23,6 +24,17 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   final TextEditingController _phoneCntrl = new TextEditingController();
   String _type = SellerType.mart; //dafault is mart
 
+  static var selectedProvince =
+      Get.find<AddressController>().addressList.first.obs;
+  static var selectedDistrict = selectedProvince.value.districts.first.obs;
+  static var selectedArea = selectedDistrict.value.areas.first.obs;
+  static var selectedStreet = selectedArea.value.streets.first.obs;
+
+  var provinceLists = Get.find<AddressController>().addressList.obs;
+  var districtLists = [].obs;
+  var areaLists = [].obs;
+  var streetLists = [].obs;
+
   @override
   void initState() {
     Get.find<LocationController>().getCurrentPosition();
@@ -33,11 +45,173 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     return _nameCntrl.text.isNotEmpty &&
         _ownerCntrl.text.isNotEmpty &&
         _phoneCntrl.text.isNotEmpty &&
-        _phoneCntrl.text.length == 10;
+        _phoneCntrl.text.length == 10 &&
+        districtLists.isNotEmpty &&
+        areaLists.isNotEmpty &&
+        streetLists.isNotEmpty;
+  }
+
+  InputDecoration decoration(String label) {
+    return InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      labelText: label,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget _buildProvinceDropdown() {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: InputDecorator(
+          decoration: decoration("Select Province"),
+          child: Obx(
+            () => ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton<Address>(
+                iconEnabledColor: Colors.green,
+                iconDisabledColor: Colors.red,
+                isDense: true,
+                isExpanded: true,
+                hint: Text(selectedProvince.value.name),
+                items: provinceLists.map((e) {
+                  return DropdownMenuItem<Address>(
+                      value: e, child: Text(e.name));
+                }).toList(),
+                onChanged: (province) {
+                  selectedProvince.value = province;
+                  districtLists.value = provinceLists
+                          .where((element) =>
+                              element.id == selectedProvince.value.id)
+                          .toList()
+                          .isEmpty
+                      ? []
+                      : Get.find<AddressController>()
+                          .addressList
+                          .where((element) =>
+                              element.id == selectedProvince.value.id)
+                          .toList()
+                          .first
+                          .districts;
+                  if (districtLists.isEmpty) {
+                    areaLists.value = [];
+                    streetLists.value = [];
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget _buildDistrictDropdown() {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: InputDecorator(
+          decoration: decoration("Select District"),
+          child: Obx(
+            () => ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton<Districts>(
+                iconEnabledColor: Colors.green,
+                iconDisabledColor: Colors.red,
+                isDense: true,
+                isExpanded: true,
+                hint: Text(selectedDistrict.value.name),
+                items: districtLists.map((e) {
+                  return DropdownMenuItem<Districts>(
+                      value: e, child: Text(e.name));
+                }).toList(),
+                onChanged: (district) {
+                  selectedDistrict.value = district;
+                  areaLists.value = districtLists.isNotEmpty
+                      ? districtLists
+                          .where((element) =>
+                              element.id == selectedDistrict.value.id)
+                          .toList()
+                          .first
+                          .areas
+                      : [];
+                  if (areaLists.isEmpty) {
+                    streetLists.value = [];
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget _buildAreaDropdown() {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: InputDecorator(
+          decoration: decoration("Select Area"),
+          child: Obx(
+            () => ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton<Areas>(
+                iconEnabledColor: Colors.green,
+                iconDisabledColor: Colors.red,
+                isDense: true,
+                isExpanded: true,
+                hint: Text(selectedArea.value.name),
+                items: areaLists.map((e) {
+                  return DropdownMenuItem<Areas>(value: e, child: Text(e.name));
+                }).toList(),
+                onChanged: (area) {
+                  selectedArea.value = area;
+                  streetLists.value = areaLists.isNotEmpty
+                      ? areaLists
+                          .where(
+                              (element) => element.id == selectedArea.value.id)
+                          .toList()
+                          .first
+                          .streets
+                      : [];
+                  if (areaLists.isEmpty) {
+                    streetLists.value = [];
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget _buildStreetDropdown() {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: InputDecorator(
+          decoration: decoration("Select Street"),
+          child: Obx(
+            () => ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton<Streets>(
+                iconEnabledColor: Colors.green,
+                iconDisabledColor: Colors.red,
+                isDense: true,
+                isExpanded: true,
+                hint: Text(selectedStreet.value.name),
+                items: streetLists.map((e) {
+                  return DropdownMenuItem<Streets>(
+                      value: e, child: Text(e.name));
+                }).toList(),
+                onChanged: (street) {
+                  selectedStreet.value = street;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -89,6 +263,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                           controller: _phoneCntrl,
                         ),
                       ),
+                      _buildProvinceDropdown(),
+                      _buildDistrictDropdown(),
+                      _buildAreaDropdown(),
+                      _buildStreetDropdown(),
                       Container(
                         padding: const EdgeInsets.all(12.0),
                         child: InputDecorator(
@@ -186,15 +364,20 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                       desiredAccuracy:
                                           LocationAccuracy.bestForNavigation);
                               var outlet = Outlet(
-                                  id: DateTime.now().millisecondsSinceEpoch,
-                                  contact: _phoneCntrl.text,
-                                  latitude: pos.latitude,
-                                  name: _nameCntrl.text,
-                                  ownerName: _ownerCntrl.text,
-                                  type: _type,
-                                  salesOfficerId:
-                                      Get.find<AuthController>().user.id,
-                                  longitude: pos.longitude);
+                                id: DateTime.now().millisecondsSinceEpoch,
+                                contact: _phoneCntrl.text,
+                                latitude: pos.latitude,
+                                name: _nameCntrl.text,
+                                ownerName: _ownerCntrl.text,
+                                type: _type,
+                                // salesOfficerId:
+                                //     Get.find<AuthController>().user.id,
+                                longitude: pos.longitude,
+                                provinceId: selectedProvince.value.id,
+                                districtId: selectedDistrict.value.id,
+                                areaId: selectedArea.value.id,
+                                streetId: selectedStreet.value.id,
+                              );
 
                               if (conn) {
                                 var response = await registerOutlet(outlet);
@@ -211,6 +394,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 }
                               } else {
                                 Get.back();
+                                outlet.synced = false;
 
                                 Utilities.showInToast('Storing Offline',
                                     toastType: ToastType.INFO);

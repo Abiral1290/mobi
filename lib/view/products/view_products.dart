@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:intl/intl.dart';
-import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_sales.dart';
 
 class ViewProductsPage extends StatelessWidget {

@@ -6,7 +6,6 @@ import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/call_server.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -115,32 +114,34 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: _callServerNum.isEmpty
-            ? CircularProgressIndicator()
-            : FloatingActionButton(
-                backgroundColor: Colors.green,
-                child: Icon(Icons.call),
-                onPressed: () async {
-                  FocusScope.of(context).unfocus();
-                  if (_userNUmber.length < 10) {
-                    Utilities.showInToast('Please input 10 digit valid number.',
-                        toastType: ToastType.ERROR);
-                  } else {
-                    var conn = await Utilities.isInternetWorking();
-                    if (conn) {
-                      // code to bypass call server
-                      byPassCallServer();
+        floatingActionButton:
+            // _callServerNum.isEmpty
+            //     ? CircularProgressIndicator()
+            //     :
+            FloatingActionButton(
+          backgroundColor: Colors.green,
+          child: Icon(Icons.call),
+          onPressed: () async {
+            FocusScope.of(context).unfocus();
+            if (_userNUmber.length < 10) {
+              Utilities.showInToast('Please input 10 digit valid number.',
+                  toastType: ToastType.ERROR);
+            } else {
+              var conn = await Utilities.isInternetWorking();
+              if (conn) {
+                // code to bypass call server
+                byPassCallServer();
 
-                      // code to verify call server
-                      // launch('tel://$_callServerNum');
-                      // showLoadingandCheckAPI();
-                    } else {
-                      Utilities.showInToast('No internet',
-                          toastType: ToastType.ERROR);
-                    }
-                  }
-                },
-              ),
+                // code to verify call server
+                // launch('tel://$_callServerNum');
+                // showLoadingandCheckAPI();
+              } else {
+                Utilities.showInToast('No internet',
+                    toastType: ToastType.ERROR);
+              }
+            }
+          },
+        ),
         backgroundColor: Colors.white,
         body: Column(
           children: [

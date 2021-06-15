@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
@@ -66,8 +65,6 @@ class SellProductPage extends StatelessWidget {
                     } else {
                       Utilities.showInToast("Please add quantity");
                     }
-                    // Utilities.showInToast(
-                    //     "Quantity: $addedQuantity, ProductId: $productId, BatchId: $batchId");
                     Get.back();
                   },
                   child: Text("Add"),
@@ -108,21 +105,27 @@ class SellProductPage extends StatelessWidget {
                         child: ListView.builder(
                           itemCount: selectedProductList.length,
                           itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(Get.find<ProductsController>()
-                                  .productList
-                                  .where((element) =>
-                                      element.id ==
-                                      int.parse(selectedProductList[index]
-                                          .values
-                                          .elementAt(0)))
-                                  .toList()
-                                  .first
-                                  .name),
-                              subtitle: Text("Quantity: " +
-                                  selectedProductList[index]
-                                      .values
-                                      .elementAt(1)),
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    Get.find<ProductsController>()
+                                        .productList
+                                        .where((element) =>
+                                            element.id ==
+                                            int.parse(selectedProductList[index]
+                                                .values
+                                                .elementAt(0)))
+                                        .toList()
+                                        .first
+                                        .name,
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                ),
+                                Text(selectedProductList[index]
+                                    .values
+                                    .elementAt(1)),
+                              ],
                             );
                           },
                         ),

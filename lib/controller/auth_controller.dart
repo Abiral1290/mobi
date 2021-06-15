@@ -24,6 +24,7 @@ class AuthController extends GetxController {
         isLoggedIn = true;
         _officer = SalesOfficer.fromJson(json.decode(value));
         print(_officer.toJson());
+        print(_officer.apiToken);
         update();
       }
     });
