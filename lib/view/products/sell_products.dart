@@ -39,74 +39,109 @@ class SellProductPage extends StatelessWidget {
     );
   }
 
+  String validateDiscount(int value) {
+    if (!(value >= 0) && !(value <= 100)) {
+      return "Discount should be less than or equal to 100%";
+    }
+    return null;
+  }
+
   void showQuantityBottomSheet(String batchId, String productId) {
     String addedQuantity;
-    showModalBottomSheet(
-        context: Get.context,
-        shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-        builder: (builder) {
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: decoration("Add Quantity"),
-                  onChanged: (quantity) {
-                    addedQuantity = quantity;
-                  },
-                  keyboardType: TextInputType.number,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (addedQuantity != null) {
-                      selectedProductList.add(
-                          {"product_id": productId, "quantity": addedQuantity});
-                    } else {
-                      Utilities.showInToast("Please add quantity");
-                    }
-                    Get.back();
-                  },
-                  child: Text("Add"),
-                )
-              ],
+    String discountPercent = "0";
+    Get.bottomSheet(
+      Container(
+          child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: decoration("Add Quantity"),
+              onChanged: (quantity) {
+                addedQuantity = quantity;
+              },
+              keyboardType: TextInputType.number,
             ),
-          );
-        });
+            SizedBox(height: Get.size.height * 0.01),
+            TextField(
+              controller: TextEditingController()..text = '0',
+              decoration: InputDecoration(
+                labelText: "Discount",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                suffixText: "%",
+                suffixStyle: TextStyle(fontSize: 20.0),
+              ),
+              onChanged: (discount) {
+                discountPercent = discount;
+              },
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (addedQuantity != null && discountPercent != null) {
+                  selectedProductList.add({
+                    "product_id": productId,
+                    "batch_id": batchId,
+                    "quantity": addedQuantity,
+                    "discount": discountPercent
+                  });
+                } else {
+                  Utilities.showInToast("Please add quantity");
+                }
+                Get.back();
+              },
+              child: Text("Add"),
+            )
+          ],
+        ),
+      )),
+      shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      backgroundColor: Colors.white,
+      enableDrag: true,
+    );
   }
 
   void showInfoBottomSheet() {
-    showModalBottomSheet(
-        shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-        context: Get.context,
-        enableDrag: true,
-        builder: (builder) {
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "Selected Products",
-                      style: TextStyle(
-                          fontSize: 25.0, fontWeight: FontWeight.bold),
-                    ),
-                    Spacer(),
-                    IconButton(
-                        icon: Icon(Icons.close), onPressed: () => Get.back()),
-                  ],
-                ),
-                selectedProductList.isEmpty
-                    ? Center(
-                        child: Text("No Products"),
-                      )
-                    : Expanded(
+    Get.bottomSheet(
+      Container(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Selected Products",
+                    style:
+                        TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  IconButton(
+                      icon: Icon(Icons.close), onPressed: () => Get.back()),
+                ],
+              ),
+              selectedProductList.isEmpty
+                  ? Center(
+                      child: Text("No Products"),
+                    )
+                  : Obx(
+                      () => Expanded(
                         child: ListView.builder(
                           itemCount: selectedProductList.length,
                           itemBuilder: (context, index) {
                             return Row(
                               children: [
+                                IconButton(
+                                    onPressed: () {
+                                      selectedProductList
+                                          .remove(selectedProductList[index]);
+                                    },
+                                    icon: Icon(Icons.delete)),
                                 Expanded(
                                   child: Text(
                                     Get.find<ProductsController>()
@@ -122,18 +157,31 @@ class SellProductPage extends StatelessWidget {
                                     overflow: TextOverflow.visible,
                                   ),
                                 ),
-                                Text(selectedProductList[index]
-                                    .values
-                                    .elementAt(1)),
+                                Column(
+                                  children: [
+                                    Text(selectedProductList[index]
+                                        .values
+                                        .elementAt(2)),
+                                    Text(selectedProductList[index]
+                                            .values
+                                            .elementAt(3) +
+                                        "%"),
+                                  ],
+                                ),
                               ],
                             );
                           },
                         ),
                       ),
-              ],
-            ),
-          );
-        });
+                    ),
+            ],
+          ),
+        ),
+      ),
+      enableDrag: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+    );
   }
 
   @override
@@ -226,8 +274,7 @@ class SellProductPage extends StatelessWidget {
               products.batches.isEmpty
                   ? ElevatedButton(
                       onPressed: () {
-                        showQuantityBottomSheet(
-                            null.toString(), products.id.toString());
+                        showQuantityBottomSheet(null, products.id.toString());
                       },
                       child: Text("Sell"),
                     )
@@ -260,7 +307,8 @@ class SellProductPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           if (selectedProductList.isEmpty) {
-            Utilities.showInToast("Please add a product");
+            Utilities.showInToast("Please add a product",
+                toastType: ToastType.ERROR);
             return;
           }
 

@@ -13,7 +13,7 @@ class Outlet {
   int provinceId;
   int districtId;
   int areaId;
-  int streetId;
+  String street;
   String contact;
   String type;
   double latitude;
@@ -32,7 +32,7 @@ class Outlet {
       this.provinceId,
       this.districtId,
       this.areaId,
-      this.streetId,
+      this.street,
       this.contact,
       this.type,
       this.latitude,
@@ -48,7 +48,7 @@ class Outlet {
     provinceId = int.parse(json['province_id'].toString());
     districtId = int.parse(json['district_id'].toString());
     areaId = int.parse(json['area_id'].toString());
-    streetId = int.parse(json['street_id'].toString());
+    street = json['street'].toString();
     contact = json['contact'];
     type = json['type'];
     latitude = double.parse(json['latitude'].toString());
@@ -71,7 +71,7 @@ class Outlet {
     data['province_id'] = this.provinceId.toString();
     data['district_id'] = this.districtId.toString();
     data['area_id'] = this.areaId.toString();
-    data['street_id'] = this.streetId.toString();
+    data['street'] = this.street.toString();
     data['contact'] = this.contact.toString();
     data['type'] = this.type.toString();
     data['latitude'] = this.latitude.toString();

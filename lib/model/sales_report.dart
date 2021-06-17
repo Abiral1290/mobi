@@ -13,6 +13,7 @@ class SalesReport {
   int batchId;
   int productId;
   int quantity;
+  String discount;
   String soldAt;
   int outletId;
   String createdAt;
@@ -25,6 +26,7 @@ class SalesReport {
       this.batchId,
       this.productId,
       this.quantity,
+      this.discount,
       this.soldAt,
       this.outletId,
       this.createdAt,
@@ -37,6 +39,7 @@ class SalesReport {
     batchId = json['batch_id'];
     productId = json['product_id'];
     quantity = json['quantity'];
+    discount = json['discount'];
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
     createdAt = json['created_at'];
@@ -51,6 +54,7 @@ class SalesReport {
     data['batch_id'] = this.batchId;
     data['product_id'] = this.productId;
     data['quantity'] = this.quantity;
+    data['discount'] = this.discount;
     data['sold_at'] = this.soldAt;
     data['outlet_id'] = this.outletId;
     data['created_at'] = this.createdAt;

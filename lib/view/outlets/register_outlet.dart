@@ -22,6 +22,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   final TextEditingController _nameCntrl = new TextEditingController();
   final TextEditingController _ownerCntrl = new TextEditingController();
   final TextEditingController _phoneCntrl = new TextEditingController();
+  final TextEditingController _streetCntrl = new TextEditingController();
   String _type = SellerType.mart; //dafault is mart
 
   static var selectedProvince =
@@ -46,9 +47,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         _ownerCntrl.text.isNotEmpty &&
         _phoneCntrl.text.isNotEmpty &&
         _phoneCntrl.text.length == 10 &&
+        _streetCntrl.text.isNotEmpty &&
         districtLists.isNotEmpty &&
-        areaLists.isNotEmpty &&
-        streetLists.isNotEmpty;
+        areaLists.isNotEmpty;
   }
 
   InputDecoration decoration(String label) {
@@ -266,7 +267,17 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       _buildProvinceDropdown(),
                       _buildDistrictDropdown(),
                       _buildAreaDropdown(),
-                      _buildStreetDropdown(),
+                      // _buildStreetDropdown(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          autofocus: false,
+                          decoration: InputDecoration(
+                              labelText: 'Street',
+                              prefixIcon: Icon(Icons.add_road)),
+                          controller: _streetCntrl,
+                        ),
+                      ),
                       Container(
                         padding: const EdgeInsets.all(12.0),
                         child: InputDecorator(
@@ -376,7 +387,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 provinceId: selectedProvince.value.id,
                                 districtId: selectedDistrict.value.id,
                                 areaId: selectedArea.value.id,
-                                streetId: selectedStreet.value.id,
+                                street: _streetCntrl.text,
                               );
 
                               if (conn) {

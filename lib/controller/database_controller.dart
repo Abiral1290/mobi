@@ -69,7 +69,7 @@ class DatabaseHelper {
               province_id TEXT,
               district_id TEXT,
               area_id TEXT,
-              street_id TEXT,
+              street TEXT,
               synced TEXT
               )
           ''');

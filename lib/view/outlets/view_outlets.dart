@@ -76,24 +76,7 @@ class ViewOutletsPage extends StatelessWidget {
                     .toList()
                     .first
                     .name;
-                String street = Get.find<AddressController>()
-                    .addressList
-                    .where((element) => element.id == item.provinceId)
-                    .toList()
-                    .first
-                    .districts
-                    .where((element) => element.id == item.districtId)
-                    .toList()
-                    .first
-                    .areas
-                    .where((element) => element.id == item.areaId)
-                    .toList()
-                    .first
-                    .streets
-                    .where((element) => element.id == item.streetId)
-                    .toList()
-                    .first
-                    .name;
+
                 return Container(
                   child: Card(
                     elevation: 7,
@@ -175,7 +158,7 @@ class ViewOutletsPage extends StatelessWidget {
                                       ", " +
                                       area +
                                       ", " +
-                                      street,
+                                      (item.street ?? ""),
                                   overflow: TextOverflow.visible,
                                   style: TextStyle(fontSize: 12),
                                 ),
