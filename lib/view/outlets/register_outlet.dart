@@ -388,6 +388,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 districtId: selectedDistrict.value.id,
                                 areaId: selectedArea.value.id,
                                 street: _streetCntrl.text,
+                                distributorId: Constants.selectedDistributor.id.toString(),
                               );
 
                               if (conn) {

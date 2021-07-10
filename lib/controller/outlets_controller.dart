@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class OutletsController extends GetxController {
@@ -29,8 +30,6 @@ class OutletsController extends GetxController {
             .first
             .synced = true;
         update();
-        // await DatabaseHelper.instance.deleteOutlet(item);
-        // await DatabaseHelper.instance.insertOutlet(item);
       }
     }
     update();
@@ -43,10 +42,7 @@ class OutletsController extends GetxController {
       await fetchOutletsApi().then((value) async {
         if (value.success) {
           await DatabaseHelper.instance.deleteSyncedOutlet();
-          // await DatabaseHelper.instance.clearOutletData();
-          // value.response.forEach((o) {
-          //   DatabaseHelper.instance.insertOutlet(o);
-          // });
+
           outletList = value.response;
           outletList.forEach((o) {
             DatabaseHelper.instance.insertOutlet(o);
@@ -60,7 +56,13 @@ class OutletsController extends GetxController {
       });
     }
 
-    outletList = await DatabaseHelper.instance.getAllOutletData();
+    // outletList = await DatabaseHelper.instance.getAllOutletData();
+    var list = await DatabaseHelper.instance.getAllOutletData();
+    outletList = list
+        .where((element) =>
+            element.distributorId ==
+            Constants.selectedDistributor.id.toString())
+        .toList();
     update();
     print(outletList);
   }

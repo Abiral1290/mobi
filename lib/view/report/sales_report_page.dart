@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:mobitrack_dv_flutter/controller/sales_report_controller.dart';
+import 'package:mobitrack_dv_flutter/model/distributor.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/pdf_api.dart';
+import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_pdf_generator.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -15,7 +19,8 @@ class SalesReportPage extends StatefulWidget {
 }
 
 class _SalesReportPageState extends State<SalesReportPage> {
-  var taskController = Get.lazyPut(() => SalesReportController());
+  var salesReportController = Get.lazyPut(() => SalesReportController());
+  var distributorController = Get.lazyPut(() => DistributorController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +30,10 @@ class _SalesReportPageState extends State<SalesReportPage> {
         actions: [
           MaterialButton(
             onPressed: () async {
+              print(Get.find<SalesReportController>().formattedSalesReportList);
+
               final pdfFile = await PdfParagraphApi.generate(
                   Get.find<SalesReportController>().formattedSalesReportList);
-
               Get.bottomSheet(
                 Container(
                   padding: EdgeInsets.all(10.0),
@@ -79,7 +85,10 @@ class _SalesReportPageState extends State<SalesReportPage> {
                         "Total data: ${Get.find<SalesReportController>().formattedSalesReportList.length.toString()}"),
                     Spacer(),
                     IconButton(
-                      icon: Icon(Icons.calendar_today_outlined),
+                      icon: Icon(
+                        Icons.calendar_today_outlined,
+                        semanticLabel: "Filter by Date",
+                      ),
                       onPressed: () async {
                         var pickedDate = await showDatePicker(
                             context: context,
@@ -91,12 +100,75 @@ class _SalesReportPageState extends State<SalesReportPage> {
                               .formatSalesDate(pickedDate);
                         }
                       },
+                      tooltip: "Filter by date",
                     ),
+                    PopupMenuButton<Distributor>(
+                      elevation: 3.2,
+                      onCanceled: () {
+                        print('You have not choosed anything');
+                      },
+                      tooltip: 'Filter by distributor',
+                      onSelected: (distributor) {
+                        Get.find<SalesReportController>()
+                            .formatSalesDistributor(distributor);
+                      },
+                      icon: Icon(Icons.person),
+                      itemBuilder: (BuildContext context) {
+                        return Get.find<DistributorController>()
+                            .distributorList
+                            .map((distributor) {
+                          return PopupMenuItem<Distributor>(
+                            textStyle:
+                                TextStyle(fontSize: 16.0, color: Colors.black),
+                            value: distributor,
+                            child: Text(distributor.name),
+                          );
+                        }).toList();
+                      },
+                    ),
+                    // GetBuilder<DistributorController>(
+                    //   builder: (builder) {
+                    //     return PopupMenuButton<Distributor>(
+                    //       elevation: 3.2,
+                    //       onCanceled: () {
+                    //         print('You have not choosed anything');
+                    //       },
+                    //       tooltip: 'Filter by distributor',
+                    //       onSelected: (distributor) {
+                    //         Get.find<SalesReportController>()
+                    //             .formatSalesDistributor(distributor);
+                    //       },
+                    //       icon: Icon(Icons.person),
+                    //       itemBuilder: (BuildContext context) {
+                    //         return Get.find<DistributorController>()
+                    //             .distributorList
+                    //             .map((distributor) {
+                    //           return PopupMenuItem<Distributor>(
+                    //             textStyle: TextStyle(
+                    //                 fontSize: 16.0, color: Colors.black),
+                    //             value: distributor,
+                    //             child: Text(distributor.name),
+                    //           );
+                    //         }).toList();
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),
-              Text(DateFormat.yMMMMEEEEd()
-                  .format(Get.find<SalesReportController>().selectedDate)),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  Get.find<SalesReportController>().selectedData,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              // Text(DateFormat.yMMMMEEEEd()
+              //     .format(Get.find<SalesReportController>().selectedData)),
               Expanded(
                 child: Get.find<SalesReportController>()
                         .formattedSalesReportList

@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
     Get.find<ProductsController>();
     Get.find<AddressController>();
     Get.find<BankController>();
-    Get.find<OutletsController>();
     Get.find<CollectionController>();
 
     Get.find<PreferenceController>().getCheckInValue().then((value) {
@@ -47,6 +46,9 @@ class _HomePageState extends State<HomePage> {
         print(Constants.selectedDistributor);
       }
     });
+
+    Get.find<OutletsController>();
+
 
     super.initState();
   }

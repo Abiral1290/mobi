@@ -70,6 +70,7 @@ class DatabaseHelper {
               district_id TEXT,
               area_id TEXT,
               street TEXT,
+              distributor_id TEXT,
               synced TEXT
               )
           ''');

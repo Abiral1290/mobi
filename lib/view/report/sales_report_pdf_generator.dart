@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/sales_report.dart';
@@ -17,73 +18,9 @@ class PdfParagraphApi {
         build: (context) => <Widget>[
           buildHeader(soldDate),
           SizedBox(height: 0.5 * PdfPageFormat.cm),
-          // buildContent(salesList),
-
-          // Table(
-          //   border: TableBorder.all(),
-          //   children: salesList
-          //       .map((e) => TableRow(children: [
-          //             Text(
-          //               Get.find<ProductsController>()
-          //                   .productList
-          //                   .where((element) => element.id == e.productId)
-          //                   .toList()
-          //                   .first
-          //                   .name,
-          //             ),
-          //             Text(Get.find<OutletsController>()
-          //                 .outletList
-          //                 .where((element) => element.id == e.outletId)
-          //                 .toList()
-          //                 .first
-          //                 .name),
-          //             Text(e.quantity.toString()),
-          //             Text("${e.discount}%"),
-          //           ]))
-          //       .toList(),
-          // ),
-
-          Table.fromTextArray(
-            headers: ['SN.', 'Product', 'Outlet', 'Quantity', 'Discount %'],
-            data: List<List<dynamic>>.generate(
-              salesList.length,
-              (index) => <dynamic>[
-                index + 1,
-                Get.find<ProductsController>()
-                    .productList
-                    .where(
-                        (element) => element.id == salesList[index].productId)
-                    .toList()
-                    .first
-                    .name,
-                Get.find<OutletsController>()
-                    .outletList
-                    .where((element) => element.id == salesList[index].outletId)
-                    .toList()
-                    .first
-                    .name,
-                salesList[index].quantity,
-                salesList[index].discount,
-              ],
-            ),
-            headerStyle: TextStyle(
-              color: PdfColors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            headerDecoration: BoxDecoration(
-              color: PdfColors.cyan,
-            ),
-            rowDecoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: PdfColors.cyan,
-                  width: .5,
-                ),
-              ),
-            ),
-            cellAlignment: Alignment.centerRight,
-            cellAlignments: {0: Alignment.centerLeft},
-          ),
+          buildSalesOfficerInfo(),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          buildContent(salesList),
         ],
         footer: (context) {
           final text = 'Page ${context.pageNumber} of ${context.pagesCount}';
@@ -124,72 +61,65 @@ class PdfParagraphApi {
     );
   }
 
-  // static Widget buildContent(List<SalesReport> salesList) {
-  //   return ListView.builder(
-  //     itemBuilder: (context, index) {
-  //       return Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-  //         child: Container(
-  //           child: Row(children: <Widget>[
-  //             Text(
-  //               "${index + 1}. ",
-  //               style: TextStyle(
-  //                   // fontWeight: FontWeight.bold,
-  //                   // fontSize: 16.0,
-  //                   ),
-  //             ),
-  //             SizedBox(width: 0.5 * PdfPageFormat.cm),
-  //             Column(
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: <Widget>[
-  //                   Row(children: <Widget>[
-  //                     Text(
-  //                       Get.find<ProductsController>()
-  //                           .productList
-  //                           .where((element) =>
-  //                               element.id == salesList[index].productId)
-  //                           .toList()
-  //                           .first
-  //                           .name,
-  //                       style: TextStyle(
-  //                         color: PdfColors.green900,
-  //                         // fontWeight: FontWeight.bold,
-  //                         // fontSize: 18.0,
-  //                       ),
-  //                     ),
-  //                     SizedBox(width: 0.5 * PdfPageFormat.cm),
-  //                     Text(
-  //                       "Outlet: ${Get.find<OutletsController>().outletList.where((element) => element.id == salesList[index].outletId).toList().first.name}",
-  //                       style: TextStyle(
-  //                           // fontWeight: FontWeight.bold,
-  //                           // fontSize: 17.0,
-  //                           ),
-  //                     ),
-  //                   ]),
-  //                   Row(children: <Widget>[
-  //                     Text(
-  //                       "Quantity: ${salesList[index].quantity}",
-  //                       style: TextStyle(
-  //                           // fontWeight: FontWeight.bold,
-  //                           // fontSize: 16.0,
-  //                           ),
-  //                     ),
-  //                     SizedBox(width: 0.5 * PdfPageFormat.cm),
-  //                     Text(
-  //                       "Discount: ${salesList[index].discount}%",
-  //                       style: TextStyle(
-  //                           // fontWeight: FontWeight.bold,
-  //                           // fontSize: 16.0,
-  //                           ),
-  //                     ),
-  //                   ]),
-  //                 ]),
-  //           ]),
-  //         ),
-  //       );
-  //     },
-  //     itemCount: salesList.length,
-  //   );
-  // }
+  static Widget buildSalesOfficerInfo() => Header(
+        child: Text(
+          "${Get.find<AuthController>().user.name} (Sales Officer)",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: PdfColors.white,
+          ),
+        ),
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(color: PdfColors.red),
+      );
+
+  static Widget buildContent(List<SalesReport> salesList) {
+    return Table.fromTextArray(
+      headers: ['SN.', 'Product', 'Outlet', 'Quantity', 'Discount %'],
+      data: List<List<dynamic>>.generate(
+        salesList.length,
+        (index) => <dynamic>[
+          index + 1,
+          Get.find<ProductsController>()
+              .productList
+              .where((element) => element.id == salesList[index].productId)
+              .toList()
+              .first
+              .name,
+          Get.find<OutletsController>()
+                  .outletList
+                  .where((element) => element.id == salesList[index].outletId)
+                  .toList()
+                  .isNotEmpty
+              ? Get.find<OutletsController>()
+                  .outletList
+                  .where((element) => element.id == salesList[index].outletId)
+                  .toList()
+                  .first
+                  .name
+              : "N/A",
+          salesList[index].quantity,
+          salesList[index].discount,
+        ],
+      ),
+      headerStyle: TextStyle(
+        color: PdfColors.white,
+        fontWeight: FontWeight.bold,
+      ),
+      headerDecoration: BoxDecoration(
+        color: PdfColors.cyan,
+      ),
+      rowDecoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: PdfColors.cyan,
+            width: .5,
+          ),
+        ),
+      ),
+      cellAlignment: Alignment.centerRight,
+      cellAlignments: {0: Alignment.centerLeft},
+    );
+  }
 }

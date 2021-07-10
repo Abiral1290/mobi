@@ -7,6 +7,7 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 
 class ViewOutletsPage extends StatelessWidget {
+  var outletController = Get.lazyPut(() => OutletsController());
   bool _lock = false;
   @override
   Widget build(BuildContext context) {
@@ -38,6 +39,7 @@ class ViewOutletsPage extends StatelessWidget {
           title: Text('Outlets'),
         ),
         body: GetBuilder<OutletsController>(
+          // initState: Get.find<OutletsController>().fetchOutlets(),
           builder: (outletController) {
             return ListView.builder(
               itemCount: Get.find<OutletsController>().outletList.length,

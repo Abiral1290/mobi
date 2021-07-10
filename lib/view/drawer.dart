@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
 import 'package:mobitrack_dv_flutter/view/info/about.dart';
@@ -98,37 +99,50 @@ class DrawerPage extends StatelessWidget {
                   // collapsedBackgroundColor: Colors.green,
                   children: [
                     ElevatedButton(
-                      onPressed: () async {
-                        var res =
-                            await GeolocatorPlatform.instance.checkPermission();
+                      onPressed: Constants.selectedDistributor != null
+                          ? Constants.selectedDistributor.id != null
+                              ? () async {
+                                  var res = await GeolocatorPlatform.instance
+                                      .checkPermission();
 
-                        if (res == LocationPermission.whileInUse ||
-                            res == LocationPermission.always) {
-                          var res = await GeolocatorPlatform.instance
-                              .isLocationServiceEnabled();
-                          if (!res) {
-                            Utilities.showInToast(
-                                'Please enable location services and permision',
-                                toastType: ToastType.INFO);
-                            await GeolocatorPlatform.instance
-                                .openLocationSettings();
-                          } else {
-                            Get.to(() => RegisterShopPage());
-                          }
-                        } else {
-                          Utilities.showInToast(
-                              'Please enable location services and permision',
-                              toastType: ToastType.INFO);
-                          await GeolocatorPlatform.instance
-                              .openLocationSettings();
-                          await GeolocatorPlatform.instance.requestPermission();
-                        }
-                      },
+                                  if (res == LocationPermission.whileInUse ||
+                                      res == LocationPermission.always) {
+                                    var res = await GeolocatorPlatform.instance
+                                        .isLocationServiceEnabled();
+                                    if (!res) {
+                                      Utilities.showInToast(
+                                          'Please enable location services and permision',
+                                          toastType: ToastType.INFO);
+                                      await GeolocatorPlatform.instance
+                                          .openLocationSettings();
+                                    } else {
+                                      Get.to(() => RegisterShopPage());
+                                    }
+                                  } else {
+                                    Utilities.showInToast(
+                                        'Please enable location services and permision',
+                                        toastType: ToastType.INFO);
+                                    await GeolocatorPlatform.instance
+                                        .openLocationSettings();
+                                    await GeolocatorPlatform.instance
+                                        .requestPermission();
+                                  }
+                                }
+                              : () => Utilities.showInToast(
+                                  "Please select distributor first")
+                          : () => Utilities.showInToast(
+                              "Please select distributor first"),
                       child: Text("Register Shop"),
                       style: expandedButtonStyle,
                     ),
                     ElevatedButton(
-                      onPressed: () => Get.to(() => ViewOutletsPage()),
+                      onPressed: Constants.selectedDistributor != null
+                          ? Constants.selectedDistributor.id != null
+                              ? () => Get.to(() => ViewOutletsPage())
+                              : () => Utilities.showInToast(
+                                  "Please select distributor first")
+                          : () => Utilities.showInToast(
+                              "Please select distributor first"),
                       child: Text("View Shop"),
                       style: expandedButtonStyle,
                     ),

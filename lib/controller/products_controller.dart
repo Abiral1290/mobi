@@ -4,7 +4,7 @@ import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class ProductsController extends GetxController {
-  List<Product> productList;
+  List<Product> productList = [];
   List<Product> searchProductList;
   List<Sales> localSalesList = [];
   DatabaseHelper databaseHelper = DatabaseHelper.instance;

@@ -21,6 +21,7 @@ class Outlet {
   int salesOfficerId;
   String createdAt;
   String updatedAt;
+  String distributorId;
 
   ///flag to check if the outlet is synced with backend
   bool synced = true; //default is true for data fetched from api
@@ -39,7 +40,8 @@ class Outlet {
       this.longitude,
       this.salesOfficerId,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.distributorId});
 
   Outlet.fromJson(Map<String, dynamic> json) {
     id = int.parse(json['id'].toString());
@@ -56,6 +58,7 @@ class Outlet {
     salesOfficerId = json['sales_officer_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    distributorId = json['distributor_id'].toString();
     synced = json['synced'] == null
         ? true
         : json['synced'] == "1"
@@ -76,6 +79,7 @@ class Outlet {
     data['type'] = this.type.toString();
     data['latitude'] = this.latitude.toString();
     data['longitude'] = this.longitude.toString();
+    data['distributor_id'] = this.distributorId.toString();
     data['synced'] = (this.synced ? 1 : 0).toString();
 
     return data;

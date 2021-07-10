@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/sales_report.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class SalesReportController extends GetxController {
   List<SalesReport> salesReportList = [];
   List<SalesReport> formattedSalesReportList = [];
-  DateTime selectedDate = DateTime.now();
+  String selectedData = DateTime.now().toString();
 
   SalesReportController() {
     fetchSalesReportFromAPI();
@@ -38,7 +39,16 @@ class SalesReportController extends GetxController {
                 DateTime.parse(element.soldAt).day) ==
             formattedDate)
         .toList();
-    selectedDate = datetime;
+    selectedData = datetime.toString();
+    update();
+  }
+
+  // format sales list according to selected distributor from user
+  formatSalesDistributor(Distributor distributor) {
+    formattedSalesReportList = salesReportList
+        .where((element) => element.distributorId == distributor.id)
+        .toList();
+    selectedData = distributor.name;
     update();
   }
 }
