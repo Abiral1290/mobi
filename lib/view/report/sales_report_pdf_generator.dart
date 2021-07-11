@@ -4,13 +4,15 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
+import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/sales_report.dart';
 import 'package:mobitrack_dv_flutter/utils/pdf_api.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
 class PdfParagraphApi {
-  static Future<File> generate(List<SalesReport> salesList) async {
+  static Future<File> generate(List<SalesReport> salesList,
+      {Distributor distributor}) async {
     final pdf = Document();
     final soldDate = DateTime.parse(salesList.first.soldAt);
     pdf.addPage(
@@ -19,6 +21,7 @@ class PdfParagraphApi {
           buildHeader(soldDate),
           SizedBox(height: 0.5 * PdfPageFormat.cm),
           buildSalesOfficerInfo(),
+          distributor != null ? buildDistributorInfo(distributor) : SizedBox(),
           SizedBox(height: 0.5 * PdfPageFormat.cm),
           buildContent(salesList),
         ],
@@ -64,6 +67,19 @@ class PdfParagraphApi {
   static Widget buildSalesOfficerInfo() => Header(
         child: Text(
           "${Get.find<AuthController>().user.name} (Sales Officer)",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: PdfColors.white,
+          ),
+        ),
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(color: PdfColors.red),
+      );
+
+  static Widget buildDistributorInfo(Distributor distributor) => Header(
+        child: Text(
+          "${distributor.name} (Distributor)",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,

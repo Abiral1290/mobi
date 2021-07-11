@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
-import 'package:intl/intl.dart';
 import 'package:mobitrack_dv_flutter/controller/sales_report_controller.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
-import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/pdf_api.dart';
-import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_pdf_generator.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -22,6 +19,8 @@ class _SalesReportPageState extends State<SalesReportPage> {
   var salesReportController = Get.lazyPut(() => SalesReportController());
   var distributorController = Get.lazyPut(() => DistributorController());
 
+  Distributor selectedDistributor;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +32,8 @@ class _SalesReportPageState extends State<SalesReportPage> {
               print(Get.find<SalesReportController>().formattedSalesReportList);
 
               final pdfFile = await PdfParagraphApi.generate(
-                  Get.find<SalesReportController>().formattedSalesReportList);
+                  Get.find<SalesReportController>().formattedSalesReportList,
+                  distributor: selectedDistributor);
               Get.bottomSheet(
                 Container(
                   padding: EdgeInsets.all(10.0),
@@ -98,6 +98,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                         if (pickedDate != null) {
                           Get.find<SalesReportController>()
                               .formatSalesDate(pickedDate);
+                          selectedDistributor = null;
                         }
                       },
                       tooltip: "Filter by date",
@@ -111,6 +112,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                       onSelected: (distributor) {
                         Get.find<SalesReportController>()
                             .formatSalesDistributor(distributor);
+                        selectedDistributor = distributor;
                       },
                       icon: Icon(Icons.person),
                       itemBuilder: (BuildContext context) {
@@ -126,34 +128,6 @@ class _SalesReportPageState extends State<SalesReportPage> {
                         }).toList();
                       },
                     ),
-                    // GetBuilder<DistributorController>(
-                    //   builder: (builder) {
-                    //     return PopupMenuButton<Distributor>(
-                    //       elevation: 3.2,
-                    //       onCanceled: () {
-                    //         print('You have not choosed anything');
-                    //       },
-                    //       tooltip: 'Filter by distributor',
-                    //       onSelected: (distributor) {
-                    //         Get.find<SalesReportController>()
-                    //             .formatSalesDistributor(distributor);
-                    //       },
-                    //       icon: Icon(Icons.person),
-                    //       itemBuilder: (BuildContext context) {
-                    //         return Get.find<DistributorController>()
-                    //             .distributorList
-                    //             .map((distributor) {
-                    //           return PopupMenuItem<Distributor>(
-                    //             textStyle: TextStyle(
-                    //                 fontSize: 16.0, color: Colors.black),
-                    //             value: distributor,
-                    //             child: Text(distributor.name),
-                    //           );
-                    //         }).toList();
-                    //       },
-                    //     );
-                    //   },
-                    // ),
                   ],
                 ),
               ),

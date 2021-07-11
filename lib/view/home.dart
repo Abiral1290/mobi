@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
@@ -25,6 +26,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  LocationPermission permission;
+  bool serviceEnabled;
+
   @override
   void initState() {
     Get.find<ProductsController>();
@@ -48,7 +52,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     Get.find<OutletsController>();
-
 
     super.initState();
   }
@@ -91,28 +94,57 @@ class _HomePageState extends State<HomePage> {
                         label: 'Check In',
                         ontap: () async {
                           var conn = await Utilities.isInternetWorking();
-                          if (location.userPosition != null) {
-                            if (conn) {
-                              var resp = await user.checkInOut(
-                                  Check.checkIn,
-                                  location.userPosition.latitude.toString(),
-                                  location.userPosition.longitude.toString());
-                              if (resp.success) {
-                                location.startLocationService();
-                                Get.find<PreferenceController>()
-                                    .setCheckInValue(true);
-                                Get.to(() => ViewDistributorPage());
+
+                          if (conn) {
+                            // Test if location services are enabled.
+                            serviceEnabled =
+                                await Geolocator.isLocationServiceEnabled();
+                            if (!serviceEnabled) {
+                              return Future.error(
+                                  'Location services are disabled.');
+                            }
+                            // check for permission
+                            permission = await Geolocator.checkPermission();
+                            if (permission == LocationPermission.denied ||
+                                permission ==
+                                    LocationPermission.deniedForever) {
+                              Utilities.showInToast(
+                                  "Location permission is denied, Please enable permission for future use");
+                              // // request permission
+                              // permission = await Geolocator.requestPermission();
+                              // if (permission == LocationPermission.denied ||
+                              //     permission ==
+                              //         LocationPermission.deniedForever) {
+                              //   // Permissions are denied,
+                              //   Utilities.showInToast(
+                              //       "Location permission is denied, Please enable permission for future use");
+                              // }
+                            } else {
+                              await Get.find<LocationController>()
+                                  .getCurrentPosition();
+                              if (location.userPosition != null) {
+                                var resp = await user.checkInOut(
+                                    Check.checkIn,
+                                    location.userPosition.latitude.toString(),
+                                    location.userPosition.longitude.toString());
+                                if (resp.success) {
+                                  location.startLocationService();
+                                  Get.find<PreferenceController>()
+                                      .setCheckInValue(true);
+                                  Get.to(() => ViewDistributorPage());
+                                } else {
+                                  Utilities.showInToast(resp.message,
+                                      toastType: ToastType.ERROR);
+                                }
                               } else {
-                                Utilities.showInToast(resp.message,
+                                Utilities.showInToast(
+                                    "Could not get your location",
                                     toastType: ToastType.ERROR);
                               }
-                            } else {
-                              Utilities.showInToast(
-                                  'Please connect to the internet to check in!',
-                                  toastType: ToastType.ERROR);
                             }
                           } else {
-                            Utilities.showInToast("Could not get your location",
+                            Utilities.showInToast(
+                                'Please connect to the internet to check in!',
                                 toastType: ToastType.ERROR);
                           }
                         },
@@ -126,27 +158,56 @@ class _HomePageState extends State<HomePage> {
                         ontap: () async {
                           var conn = await Utilities.isInternetWorking();
 
-                          if (location.userPosition != null) {
-                            if (conn) {
-                              var resp = await user.checkInOut(
-                                  Check.checkOut,
-                                  location.userPosition.latitude.toString(),
-                                  location.userPosition.longitude.toString());
-                              if (resp.success) {
-                                location.stopBackgroundLocationService();
-                                Get.find<PreferenceController>()
-                                    .setCheckInValue(false);
+                          if (conn) {
+                            // Test if location services are enabled.
+                            serviceEnabled =
+                                await Geolocator.isLocationServiceEnabled();
+                            if (!serviceEnabled) {
+                              return Future.error(
+                                  'Location services are disabled.');
+                            }
+
+                            // check for permission
+                            permission = await Geolocator.checkPermission();
+                            if (permission == LocationPermission.denied ||
+                                permission ==
+                                    LocationPermission.deniedForever) {
+                              Utilities.showInToast(
+                                  "Location permission is denied, Please enable permission for future use");
+                              // // request permission
+                              // permission = await Geolocator.requestPermission();
+                              // if (permission == LocationPermission.denied ||
+                              //     permission ==
+                              //         LocationPermission.deniedForever) {
+                              //   // Permissions are denied,
+                              //   Utilities.showInToast(
+                              //       "Location permission is denied, Please enable permission for future use");
+                              // }
+                            } else {
+                              await Get.find<LocationController>()
+                                  .getCurrentPosition();
+                              if (location.userPosition != null) {
+                                var resp = await user.checkInOut(
+                                    Check.checkOut,
+                                    location.userPosition.latitude.toString(),
+                                    location.userPosition.longitude.toString());
+                                if (resp.success) {
+                                  location.stopBackgroundLocationService();
+                                  Get.find<PreferenceController>()
+                                      .setCheckInValue(false);
+                                } else {
+                                  Utilities.showInToast(resp.message,
+                                      toastType: ToastType.ERROR);
+                                }
                               } else {
-                                Utilities.showInToast(resp.message,
+                                Utilities.showInToast(
+                                    "Could not get your location",
                                     toastType: ToastType.ERROR);
                               }
-                            } else {
-                              Utilities.showInToast(
-                                  'Please connect to the internet to check out!',
-                                  toastType: ToastType.ERROR);
                             }
                           } else {
-                            Utilities.showInToast("Could not get your location",
+                            Utilities.showInToast(
+                                'Please connect to the internet to check out!',
                                 toastType: ToastType.ERROR);
                           }
 
