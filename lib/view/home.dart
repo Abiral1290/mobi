@@ -28,6 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   LocationPermission permission;
   bool serviceEnabled;
+  bool hasLocationPermission = false;
 
   @override
   void initState() {
@@ -51,7 +52,11 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    Get.find<OutletsController>();
+    // Get.find<OutletsController>();
+
+    Future.delayed(Duration(seconds: 6), () {
+      Get.find<OutletsController>();
+    });
 
     super.initState();
   }
@@ -100,8 +105,9 @@ class _HomePageState extends State<HomePage> {
                             serviceEnabled =
                                 await Geolocator.isLocationServiceEnabled();
                             if (!serviceEnabled) {
-                              return Future.error(
-                                  'Location services are disabled.');
+                              return Utilities.showInToast(
+                                  'Location services are disabled.',
+                                  toastType: ToastType.ERROR);
                             }
                             // check for permission
                             permission = await Geolocator.checkPermission();
@@ -109,38 +115,40 @@ class _HomePageState extends State<HomePage> {
                                 permission ==
                                     LocationPermission.deniedForever) {
                               Utilities.showInToast(
-                                  "Location permission is denied, Please enable permission for future use");
-                              // // request permission
-                              // permission = await Geolocator.requestPermission();
-                              // if (permission == LocationPermission.denied ||
-                              //     permission ==
-                              //         LocationPermission.deniedForever) {
-                              //   // Permissions are denied,
-                              //   Utilities.showInToast(
-                              //       "Location permission is denied, Please enable permission for future use");
-                              // }
-                            } else {
-                              await Get.find<LocationController>()
-                                  .getCurrentPosition();
-                              if (location.userPosition != null) {
-                                var resp = await user.checkInOut(
-                                    Check.checkIn,
-                                    location.userPosition.latitude.toString(),
-                                    location.userPosition.longitude.toString());
-                                if (resp.success) {
-                                  location.startLocationService();
-                                  Get.find<PreferenceController>()
-                                      .setCheckInValue(true);
-                                  Get.to(() => ViewDistributorPage());
-                                } else {
-                                  Utilities.showInToast(resp.message,
-                                      toastType: ToastType.ERROR);
-                                }
-                              } else {
-                                Utilities.showInToast(
-                                    "Could not get your location",
+                                  "Location permission is denied, Please enable permission for future use",
+                                  toastType: ToastType.ERROR);
+                              // request permission
+                              permission = await Geolocator.requestPermission();
+                              if (permission == LocationPermission.denied ||
+                                  permission ==
+                                      LocationPermission.deniedForever) {
+                                // Permissions are denied,
+                                return Utilities.showInToast(
+                                    "Location permission is denied, Please enable permission for future use",
                                     toastType: ToastType.ERROR);
                               }
+                            }
+
+                            await Get.find<LocationController>()
+                                .getCurrentPosition();
+                            if (location.userPosition != null) {
+                              var resp = await user.checkInOut(
+                                  Check.checkIn,
+                                  location.userPosition.latitude.toString(),
+                                  location.userPosition.longitude.toString());
+                              if (resp.success) {
+                                location.startLocationService();
+                                Get.find<PreferenceController>()
+                                    .setCheckInValue(true);
+                                Get.to(() => ViewDistributorPage());
+                              } else {
+                                Utilities.showInToast(resp.message,
+                                    toastType: ToastType.ERROR);
+                              }
+                            } else {
+                              Utilities.showInToast(
+                                  "Could not get your location",
+                                  toastType: ToastType.ERROR);
                             }
                           } else {
                             Utilities.showInToast(
@@ -174,36 +182,35 @@ class _HomePageState extends State<HomePage> {
                                     LocationPermission.deniedForever) {
                               Utilities.showInToast(
                                   "Location permission is denied, Please enable permission for future use");
-                              // // request permission
-                              // permission = await Geolocator.requestPermission();
-                              // if (permission == LocationPermission.denied ||
-                              //     permission ==
-                              //         LocationPermission.deniedForever) {
-                              //   // Permissions are denied,
-                              //   Utilities.showInToast(
-                              //       "Location permission is denied, Please enable permission for future use");
-                              // }
-                            } else {
-                              await Get.find<LocationController>()
-                                  .getCurrentPosition();
-                              if (location.userPosition != null) {
-                                var resp = await user.checkInOut(
-                                    Check.checkOut,
-                                    location.userPosition.latitude.toString(),
-                                    location.userPosition.longitude.toString());
-                                if (resp.success) {
-                                  location.stopBackgroundLocationService();
-                                  Get.find<PreferenceController>()
-                                      .setCheckInValue(false);
-                                } else {
-                                  Utilities.showInToast(resp.message,
-                                      toastType: ToastType.ERROR);
-                                }
+                              // request permission
+                              permission = await Geolocator.requestPermission();
+                              if (permission == LocationPermission.denied ||
+                                  permission ==
+                                      LocationPermission.deniedForever) {
+                                // Permissions are denied,
+                                return Utilities.showInToast(
+                                    "Location permission is denied, Please enable permission for future use");
+                              }
+                            }
+                            await Get.find<LocationController>()
+                                .getCurrentPosition();
+                            if (location.userPosition != null) {
+                              var resp = await user.checkInOut(
+                                  Check.checkOut,
+                                  location.userPosition.latitude.toString(),
+                                  location.userPosition.longitude.toString());
+                              if (resp.success) {
+                                location.stopBackgroundLocationService();
+                                Get.find<PreferenceController>()
+                                    .setCheckInValue(false);
                               } else {
-                                Utilities.showInToast(
-                                    "Could not get your location",
+                                Utilities.showInToast(resp.message,
                                     toastType: ToastType.ERROR);
                               }
+                            } else {
+                              Utilities.showInToast(
+                                  "Could not get your location",
+                                  toastType: ToastType.ERROR);
                             }
                           } else {
                             Utilities.showInToast(

@@ -11,7 +11,7 @@ import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationController extends GetxController {
-  List<LocationModel> locationList;
+  List<LocationModel> locationList = [];
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   Position userPosition;
   StreamSubscription<Position> positionStream;
@@ -124,24 +124,6 @@ class LocationController extends GetxController {
     await BackgroundLocation.startLocationService(distanceFilter: 0);
 
     getPositionStream();
-
-    // timer = Timer.periodic(Duration(seconds: 20), (timer) {
-    //   print("Timer started");
-
-    //   getCurrentLocation().then((value) {
-    //     if (value != null) {
-    //       LocationModel model = LocationModel(
-    //         id: Random().nextInt(100).toString(),
-    //         latitude: value.latitude,
-    //         longitude: value.longitude,
-    //         time: value.timestamp.toString(),
-    //       );
-    //       Get.find<LocationController>().addLocation(model);
-    //     }
-    //   });
-
-    //   print("Running: ${DateTime.now()}");
-    // });
   }
 
   stopBackgroundLocationService() {
