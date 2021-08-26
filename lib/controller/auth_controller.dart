@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/model/sales_officer.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 
@@ -50,35 +49,6 @@ class AuthController extends GetxController {
     } catch (e) {
       debugPrint(e.toString());
       return 'Unknown error occured';
-    }
-  }
-
-  Future<ApiResponse> checkInOut(String type, String lat, String long) async {
-    var body = {
-      'check_type': type,
-      'latitude': lat,
-      'longitude': long,
-      'device_time': DateTime.now().toString()
-    };
-    var headers = {
-      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
-      'Accept': 'application/json'
-    };
-
-    try {
-      var resp = await http.post(Uri.parse(ApiUrls.checkInOuts),
-          headers: headers, body: body);
-      Map<String, dynamic> obj = json.decode(resp.body);
-
-      if (resp.statusCode == 200) {
-        return ApiResponse(obj['success'], obj['message'], null);
-      } else {
-        return ApiResponse(
-            obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
-      }
-    } catch (e) {
-      print(e.toString());
-      return ApiResponse(false, e.toString(), null);
     }
   }
 

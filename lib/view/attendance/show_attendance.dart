@@ -46,19 +46,12 @@ class _AttendancePageState extends State<AttendancePage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        // fillColor: index % 2 == 0
-                        //     ? Colors.green[100]
-                        //     : Colors.blue[100],
-                        // filled: true,
                       ),
                       child: Row(
                         children: [
                           Column(
                             mainAxisSize: MainAxisSize.min,
-                            children: item
-                                .where((element) => element.checkType == "IN")
-                                .toList()
-                                .map((e) {
+                            children: item.map((e) {
                               return Card(
                                 child: Container(
                                   width: Get.size.width * 0.4,
@@ -66,12 +59,17 @@ class _AttendancePageState extends State<AttendancePage> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       children: [
-                                        Text(e.checkType),
-                                        Text(e.deviceTime.hour.toString() +
-                                            ":" +
-                                            e.deviceTime.minute.toString() +
-                                            ":" +
-                                            e.deviceTime.second.toString()),
+                                        Text("IN"),
+                                        e.checkinDeviceTime == null
+                                            ? Text("null")
+                                            : Text(e.checkinDeviceTime.hour
+                                                    .toString() +
+                                                ":" +
+                                                e.checkinDeviceTime.minute
+                                                    .toString() +
+                                                ":" +
+                                                e.checkinDeviceTime.second
+                                                    .toString()),
                                       ],
                                     ),
                                   ),
@@ -82,10 +80,7 @@ class _AttendancePageState extends State<AttendancePage> {
                           Spacer(),
                           Column(
                             mainAxisSize: MainAxisSize.min,
-                            children: item
-                                .where((element) => element.checkType == "OUT")
-                                .toList()
-                                .map((e) {
+                            children: item.map((e) {
                               return Card(
                                 child: Container(
                                   width: Get.size.width * 0.4,
@@ -93,12 +88,17 @@ class _AttendancePageState extends State<AttendancePage> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       children: [
-                                        Text(e.checkType),
-                                        Text(e.deviceTime.hour.toString() +
-                                            ":" +
-                                            e.deviceTime.minute.toString() +
-                                            ":" +
-                                            e.deviceTime.second.toString()),
+                                        Text("OUT"),
+                                        e.checkoutDeviceTime == null
+                                            ? Text("null")
+                                            : Text(e.checkoutDeviceTime.hour
+                                                    .toString() +
+                                                ":" +
+                                                e.checkoutDeviceTime.minute
+                                                    .toString() +
+                                                ":" +
+                                                e.checkoutDeviceTime.second
+                                                    .toString()),
                                       ],
                                     ),
                                   ),

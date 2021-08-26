@@ -17,6 +17,8 @@ class LocationController extends GetxController {
   StreamSubscription<Position> positionStream;
   String nearestOutlet = 'To be Determined';
 
+  var outlets = Get.lazyPut(() => OutletsController());
+
   // LocationController() {
   //   getLocationData();
   //   getCurrentPosition();

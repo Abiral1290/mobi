@@ -90,6 +90,7 @@ class SellProductPage extends StatelessWidget {
                     "quantity": addedQuantity,
                     "discount": discountPercent
                   });
+                  Get.find<ProductsController>().addProductInList(productId);
                 } else {
                   Utilities.showInToast("Please add quantity");
                 }
@@ -228,6 +229,7 @@ class SellProductPage extends StatelessWidget {
 
     Widget buildMainTile(Product products) {
       return Card(
+        color: products.selected ? Colors.grey : Colors.white,
         elevation: 7.0,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -300,112 +302,120 @@ class SellProductPage extends StatelessWidget {
           });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Sell"),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          if (selectedProductList.isEmpty) {
-            Utilities.showInToast("Please add a product",
-                toastType: ToastType.ERROR);
-            return;
-          }
-
-          sales.orders = jsonEncode(selectedProductList);
-          sales.distributorId = Constants.selectedDistributor.id.toString();
-          sales.soldAt = DateTime.now().toString();
-          sales.outletId = outlet.id.toString();
-
-          var conn = await Utilities.isInternetWorking();
-          if (conn) {
-            Get.find<ProductsController>().sellProducts(sales);
-          } else {
-            Get.find<ProductsController>().storeSalesOffline(sales);
-          }
-
-          // Get.back();
-        },
-        label: Row(
-          children: [
-            Icon(Icons.check_circle),
-            Text("Save"),
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        Get.find<ProductsController>().removeAllProductFromList();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Sell"),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Center(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      outlet.name,
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                    Obx(
-                      () => IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: selectedProductList.isEmpty
-                              ? null
-                              : () {
-                                  showInfoBottomSheet();
-                                }),
-                    ),
-                  ],
-                ),
-                Text(
-                  "Distributor: ${Constants.selectedDistributor.name}",
-                  style: TextStyle(fontSize: 18.0),
-                ),
-                SizedBox(
-                  height: Get.size.height * 0.03,
-                ),
-                InputDecorator(
-                  decoration: decoration("Products"),
-                  child: Column(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () async {
+            if (selectedProductList.isEmpty) {
+              Utilities.showInToast("Please add a product",
+                  toastType: ToastType.ERROR);
+              return;
+            }
+
+            sales.orders = jsonEncode(selectedProductList);
+            sales.distributorId = Constants.selectedDistributor.id.toString();
+            sales.soldAt = DateTime.now().toString();
+            sales.outletId = outlet.id.toString();
+
+            var conn = await Utilities.isInternetWorking();
+            if (conn) {
+              Get.find<ProductsController>().sellProducts(sales);
+            } else {
+              Get.find<ProductsController>().storeSalesOffline(sales);
+            }
+
+            Get.find<ProductsController>().removeAllProductFromList();
+
+            // Get.back();
+          },
+          label: Row(
+            children: [
+              Icon(Icons.check_circle),
+              Text("Save"),
+            ],
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Center(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextField(
-                        decoration: decoration("Search Product"),
-                        onChanged: (text) {
-                          Get.find<ProductsController>().searchProducts(text);
-                        },
+                      Text(
+                        outlet.name,
+                        style: TextStyle(fontSize: 20.0),
                       ),
-                      GetBuilder<ProductsController>(
-                        // init: ProductsController(),
-                        builder: (productsController) {
-                          return Get.find<ProductsController>()
-                                      .searchProductList !=
-                                  null
-                              ? Get.find<ProductsController>()
-                                      .searchProductList
-                                      .isNotEmpty
-                                  ? _buildListViewWidget(
-                                      Get.find<ProductsController>()
-                                          .searchProductList)
-                                  : Center(child: Text("No Products"))
-                              : Get.find<ProductsController>().productList ==
-                                      null
-                                  ? Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : Get.find<ProductsController>()
-                                          .productList
-                                          .isEmpty
-                                      ? Center(child: Text("No Products"))
-                                      : _buildListViewWidget(
-                                          Get.find<ProductsController>()
-                                              .productList);
-                        },
+                      Obx(
+                        () => IconButton(
+                            icon: Icon(Icons.info),
+                            onPressed: selectedProductList.isEmpty
+                                ? null
+                                : () {
+                                    showInfoBottomSheet();
+                                  }),
                       ),
                     ],
                   ),
-                ),
-                SizedBox(height: Get.size.height * 0.02),
-              ],
+                  Text(
+                    "Distributor: ${Constants.selectedDistributor.name}",
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(
+                    height: Get.size.height * 0.03,
+                  ),
+                  InputDecorator(
+                    decoration: decoration("Products"),
+                    child: Column(
+                      children: [
+                        TextField(
+                          decoration: decoration("Search Product"),
+                          onChanged: (text) {
+                            Get.find<ProductsController>().searchProducts(text);
+                          },
+                        ),
+                        GetBuilder<ProductsController>(
+                          // init: ProductsController(),
+                          builder: (productsController) {
+                            return Get.find<ProductsController>()
+                                        .searchProductList !=
+                                    null
+                                ? Get.find<ProductsController>()
+                                        .searchProductList
+                                        .isNotEmpty
+                                    ? _buildListViewWidget(
+                                        Get.find<ProductsController>()
+                                            .searchProductList)
+                                    : Center(child: Text("No Products"))
+                                : Get.find<ProductsController>().productList ==
+                                        null
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Get.find<ProductsController>()
+                                            .productList
+                                            .isEmpty
+                                        ? Center(child: Text("No Products"))
+                                        : _buildListViewWidget(
+                                            Get.find<ProductsController>()
+                                                .productList);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: Get.size.height * 0.02),
+                ],
+              ),
             ),
           ),
         ),

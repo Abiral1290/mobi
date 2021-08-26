@@ -5,13 +5,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
 import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
-import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/bank_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
+import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   LocationPermission permission;
   bool serviceEnabled;
   bool hasLocationPermission = false;
+  String checkInId = "";
 
   @override
   void initState() {
@@ -38,8 +39,9 @@ class _HomePageState extends State<HomePage> {
     Get.find<CollectionController>();
 
     Get.find<PreferenceController>().getCheckInValue().then((value) {
-      if (value) {
+      if (value.split("//").last == "true") {
         Get.find<LocationController>().startLocationService();
+        checkInId = value.split("//")[1];
       }
     });
 
@@ -83,7 +85,7 @@ class _HomePageState extends State<HomePage> {
         body: GetBuilder<PreferenceController>(
           builder: (preferenceController) {
             print("Checked in home: ${preferenceController.isCheckedIn}");
-            var user = Get.find<AuthController>();
+            // var user = Get.find<AuthController>();
             var location = Get.find<LocationController>();
             print(preferenceController.isCheckedIn ? 'is check' : ' not check');
 
@@ -132,14 +134,15 @@ class _HomePageState extends State<HomePage> {
                             await Get.find<LocationController>()
                                 .getCurrentPosition();
                             if (location.userPosition != null) {
-                              var resp = await user.checkInOut(
-                                  Check.checkIn,
+                              var resp = await checkInAPI(
                                   location.userPosition.latitude.toString(),
                                   location.userPosition.longitude.toString());
                               if (resp.success) {
                                 location.startLocationService();
                                 Get.find<PreferenceController>()
-                                    .setCheckInValue(true);
+                                    .setCheckInValue(true,
+                                        checkInId: resp.response.toString());
+                                checkInId = resp.response.toString();
                                 Get.to(() => ViewDistributorPage());
                               } else {
                                 Utilities.showInToast(resp.message,
@@ -195,10 +198,10 @@ class _HomePageState extends State<HomePage> {
                             await Get.find<LocationController>()
                                 .getCurrentPosition();
                             if (location.userPosition != null) {
-                              var resp = await user.checkInOut(
-                                  Check.checkOut,
+                              var resp = await checkOutAPI(
                                   location.userPosition.latitude.toString(),
-                                  location.userPosition.longitude.toString());
+                                  location.userPosition.longitude.toString(),
+                                  checkInId);
                               if (resp.success) {
                                 location.stopBackgroundLocationService();
                                 Get.find<PreferenceController>()

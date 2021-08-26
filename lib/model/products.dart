@@ -12,6 +12,7 @@ class Product {
   String name;
   String unit;
   int value;
+  bool selected;
   String createdAt;
   String updatedAt;
   List<Batches> batches;
@@ -21,6 +22,7 @@ class Product {
       this.name,
       this.unit,
       this.value,
+      this.selected,
       this.createdAt,
       this.updatedAt,
       this.batches});
@@ -30,6 +32,7 @@ class Product {
     name = json['name'];
     unit = json['unit'];
     value = json['value'];
+    selected = false;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     if (json['batches'] != null) {

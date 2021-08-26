@@ -51,6 +51,23 @@ class ProductsController extends GetxController {
     }
   }
 
+  addProductInList(String productId) {
+    for (var product in productList) {
+      if (productId == product.id.toString()) {
+        product.selected = true;
+        break;
+      }
+    }
+    update();
+  }
+
+  removeAllProductFromList() {
+    for (var product in productList) {
+      product.selected = false;
+    }
+    update();
+  }
+
   sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {
       if (value.success) {

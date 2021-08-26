@@ -14,20 +14,6 @@ class PreferenceController extends GetxController {
     await _preferences.clear();
   }
 
-  Future<bool> getCheckInValue() async {
-    SharedPreferences _preferences = await SharedPreferences.getInstance();
-    try {
-      var value = _preferences.getBool(checkIn) ?? false;
-
-      if (value != null) isCheckedIn = value;
-      update();
-      return value;
-    } catch (e) {
-      print("error fetching data");
-      return false;
-    }
-  }
-
   saveUser(String userData) async {
     try {
       var pref = await SharedPreferences.getInstance();
@@ -70,16 +56,53 @@ class PreferenceController extends GetxController {
     }
   }
 
-  setCheckInValue(bool checkInData) async {
+  setCheckInValue(bool checkInData, {String checkInId = ""}) async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
     try {
-      _preferences.setBool(checkIn, checkInData).then((value) {
+      // _preferences.setBool(checkIn, checkInData);
+      _preferences
+          .setString(checkIn,
+              DateTime.now().toString() + "//$checkInId" + "//$checkInData")
+          .then((value) {
         if (value) isCheckedIn = checkInData;
         update();
         print("Checked In: $isCheckedIn");
       });
     } catch (e) {
       print("error fetching data");
+    }
+  }
+
+  Future<String> getCheckInValue() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    var now = DateTime.now();
+    var today = now.year.toString() +
+        "-" +
+        now.month.toString() +
+        "-" +
+        now.day.toString();
+    try {
+      var value = _preferences.getString(checkIn);
+
+      if (value != null) {
+        var date = value.split("//").first;
+        var parsedDdate = DateTime.parse(date);
+        var addedDate = parsedDdate.year.toString() +
+            "-" +
+            parsedDdate.month.toString() +
+            "-" +
+            parsedDdate.day.toString();
+        if (addedDate == today) {
+          isCheckedIn = value.split("//").last == "true" ? true : false;
+        } else {
+          isCheckedIn = false;
+        }
+      }
+      update();
+      return value ?? "";
+    } catch (e) {
+      print("error fetching data");
+      return "";
     }
   }
 

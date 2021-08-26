@@ -17,7 +17,7 @@ class Address {
     id = json['id'];
     name = json['name'];
     if (json['districts'] != null) {
-      districts = new List<Districts>();
+      districts = [];
       json['districts'].forEach((v) {
         districts.add(new Districts.fromJson(v));
       });
@@ -48,7 +48,7 @@ class Districts {
     provinceId = json['province_id'];
     name = json['name'];
     if (json['areas'] != null) {
-      areas = new List<Areas>();
+      areas = [];
       json['areas'].forEach((v) {
         areas.add(new Areas.fromJson(v));
       });
@@ -80,7 +80,7 @@ class Areas {
     districtId = json['district_id'];
     name = json['name'];
     if (json['streets'] != null) {
-      streets = new List<Streets>();
+      streets = [];
       json['streets'].forEach((v) {
         streets.add(new Streets.fromJson(v));
       });

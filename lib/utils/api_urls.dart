@@ -12,7 +12,9 @@ class ApiUrls {
   static final String address = _endPoint + 'get-locations';
   static final String collections = _endPoint + 'collections';
   static final String distributors = _endPoint + 'distributors';
-  static final String checkInOuts = _endPoint + 'check_in_outs';
+  static final String checkInOuts =
+      _endPoint + 'check_in_outs'; //get to fetch data and post to check in
+  static final String checkOut = _endPoint + 'checkout';
 
   static final String storageURL = _mainUrl + 'dv_group/public';
 
