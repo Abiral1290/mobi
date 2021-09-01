@@ -2,6 +2,8 @@ import 'package:background_location/background_location.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
+import 'package:mobitrack_dv_flutter/model/location_model.dart';
+import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationStatusPage extends StatefulWidget {
   @override
@@ -16,10 +18,33 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
           title: const Text('Status'),
           actions: [
             TextButton(
-              onPressed: () {
-                Get.find<LocationController>().deleteAllLocation();
+              onPressed: () async {
+                var conn = await Utilities.isInternetWorking();
+                if (conn) {
+                  for (var list
+                      in Get.find<LocationController>().locationList) {
+                    LocationModel model = LocationModel(
+                      id: list.id.toString(),
+                      latitude: list.latitude.toString(),
+                      longitude: list.longitude.toString(),
+                      date: list.date.toString(),
+                      checkinoutId: list.checkinoutId.toString(),
+                      outletId: list.outletId,
+                    );
+                    postLocationApi(model, list.outletId == null ? false : true)
+                        .then((value) {
+                      if (value.success) {
+                        Get.find<LocationController>().deleteLocation(list);
+                        print("Location send success");
+                      }
+                    });
+                  }
+                } else {
+                  Utilities.showInToast("No Internet",
+                      toastType: ToastType.ERROR);
+                }
               },
-              child: Text("Clear", style: TextStyle(color: Colors.white)),
+              child: Text("Sync", style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -34,7 +59,7 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
                       return ListTile(
                         title: Text(Get.find<LocationController>()
                             .locationList[index]
-                            .time),
+                            .date),
                         subtitle: Text(Get.find<LocationController>()
                                 .locationList[index]
                                 .latitude

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 
 class Outlet {
   int id;
@@ -118,7 +119,10 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
   };
 
   try {
-    var res = await http.get(Uri.parse(ApiUrls.outlets), headers: headers);
+    var res = await http.get(
+        Uri.parse(
+            ApiUrls.outlets + Constants.selectedDistributor.id.toString()),
+        headers: headers);
     Map<String, dynamic> obj = json.decode(res.body);
 
     if (res.statusCode == 200) {

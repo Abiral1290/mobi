@@ -7,6 +7,7 @@ class Constants {
   static int appVerId = 0;
   static String appVername = '';
   static final String tempApkName = 'temp_dv.apk';
+  static String checkInOut;
 }
 
 class SellerType {

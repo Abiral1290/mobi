@@ -8,6 +8,7 @@ import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationController extends GetxController {
@@ -19,12 +20,6 @@ class LocationController extends GetxController {
 
   var outlets = Get.lazyPut(() => OutletsController());
 
-  // LocationController() {
-  //   getLocationData();
-  //   getCurrentPosition();
-  // }
-  //
-  //
   Future<bool> _checkLocation() async {
     bool isLocationOpened = await Geolocator.isLocationServiceEnabled();
     bool hasPerm = false;
@@ -89,17 +84,30 @@ class LocationController extends GetxController {
   }
 
   getPositionStream() async {
-    positionStream = Geolocator.getPositionStream().listen((Position position) {
+    positionStream =
+        Geolocator.getPositionStream(intervalDuration: Duration(seconds: 20))
+            .listen((Position position) async {
       if (position != null) {
         setNearestOutletName(position);
 
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
-          latitude: position.latitude,
-          longitude: position.longitude,
-          time: position.timestamp.toString(),
+          latitude: position.latitude.toString(),
+          longitude: position.longitude.toString(),
+          date: DateTime.now().toString(),
+          checkinoutId: Constants.checkInOut,
         );
-        Get.find<LocationController>().addLocation(model);
+        if (await Utilities.isInternetWorking()) {
+          postLocationApi(model, false).then((value) {
+            if (value.success) {
+              print("Location send success");
+            } else {
+              Get.find<LocationController>().addLocation(model, false);
+            }
+          });
+        } else {
+          Get.find<LocationController>().addLocation(model, false);
+        }
 
         position = position;
         update();
@@ -145,8 +153,8 @@ class LocationController extends GetxController {
     });
   }
 
-  addLocation(LocationModel locationModel) {
-    databaseHelper.insertLocationData(locationModel).then((value) {
+  addLocation(LocationModel locationModel, bool inOutlet) {
+    databaseHelper.insertLocationData(locationModel, inOutlet).then((value) {
       locationList.add(value);
       update();
     });

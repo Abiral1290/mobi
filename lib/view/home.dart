@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
 
     Get.find<PreferenceController>().getCheckInValue().then((value) {
       if (value.split("//").last == "true") {
+        Constants.checkInOut = value.split("//")[1];
         Get.find<LocationController>().startLocationService();
         checkInId = value.split("//")[1];
       }
@@ -142,6 +143,7 @@ class _HomePageState extends State<HomePage> {
                                 Get.find<PreferenceController>()
                                     .setCheckInValue(true,
                                         checkInId: resp.response.toString());
+                                Constants.checkInOut = resp.response.toString();
                                 checkInId = resp.response.toString();
                                 Get.to(() => ViewDistributorPage());
                               } else {

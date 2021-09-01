@@ -121,17 +121,29 @@ class Sales {
   String soldAt;
   String outletId;
   String orders;
+  String outletLatitude;
+  String outletLongitude;
   int id;
 
-  Sales({this.distributorId, this.soldAt, this.outletId, this.orders, this.id});
+  Sales(
+      {this.distributorId,
+      this.soldAt,
+      this.outletId,
+      this.orders,
+      this.outletLongitude,
+      this.outletLatitude,
+      this.id});
 
   Sales.fromJson(Map<String, dynamic> json, [isLocalStorage = false]) {
     distributorId = json['distributor_id'];
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
     orders = json['orders'];
+
     if (isLocalStorage) {
       id = json['id'];
+      outletLatitude = json["outlet_latitude"];
+      outletLongitude = json["outlet_longitude"];
     }
   }
 
@@ -143,6 +155,8 @@ class Sales {
     data['orders'] = this.orders;
     if (isLocalStorage) {
       data['id'] = this.id;
+      data['outlet_latitude'] = this.outletLatitude;
+      data['outlet_longitude'] = this.outletLongitude;
     }
 
     return data;

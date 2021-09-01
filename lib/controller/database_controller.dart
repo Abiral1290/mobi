@@ -43,9 +43,11 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE IF NOT EXISTS $locationTable (
               id TEXT,
-              latitude REAL,
-              longitude REAL,
-              time TEXT
+              latitude TEXT,
+              longitude TEXT,
+              date TEXT,
+              checkinout_id TEXT,
+              outlet_id TEXT
               )
           ''');
     await db.execute('''
@@ -110,14 +112,17 @@ class DatabaseHelper {
               distributor_id TEXT,
               sold_at TEXT,
               orders TEXT,
+              outlet_latitude TEXT,
+              outlet_longitude TEXT,
               outlet_id TEXT
               )
           ''');
   }
 
-  Future<LocationModel> insertLocationData(LocationModel locationModel) async {
+  Future<LocationModel> insertLocationData(
+      LocationModel locationModel, bool inOutlet) async {
     Database db = await instance.instace;
-    await db.insert(locationTable, locationModel.toJson());
+    await db.insert(locationTable, locationModel.toJson(inOutlet));
     // print('inserted location data');
     return locationModel;
   }

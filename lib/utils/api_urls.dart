@@ -5,7 +5,7 @@ class ApiUrls {
   static final String downloadUrl = _mainUrl;
   static final String checkForUpdate = _endPoint + 'app_versions';
   static final String login = _endPoint + 'login';
-  static final String outlets = _endPoint + 'outlets';
+  static final String outlets = _endPoint + 'outlets?distributor_id=';
   static final String products = _endPoint + 'products';
   static final String sales = _endPoint + 'sales';
   static final String banks = _endPoint + 'banks';
@@ -15,6 +15,7 @@ class ApiUrls {
   static final String checkInOuts =
       _endPoint + 'check_in_outs'; //get to fetch data and post to check in
   static final String checkOut = _endPoint + 'checkout';
+  static final String dailyLocation = _endPoint + 'daily_locations';
 
   static final String storageURL = _mainUrl + 'dv_group/public';
 

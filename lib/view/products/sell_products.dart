@@ -323,6 +323,8 @@ class SellProductPage extends StatelessWidget {
             sales.distributorId = Constants.selectedDistributor.id.toString();
             sales.soldAt = DateTime.now().toString();
             sales.outletId = outlet.id.toString();
+            sales.outletLatitude = outlet.latitude.toString();
+            sales.outletLongitude = outlet.longitude.toString();
 
             var conn = await Utilities.isInternetWorking();
             if (conn) {
