@@ -273,7 +273,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         child: TextField(
                           autofocus: false,
                           decoration: InputDecoration(
-                              labelText: 'Street',
+                              labelText: 'Location',
                               prefixIcon: Icon(Icons.add_road)),
                           controller: _streetCntrl,
                         ),

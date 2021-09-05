@@ -7,6 +7,7 @@ class PreferenceController extends GetxController {
   String user = "user";
   String distributors = "distributors";
   String address = "address";
+  String location = "location";
   bool isCheckedIn = false;
 
   clear() async {
@@ -59,7 +60,6 @@ class PreferenceController extends GetxController {
   setCheckInValue(bool checkInData, {String checkInId = ""}) async {
     SharedPreferences _preferences = await SharedPreferences.getInstance();
     try {
-      // _preferences.setBool(checkIn, checkInData);
       _preferences
           .setString(checkIn,
               DateTime.now().toString() + "//$checkInId" + "//$checkInData")
@@ -122,6 +122,27 @@ class PreferenceController extends GetxController {
       return pref.getString(distributors) ?? "";
     } catch (e) {
       print("failed to get distributors");
+      print(e);
+      return null;
+    }
+  }
+
+  setLocation(String latitude, String longitude) async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      pref.setString(location, "$latitude,$longitude");
+    } catch (e) {
+      print("failed to store location");
+      print(e);
+    }
+  }
+
+  Future<String> getLocation() async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      return pref.getString(location) ?? "";
+    } catch (e) {
+      print("failed to get location");
       print(e);
       return null;
     }

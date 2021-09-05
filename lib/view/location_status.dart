@@ -11,6 +11,8 @@ class LocationStatusPage extends StatefulWidget {
 }
 
 class _LocationStatusPageState extends State<LocationStatusPage> {
+  var location = Get.lazyPut(() => LocationController());
+  var locationController = Get.find<LocationController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,8 +23,9 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
               onPressed: () async {
                 var conn = await Utilities.isInternetWorking();
                 if (conn) {
-                  for (var list
-                      in Get.find<LocationController>().locationList) {
+                  Utilities.showInToast("Syncing Data",
+                      toastType: ToastType.INFO);
+                  for (var list in locationController.locationList) {
                     LocationModel model = LocationModel(
                       id: list.id.toString(),
                       latitude: list.latitude.toString(),
@@ -31,13 +34,19 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
                       checkinoutId: list.checkinoutId.toString(),
                       outletId: list.outletId,
                     );
-                    postLocationApi(model, list.outletId == null ? false : true)
-                        .then((value) {
-                      if (value.success) {
-                        Get.find<LocationController>().deleteLocation(list);
-                        print("Location send success");
-                      }
-                    });
+
+                    locationController.postLocation(
+                        model, list.outletId == null ? false : true);
+
+                    Get.find<LocationController>().deleteLocation(list);
+
+                    // postLocationApi(model, list.outletId == null ? false : true)
+                    //     .then((value) {
+                    //   if (value.success) {
+                    //     Get.find<LocationController>().deleteLocation(list);
+                    //     print("Location send success");
+                    //   }
+                    // });
                   }
                 } else {
                   Utilities.showInToast("No Internet",

@@ -44,6 +44,7 @@ class OutletsController extends GetxController {
           await DatabaseHelper.instance.deleteSyncedOutlet();
 
           outletList = value.response;
+
           outletList.forEach((o) {
             DatabaseHelper.instance.insertOutlet(o);
           });

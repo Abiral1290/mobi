@@ -5,6 +5,7 @@ import 'package:background_location/background_location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
@@ -18,7 +19,8 @@ class LocationController extends GetxController {
   StreamSubscription<Position> positionStream;
   String nearestOutlet = 'To be Determined';
 
-  var outlets = Get.lazyPut(() => OutletsController());
+  // var outlets = Get.put(OutletsController());
+  var preference = Get.put(PreferenceController());
 
   Future<bool> _checkLocation() async {
     bool isLocationOpened = await Geolocator.isLocationServiceEnabled();
@@ -61,12 +63,56 @@ class LocationController extends GetxController {
     _init();
   }
 
+  postLocation(LocationModel locationModel, bool inOutlet) async {
+    print("inside post location");
+    if (await Utilities.isInternetWorking()) {
+      var savedLocation = await Get.find<PreferenceController>().getLocation();
+      if (savedLocation != "") {
+        var lat = double.parse(savedLocation.split(",").first.toString());
+        var lng = double.parse(savedLocation.split(",").last.toString());
+        if (((Utilities.calculateDistance(
+                        lat,
+                        lng,
+                        double.parse(locationModel.latitude),
+                        double.parse(locationModel.latitude))) *
+                    1000)
+                .abs() >
+            Constants.locationRadius) {
+          postLocationApi(locationModel, inOutlet).then((value) {
+            if (value.success) {
+              print("Location send success");
+
+              Get.find<PreferenceController>()
+                  .setLocation(locationModel.latitude, locationModel.longitude);
+            } else {
+              Get.find<LocationController>()
+                  .addLocation(locationModel, inOutlet);
+            }
+          });
+        }
+      } else {
+        postLocationApi(locationModel, inOutlet).then((value) {
+          if (value.success) {
+            print("Location send success");
+
+            Get.find<PreferenceController>()
+                .setLocation(locationModel.latitude, locationModel.longitude);
+          } else {
+            Get.find<LocationController>().addLocation(locationModel, inOutlet);
+          }
+        });
+      }
+    } else {
+      Get.find<LocationController>().addLocation(locationModel, inOutlet);
+    }
+  }
+
   setNearestOutletName(Position userPos) async {
-    var outlets = Get.find<OutletsController>().outletList;
-    if (outlets.isNotEmpty) {
+    var outletsController = Get.find<OutletsController>().outletList;
+    if (outletsController.isNotEmpty) {
       Map<Outlet, double> values = new Map<Outlet, double>();
 
-      for (var o in outlets) {
+      for (var o in outletsController) {
         var dist = Geolocator.distanceBetween(
             o.latitude, o.longitude, userPos.latitude, userPos.longitude);
         values[o] = dist;
@@ -84,11 +130,14 @@ class LocationController extends GetxController {
   }
 
   getPositionStream() async {
-    positionStream =
-        Geolocator.getPositionStream(intervalDuration: Duration(seconds: 20))
-            .listen((Position position) async {
+    positionStream = Geolocator.getPositionStream(
+      distanceFilter: 100,
+      intervalDuration: Duration(minutes: 1),
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+    ).listen((Position position) async {
       if (position != null) {
-        setNearestOutletName(position);
+        if (Constants.selectedDistributor != null)
+          setNearestOutletName(position);
 
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
@@ -97,17 +146,20 @@ class LocationController extends GetxController {
           date: DateTime.now().toString(),
           checkinoutId: Constants.checkInOut,
         );
-        if (await Utilities.isInternetWorking()) {
-          postLocationApi(model, false).then((value) {
-            if (value.success) {
-              print("Location send success");
-            } else {
-              Get.find<LocationController>().addLocation(model, false);
-            }
-          });
-        } else {
-          Get.find<LocationController>().addLocation(model, false);
-        }
+
+        postLocation(model, false);
+
+        // if (await Utilities.isInternetWorking()) {
+        //   postLocationApi(model, false).then((value) {
+        //     if (value.success) {
+        //       print("Location send success");
+        //     } else {
+        //       Get.find<LocationController>().addLocation(model, false);
+        //     }
+        //   });
+        // } else {
+        //   Get.find<LocationController>().addLocation(model, false);
+        // }
 
         position = position;
         update();

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
@@ -56,25 +57,12 @@ class LocationModel {
 }
 
 Future<ApiResponse> postLocationApi(
-  // String latitude,
-  // String longitude,
-  // String date,
-  // String checkinOutId,
-  // String outletId,
-
   LocationModel locationModel,
   bool inOutlet,
 ) async {
-  // var body = {
-  //   "longitude": longitude.toString(),
-  //   "latitude": latitude.toString(),
-  //   "date": date.toString(),
-  //   "checkinout_id": checkinOutId.toString(),
-  // };
-
   var body = locationModel.toJson(inOutlet);
   var headers = {
-    // 'Accept': 'application/json',
+    'Accept': 'application/json',
     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
   };
 
@@ -84,6 +72,9 @@ Future<ApiResponse> postLocationApi(
 
     Map<String, dynamic> obj = json.decode(resp.body);
 
+    if (obj["success"]) {
+      
+    }
     return ApiResponse(obj["success"], obj["message"], null);
   } catch (e) {
     print(e.toString());

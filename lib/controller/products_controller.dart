@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
-import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -14,6 +13,8 @@ class ProductsController extends GetxController {
   List<Product> searchProductList;
   List<Sales> localSalesList = [];
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  var location = Get.lazyPut(() => LocationController());
+  var locationController = Get.find<LocationController>();
 
   ProductsController() {
     getProductListFromAPI();
@@ -85,13 +86,16 @@ class ProductsController extends GetxController {
           checkinoutId: Constants.checkInOut,
           outletId: sales.outletId,
         );
-        postLocationApi(model, true).then((value) {
-          if (value.success) {
-            print("Location send success");
-          } else {
-            Get.find<LocationController>().addLocation(model, true);
-          }
-        });
+
+        locationController.postLocation(model, true);
+
+        // postLocationApi(model, true).then((value) {
+        //   if (value.success) {
+        //     print("Location send success");
+        //   } else {
+        //     Get.find<LocationController>().addLocation(model, true);
+        //   }
+        // });
 
         Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
         Get.back();
@@ -140,13 +144,16 @@ class ProductsController extends GetxController {
           checkinoutId: Constants.checkInOut,
           outletId: item.outletId,
         );
-        postLocationApi(model, true).then((value) {
-          if (value.success) {
-            print("Location send success");
-          } else {
-            Get.find<LocationController>().addLocation(model, true);
-          }
-        });
+
+        locationController.postLocation(model, true);
+
+        // postLocationApi(model, true).then((value) {
+        //   if (value.success) {
+        //     print("Location send success");
+        //   } else {
+        //     Get.find<LocationController>().addLocation(model, true);
+        //   }
+        // });
         await databaseHelper.deleteSales(item).then((value) {
           if (value) {
             localSalesList.remove(item);
