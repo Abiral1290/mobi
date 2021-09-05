@@ -35,7 +35,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
 
   Future<String> _getImg(ImageSource src) async {
     String base64Image = '';
-    var img = await ImagePicker().getImage(source: src, imageQuality: 25);
+    var img = await ImagePicker().pickImage(source: src, imageQuality: 25);
     if (img != null) {
       List<int> imageBytes = await img.readAsBytes();
       base64Image = base64Encode(imageBytes);

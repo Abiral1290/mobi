@@ -1,9 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
@@ -36,6 +39,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   var areaLists = [].obs;
   var streetLists = [].obs;
 
+  final ImagePicker _picker = ImagePicker();
+  XFile _imageFile;
+  String base64Image;
+
   @override
   void initState() {
     Get.find<LocationController>().getCurrentPosition();
@@ -49,7 +56,8 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         _phoneCntrl.text.length == 10 &&
         _streetCntrl.text.isNotEmpty &&
         districtLists.isNotEmpty &&
-        areaLists.isNotEmpty;
+        areaLists.isNotEmpty &&
+        _imageFile != null;
   }
 
   InputDecoration decoration(String label) {
@@ -59,6 +67,25 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
       ),
       labelText: label,
     );
+  }
+
+  void pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 25,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = pickedFile;
+        });
+        List<int> imageBytes = await pickedFile.readAsBytes();
+        base64Image = base64Encode(imageBytes);
+        print(base64Image);
+      }
+    } catch (e) {
+      Utilities.showInToast(e.message);
+    }
   }
 
   @override
@@ -340,6 +367,24 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         ),
                       ),
                       Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 5.0),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(),
+                          onPressed: () {
+                            pickImage();
+                          },
+                          child: Text("Select Image"),
+                        ),
+                      ),
+                      Container(
+                        child: _imageFile == null
+                            ? Center(
+                                child: Text("No Image Selected"),
+                              )
+                            : Image.file(File(_imageFile.path)),
+                      ),
+                      Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 80, vertical: 5),
                         child: MaterialButton(
@@ -381,14 +426,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 name: _nameCntrl.text,
                                 ownerName: _ownerCntrl.text,
                                 type: _type,
-                                // salesOfficerId:
-                                //     Get.find<AuthController>().user.id,
                                 longitude: pos.longitude,
                                 provinceId: selectedProvince.value.id,
                                 districtId: selectedDistrict.value.id,
                                 areaId: selectedArea.value.id,
                                 street: _streetCntrl.text,
-                                distributorId: Constants.selectedDistributor.id.toString(),
+                                image: base64Image,
+                                distributorId:
+                                    Constants.selectedDistributor.id.toString(),
                               );
 
                               if (conn) {

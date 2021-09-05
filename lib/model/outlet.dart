@@ -15,6 +15,7 @@ class Outlet {
   int districtId;
   int areaId;
   String street;
+  String image;
   String contact;
   String type;
   double latitude;
@@ -35,6 +36,7 @@ class Outlet {
       this.districtId,
       this.areaId,
       this.street,
+      this.image,
       this.contact,
       this.type,
       this.latitude,
@@ -52,6 +54,7 @@ class Outlet {
     districtId = int.parse(json['district_id'].toString());
     areaId = int.parse(json['area_id'].toString());
     street = json['street'].toString();
+    image = json["image"];
     contact = json['contact'];
     type = json['type'];
     latitude = double.parse(json['latitude'].toString());
@@ -76,6 +79,7 @@ class Outlet {
     data['district_id'] = this.districtId.toString();
     data['area_id'] = this.areaId.toString();
     data['street'] = this.street.toString();
+    data["image"] = this.image.toString();
     data['contact'] = this.contact.toString();
     data['type'] = this.type.toString();
     data['latitude'] = this.latitude.toString();

@@ -53,6 +53,8 @@
 	<string>This app need access to your motion sensors to track your movement.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app need access to your gallery to import cheque photo.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app need access to your Microphone to record audio.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app need to recognize your speech for translation.</string>
 	<key>UIBackgroundModes</key>

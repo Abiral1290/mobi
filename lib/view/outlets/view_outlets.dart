@@ -7,7 +7,7 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 
 class ViewOutletsPage extends StatelessWidget {
-  // var outlet = Get.put(OutletsController());
+  var outlet = Get.put(OutletsController());
 
   bool _lock = false;
   @override
