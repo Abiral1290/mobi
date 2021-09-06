@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
@@ -32,21 +36,36 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
       Get.find<AddressController>().addressList.first.obs;
   static var selectedDistrict = selectedProvince.value.districts.first.obs;
   static var selectedArea = selectedDistrict.value.areas.first.obs;
-  static var selectedStreet = selectedArea.value.streets.first.obs;
 
   var provinceLists = Get.find<AddressController>().addressList.obs;
   var districtLists = [].obs;
   var areaLists = [].obs;
   var streetLists = [].obs;
 
+  Completer<GoogleMapController> _controller = Completer();
+
   final ImagePicker _picker = ImagePicker();
   XFile _imageFile;
   String base64Image;
 
+  Position position;
+
+  Map<String, Marker> markers = <String, Marker>{};
+
   @override
   void initState() {
-    Get.find<LocationController>().getCurrentPosition();
+    // Get.find<LocationController>().getCurrentPosition();
+    determinePosition();
     super.initState();
+  }
+
+  determinePosition() async {
+    if (Get.find<LocationController>().userPosition == null) {
+      position = await GeolocatorPlatform.instance.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+    } else {
+      position = Get.find<LocationController>().userPosition;
+    }
   }
 
   bool validateInput() {
@@ -212,31 +231,52 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
       );
     }
 
-    Widget _buildStreetDropdown() {
-      return Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: InputDecorator(
-          decoration: decoration("Select Street"),
-          child: Obx(
-            () => ButtonTheme(
-              alignedDropdown: true,
-              child: DropdownButton<Streets>(
-                iconEnabledColor: Colors.green,
-                iconDisabledColor: Colors.red,
-                isDense: true,
-                isExpanded: true,
-                hint: Text(selectedStreet.value.name),
-                items: streetLists.map((e) {
-                  return DropdownMenuItem<Streets>(
-                      value: e, child: Text(e.name));
-                }).toList(),
-                onChanged: (street) {
-                  selectedStreet.value = street;
+    Widget buildMapContainer() {
+      return Container(
+        height: Get.size.height * 0.2,
+        child: position == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : GoogleMap(
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(position.latitude, position.longitude),
+                    zoom: 16),
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
+                markers: Set<Marker>.of(markers.values),
+                mapType: MapType.normal,
+                zoomGesturesEnabled: true,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                  new Factory<OneSequenceGestureRecognizer>(
+                    () => new EagerGestureRecognizer(),
+                  ),
+                ].toSet(),
+                onLongPress: (LatLng latlng) {
+                  print(latlng.latitude.toString() +
+                      "," +
+                      latlng.longitude.toString());
+                  setState(() {
+                    markers["outletMarker"] = Marker(
+                      markerId: MarkerId("outletMarker"),
+                      position: new LatLng(latlng.latitude, latlng.longitude),
+                    );
+                  });
+
+                  position = Position(
+                      longitude: latlng.longitude,
+                      latitude: latlng.latitude,
+                      timestamp: DateTime.now(),
+                      accuracy: 0.0,
+                      altitude: 0.0,
+                      heading: 0.0,
+                      speed: 0.0,
+                      speedAccuracy: 0.0);
                 },
               ),
-            ),
-          ),
-        ),
       );
     }
 
@@ -366,6 +406,23 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                           ),
                         ),
                       ),
+                      // view on map
+                      buildMapContainer(),
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(
+                      //       horizontal: 20.0, vertical: 5.0),
+                      //   child: OutlinedButton(
+                      //     style: OutlinedButton.styleFrom(),
+                      //     onPressed: () async {
+                      //       // launch(
+                      //       //     "https://www.google.com/maps/place/${pos.latitude},${pos.longitude}",
+                      //       //     webOnlyWindowName: "Title",
+                      //       //     forceWebView: true,
+                      //       //     enableJavaScript: true);
+                      //     },
+                      //     child: Text("View On Map"),
+                      //   ),
+                      // ),
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 5.0),
@@ -415,18 +472,18 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                       ),
                                     );
                                   });
-                              var pos = await GeolocatorPlatform.instance
-                                  .getCurrentPosition(
-                                      desiredAccuracy:
-                                          LocationAccuracy.bestForNavigation);
+                              // var pos = await GeolocatorPlatform.instance
+                              //     .getCurrentPosition(
+                              //         desiredAccuracy:
+                              //             LocationAccuracy.bestForNavigation);
                               var outlet = Outlet(
                                 id: DateTime.now().millisecondsSinceEpoch,
                                 contact: _phoneCntrl.text,
-                                latitude: pos.latitude,
+                                latitude: position.latitude,
                                 name: _nameCntrl.text,
                                 ownerName: _ownerCntrl.text,
                                 type: _type,
-                                longitude: pos.longitude,
+                                longitude: position.longitude,
                                 provinceId: selectedProvince.value.id,
                                 districtId: selectedDistrict.value.id,
                                 areaId: selectedArea.value.id,
