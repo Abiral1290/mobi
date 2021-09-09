@@ -17,6 +17,7 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/location_status.dart';
 import 'package:mobitrack_dv_flutter/view/drawer.dart';
+import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/glow.dart';
 
@@ -233,23 +234,69 @@ class _HomePageState extends State<HomePage> {
               ],
               body: Stack(
                 children: [
-                  if (Get.find<PreferenceController>().isCheckedIn)
-                    Align(
-                      alignment: Alignment.center,
-                      child: Glow(
-                        child: Container(),
-                        startDelay: Duration(milliseconds: 000),
-                        glowColor: Colors.blue[500],
-                        endRadius: 200.0,
-                      ),
-                    ),
+                  // Align(
+                  //   alignment: Alignment.topCenter,
+                  //   child: Text("You are near: "),
+                  // ),
+                  // if (Get.find<PreferenceController>().isCheckedIn)
+                  //   Align(
+                  //     alignment: Alignment.center,
+                  //     child: Glow(
+                  //       child: Container(),
+                  //       startDelay: Duration(milliseconds: 000),
+                  //       glowColor: Colors.blue[500],
+                  //       endRadius: 200.0,
+                  //     ),
+                  //   ),
                   Center(
                     child: GetBuilder<LocationController>(
                       builder: (controller) {
-                        return Text(
-                          'You are near: ' + controller.nearestOutlet,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "You are near:",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: Get.size.height * 0.05,
+                            ),
+                            Get.find<PreferenceController>().isCheckedIn
+                                ? Glow(
+                                    startDelay: Duration(milliseconds: 000),
+                                    glowColor: Colors.blue[500],
+                                    endRadius: 200.0,
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (Get.find<LocationController>()
+                                                    .nearestOutletName !=
+                                                "To be Determined" &&
+                                            Get.find<LocationController>()
+                                                    .nearestOutlet !=
+                                                null) {
+                                          Get.to(() => SellProductPage(
+                                              outlet:
+                                                  Get.find<LocationController>()
+                                                      .nearestOutlet));
+                                        }
+                                      },
+                                      child: Text(
+                                        Get.find<LocationController>()
+                                            .nearestOutletName,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    "To Be Determined",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                          ],
                         );
                       },
                     ),

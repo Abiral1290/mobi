@@ -6,6 +6,7 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
 import 'package:mobitrack_dv_flutter/view/info/about.dart';
+import 'package:mobitrack_dv_flutter/view/monthly_tour/register_monthly_tour.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
@@ -266,6 +267,33 @@ class DrawerPage extends StatelessWidget {
                         Get.to(() => ViewDistributorPage());
                       },
                       child: Text("View Distributor"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
+                ),
+                SizedBox(height: Get.size.height * 0.01),
+                ExpansionTile(
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.tour_rounded),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Monthly Tour",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => RegisterMonthlyTourPage());
+                      },
+                      child: Text("Add Monthly Tour"),
                       style: expandedButtonStyle,
                     ),
                   ],

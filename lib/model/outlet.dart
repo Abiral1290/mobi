@@ -11,9 +11,7 @@ class Outlet {
   int id;
   String name;
   String ownerName;
-  int provinceId;
-  int districtId;
-  int areaId;
+  String addressId;
   String street;
   String image;
   String contact;
@@ -32,9 +30,7 @@ class Outlet {
       {this.id,
       this.name,
       this.ownerName,
-      this.provinceId,
-      this.districtId,
-      this.areaId,
+      this.addressId,
       this.street,
       this.image,
       this.contact,
@@ -50,9 +46,7 @@ class Outlet {
     id = int.parse(json['id'].toString());
     name = json['name'];
     ownerName = json['owner_name'];
-    provinceId = int.parse(json['province_id'].toString());
-    districtId = int.parse(json['district_id'].toString());
-    areaId = int.parse(json['area_id'].toString());
+    addressId = json['address_id'].toString();
     street = json['street'].toString();
     image = json["image"];
     contact = json['contact'];
@@ -75,9 +69,7 @@ class Outlet {
     data['id'] = this.id.toString();
     data['name'] = this.name.toString();
     data['owner_name'] = this.ownerName.toString();
-    data['province_id'] = this.provinceId.toString();
-    data['district_id'] = this.districtId.toString();
-    data['area_id'] = this.areaId.toString();
+    data['address_id'] = this.addressId.toString();
     data['street'] = this.street.toString();
     data["image"] = this.image.toString();
     data['contact'] = this.contact.toString();
@@ -107,8 +99,7 @@ Future<ApiResponse> registerOutlet(Outlet outlet) async {
       outlet.synced = true;
       return ApiResponse(obj['success'], obj['message'], null);
     } else {
-      return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+      return ApiResponse(obj['success'] ?? false, obj['message'], null);
     }
   } catch (e) {
     print(e.toString());
@@ -122,28 +113,27 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
     'Accept': 'application/json'
   };
 
-  try {
-    var res = await http.get(
-        Uri.parse(
-            ApiUrls.outlets + Constants.selectedDistributor.id.toString()),
-        headers: headers);
-    Map<String, dynamic> obj = json.decode(res.body);
+  // try {
+  var res = await http.get(
+      Uri.parse(ApiUrls.outlets + Constants.selectedDistributor.id.toString()),
+      headers: headers);
+  Map<String, dynamic> obj = json.decode(res.body);
 
-    if (res.statusCode == 200) {
-      final data = obj["data"].cast<Map<String, dynamic>>();
-      List<Outlet> outlets = await data.map<Outlet>((json) {
-        var out = Outlet.fromJson(json);
-        out.synced = true;
-        return out;
-      }).toList();
-      return ApiResponse(true, obj['message'], outlets);
-    } else {
-      print(obj);
-      return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
-    }
-  } catch (e) {
-    print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+  if (res.statusCode == 200) {
+    final data = obj["data"].cast<Map<String, dynamic>>();
+    List<Outlet> outlets = await data.map<Outlet>((json) {
+      var out = Outlet.fromJson(json);
+      out.synced = true;
+      return out;
+    }).toList();
+    return ApiResponse(true, obj['message'], outlets);
+  } else {
+    print(obj);
+    return ApiResponse(
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
   }
+  // } catch (e) {
+  //   print(e.toString());
+  //   return ApiResponse(false, e.toString(), null);
+  // }
 }

@@ -42,168 +42,173 @@ class ViewOutletsPage extends StatelessWidget {
         body: GetBuilder<OutletsController>(
           // initState: Get.find<OutletsController>().fetchOutlets(),
           builder: (outletController) {
-            return ListView.builder(
-              itemCount: Get.find<OutletsController>().outletList.length,
-              itemBuilder: (context, index) {
-                var list = Get.find<OutletsController>().outletList;
-                print(list);
-                var item = Get.find<OutletsController>().outletList[index];
-                print(Get.find<AddressController>().addressList);
-                String province = Get.find<AddressController>()
-                    .addressList
-                    .where((element) => element.id == item.provinceId)
-                    .toList()
-                    .first
-                    .name;
-                String district = Get.find<AddressController>()
-                    .addressList
-                    .where((element) => element.id == item.provinceId)
-                    .toList()
-                    .first
-                    .districts
-                    .where((element) => element.id == item.districtId)
-                    .toList()
-                    .first
-                    .name;
-                String area = Get.find<AddressController>()
-                    .addressList
-                    .where((element) => element.id == item.provinceId)
-                    .toList()
-                    .first
-                    .districts
-                    .where((element) => element.id == item.districtId)
-                    .toList()
-                    .first
-                    .areas
-                    .where((element) => element.id == item.areaId)
-                    .toList()
-                    .first
-                    .name;
+            return Scrollbar(
+              isAlwaysShown: true,
+              interactive: true,
+              thickness: 6.0,
+              child: ListView.builder(
+                itemCount: Get.find<OutletsController>().outletList.length,
+                itemBuilder: (context, index) {
+                  var list = Get.find<OutletsController>().outletList;
+                  print(list);
+                  var item = Get.find<OutletsController>().outletList[index];
+                  print(Get.find<AddressController>().addressList);
+                  // String province = Get.find<AddressController>()
+                  //     .addressList
+                  //     .where((element) => element.id == item.provinceId)
+                  //     .toList()
+                  //     .first
+                  //     .name;
+                  // String district = Get.find<AddressController>()
+                  //     .addressList
+                  //     .where((element) => element.id == item.provinceId)
+                  //     .toList()
+                  //     .first
+                  //     .districts
+                  //     .where((element) => element.id == item.districtId)
+                  //     .toList()
+                  //     .first
+                  //     .name;
+                  // String area = Get.find<AddressController>()
+                  //     .addressList
+                  //     .where((element) => element.id == item.provinceId)
+                  //     .toList()
+                  //     .first
+                  //     .districts
+                  //     .where((element) => element.id == item.districtId)
+                  //     .toList()
+                  //     .first
+                  //     .areas
+                  //     .where((element) => element.id == item.areaId)
+                  //     .toList()
+                  //     .first
+                  //     .name;
 
-                return Container(
-                  child: Card(
-                    elevation: 7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: CircleAvatar(
-                            backgroundColor:
-                                item.synced ? Colors.green : Colors.grey,
-                            child: Icon(
-                              !item.synced
-                                  ? Icons.cloud_off_outlined
-                                  : Icons.shopping_bag_outlined,
-                              color: Colors.white,
+                  return Container(
+                    child: Card(
+                      elevation: 7,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                                child: CircleAvatar(
+                              backgroundColor:
+                                  item.synced ? Colors.green : Colors.grey,
+                              child: Icon(
+                                !item.synced
+                                    ? Icons.cloud_off_outlined
+                                    : Icons.shopping_bag_outlined,
+                                color: Colors.white,
+                              ),
+                            )),
+                          ),
+                          Center(
+                            child: Text(
+                              item.name,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                          )),
-                        ),
-                        Center(
-                          child: Text(
-                            item.name,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        Divider(),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.person,
-                                size: 16,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(item.ownerName),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.phone,
-                                size: 16,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(item.contact),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                size: 16,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  province +
-                                      ", " +
-                                      district +
-                                      ", " +
-                                      area +
-                                      ", " +
-                                      (item.street ?? ""),
-                                  overflow: TextOverflow.visible,
-                                  style: TextStyle(fontSize: 12),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  size: 16,
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(item.ownerName),
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.category,
-                                size: 16,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(item.type),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  size: 16,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(item.contact),
+                              ],
+                            ),
                           ),
-                        ),
-                        MaterialButton(
-                          onPressed: () {
-                            Get.to(() => SellProductPage(
-                                outlet: Get.find<OutletsController>()
-                                    .outletList[index]));
-                          },
-                          color: Colors.green[900],
-                          minWidth: Get.size.width,
-                          textColor: Colors.white,
-                          padding: EdgeInsets.all(10.0),
-                          child: Text("Sell Product"),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  size: 16,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                // Expanded(
+                                //   child: Text(
+                                //     province +
+                                //         ", " +
+                                //         district +
+                                //         ", " +
+                                //         area +
+                                //         ", " +
+                                //         (item.street ?? ""),
+                                //     overflow: TextOverflow.visible,
+                                //     style: TextStyle(fontSize: 12),
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.category,
+                                  size: 16,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(item.type),
+                              ],
+                            ),
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              Get.to(() => SellProductPage(
+                                  outlet: Get.find<OutletsController>()
+                                      .outletList[index]));
+                            },
+                            color: Colors.green[900],
+                            minWidth: Get.size.width,
+                            textColor: Colors.white,
+                            padding: EdgeInsets.all(10.0),
+                            child: Text("Sell Product"),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
 
-              // },
+                // },
+              ),
             );
           },
         ));

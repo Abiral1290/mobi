@@ -15,10 +15,10 @@ import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
-import 'package:mobitrack_dv_flutter/model/address.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:geocoding/geocoding.dart';
 
 class RegisterShopPage extends StatefulWidget {
   @override
@@ -29,34 +29,44 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   final TextEditingController _nameCntrl = new TextEditingController();
   final TextEditingController _ownerCntrl = new TextEditingController();
   final TextEditingController _phoneCntrl = new TextEditingController();
-  final TextEditingController _streetCntrl = new TextEditingController();
-  String _type = SellerType.mart; //dafault is mart
+  var _streetCntrl = new TextEditingController().obs;
 
-  static var selectedProvince =
-      Get.find<AddressController>().addressList.first.obs;
-  static var selectedDistrict = selectedProvince.value.districts.first.obs;
-  static var selectedArea = selectedDistrict.value.areas.first.obs;
-
-  var provinceLists = Get.find<AddressController>().addressList.obs;
-  var districtLists = [].obs;
-  var areaLists = [].obs;
-  var streetLists = [].obs;
+  var provinceLists = Get.find<AddressController>().provinceList.obs;
 
   Completer<GoogleMapController> _controller = Completer();
+  Map<String, Marker> markers = <String, Marker>{};
 
   final ImagePicker _picker = ImagePicker();
+
   XFile _imageFile;
+
+  String _type = SellerType.mart; //dafault is mart
   String base64Image;
+  var street = "".obs;
+  bool isProvinceSelected = false;
 
   Position position;
 
-  Map<String, Marker> markers = <String, Marker>{};
-
   @override
   void initState() {
-    // Get.find<LocationController>().getCurrentPosition();
+    Get.find<AddressController>().districtList = [];
+    Get.find<AddressController>().areaList = [];
     determinePosition();
     super.initState();
+  }
+
+  determineStreet(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      street.value = placemarks[0].street;
+      _streetCntrl.value.text = street.value;
+      print("Place: " + placemarks[0].street);
+    } catch (e) {
+      Utilities.showInToast(
+          "No address information found for supplied coordinates! Please manually write street address",
+          toastType: ToastType.INFO);
+    }
   }
 
   determinePosition() async {
@@ -66,6 +76,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     } else {
       position = Get.find<LocationController>().userPosition;
     }
+    if (position != null) {
+      determineStreet(position.latitude, position.longitude);
+    }
   }
 
   bool validateInput() {
@@ -73,9 +86,8 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         _ownerCntrl.text.isNotEmpty &&
         _phoneCntrl.text.isNotEmpty &&
         _phoneCntrl.text.length == 10 &&
-        _streetCntrl.text.isNotEmpty &&
-        districtLists.isNotEmpty &&
-        areaLists.isNotEmpty &&
+        _streetCntrl.value.text.isNotEmpty &&
+        isProvinceSelected &&
         _imageFile != null;
   }
 
@@ -112,44 +124,37 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     Widget _buildProvinceDropdown() {
       return Padding(
         padding: const EdgeInsets.all(10.0),
-        child: InputDecorator(
-          decoration: decoration("Select Province"),
-          child: Obx(
-            () => ButtonTheme(
-              alignedDropdown: true,
-              child: DropdownButton<Address>(
-                iconEnabledColor: Colors.green,
-                iconDisabledColor: Colors.red,
-                isDense: true,
-                isExpanded: true,
-                hint: Text(selectedProvince.value.name),
-                items: provinceLists.map((e) {
-                  return DropdownMenuItem<Address>(
-                      value: e, child: Text(e.name));
-                }).toList(),
-                onChanged: (province) {
-                  selectedProvince.value = province;
-                  districtLists.value = provinceLists
-                          .where((element) =>
-                              element.id == selectedProvince.value.id)
-                          .toList()
-                          .isEmpty
-                      ? []
-                      : Get.find<AddressController>()
-                          .addressList
-                          .where((element) =>
-                              element.id == selectedProvince.value.id)
-                          .toList()
-                          .first
-                          .districts;
-                  if (districtLists.isEmpty) {
-                    areaLists.value = [];
-                    streetLists.value = [];
-                  }
-                },
-              ),
-            ),
-          ),
+        child: GetBuilder<AddressController>(
+          builder: (builder) {
+            return Get.find<AddressController>().provinceList.isEmpty
+                ? SizedBox()
+                : InputDecorator(
+                    decoration: decoration("Select Province"),
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        iconEnabledColor: Colors.green,
+                        iconDisabledColor: Colors.red,
+                        isDense: true,
+                        isExpanded: true,
+                        hint: Text(
+                            Get.find<AddressController>().selectedProvince),
+                        items:
+                            Get.find<AddressController>().provinceList.map((e) {
+                          return DropdownMenuItem<String>(
+                              value: e, child: Text(e));
+                        }).toList(),
+                        onChanged: (province) {
+                          isProvinceSelected = true;
+                          Get.find<AddressController>()
+                              .setSelectedProvince(province);
+                          Get.find<AddressController>()
+                              .getDistrictList(province);
+                        },
+                      ),
+                    ),
+                  );
+          },
         ),
       );
     }
@@ -157,38 +162,35 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     Widget _buildDistrictDropdown() {
       return Padding(
         padding: const EdgeInsets.all(10.0),
-        child: InputDecorator(
-          decoration: decoration("Select District"),
-          child: Obx(
-            () => ButtonTheme(
-              alignedDropdown: true,
-              child: DropdownButton<Districts>(
-                iconEnabledColor: Colors.green,
-                iconDisabledColor: Colors.red,
-                isDense: true,
-                isExpanded: true,
-                hint: Text(selectedDistrict.value.name),
-                items: districtLists.map((e) {
-                  return DropdownMenuItem<Districts>(
-                      value: e, child: Text(e.name));
-                }).toList(),
-                onChanged: (district) {
-                  selectedDistrict.value = district;
-                  areaLists.value = districtLists.isNotEmpty
-                      ? districtLists
-                          .where((element) =>
-                              element.id == selectedDistrict.value.id)
-                          .toList()
-                          .first
-                          .areas
-                      : [];
-                  if (areaLists.isEmpty) {
-                    streetLists.value = [];
-                  }
-                },
-              ),
-            ),
-          ),
+        child: GetBuilder<AddressController>(
+          builder: (builder) {
+            return Get.find<AddressController>().districtList.isEmpty
+                ? SizedBox()
+                : InputDecorator(
+                    decoration: decoration("Select District"),
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        iconEnabledColor: Colors.green,
+                        iconDisabledColor: Colors.red,
+                        isDense: true,
+                        isExpanded: true,
+                        hint: Text(
+                            Get.find<AddressController>().selectedDistrict),
+                        items:
+                            Get.find<AddressController>().districtList.map((e) {
+                          return DropdownMenuItem<String>(
+                              value: e, child: Text(e));
+                        }).toList(),
+                        onChanged: (district) {
+                          Get.find<AddressController>()
+                              .setSelectedDistrict(district);
+                          Get.find<AddressController>().getAreaList(district);
+                        },
+                      ),
+                    ),
+                  );
+          },
         ),
       );
     }
@@ -196,37 +198,31 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     Widget _buildAreaDropdown() {
       return Padding(
         padding: const EdgeInsets.all(10.0),
-        child: InputDecorator(
-          decoration: decoration("Select Area"),
-          child: Obx(
-            () => ButtonTheme(
-              alignedDropdown: true,
-              child: DropdownButton<Areas>(
-                iconEnabledColor: Colors.green,
-                iconDisabledColor: Colors.red,
-                isDense: true,
-                isExpanded: true,
-                hint: Text(selectedArea.value.name),
-                items: areaLists.map((e) {
-                  return DropdownMenuItem<Areas>(value: e, child: Text(e.name));
-                }).toList(),
-                onChanged: (area) {
-                  selectedArea.value = area;
-                  streetLists.value = areaLists.isNotEmpty
-                      ? areaLists
-                          .where(
-                              (element) => element.id == selectedArea.value.id)
-                          .toList()
-                          .first
-                          .streets
-                      : [];
-                  if (areaLists.isEmpty) {
-                    streetLists.value = [];
-                  }
-                },
-              ),
-            ),
-          ),
+        child: GetBuilder<AddressController>(
+          builder: (builder) {
+            return Get.find<AddressController>().areaList.isEmpty
+                ? SizedBox()
+                : InputDecorator(
+                    decoration: decoration("Select Area"),
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<String>(
+                        iconEnabledColor: Colors.green,
+                        iconDisabledColor: Colors.red,
+                        isDense: true,
+                        isExpanded: true,
+                        hint: Text(Get.find<AddressController>().selectedArea),
+                        items: Get.find<AddressController>().areaList.map((e) {
+                          return DropdownMenuItem<String>(
+                              value: e, child: Text(e));
+                        }).toList(),
+                        onChanged: (area) {
+                          Get.find<AddressController>().setSelectedArea(area);
+                        },
+                      ),
+                    ),
+                  );
+          },
         ),
       );
     }
@@ -275,6 +271,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       heading: 0.0,
                       speed: 0.0,
                       speedAccuracy: 0.0);
+                  determineStreet(position.latitude, position.longitude);
                 },
               ),
       );
@@ -342,7 +339,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                           decoration: InputDecoration(
                               labelText: 'Location',
                               prefixIcon: Icon(Icons.add_road)),
-                          controller: _streetCntrl,
+                          controller: _streetCntrl.value,
+                          onChanged: (value) {
+                            street.value = value;
+                          },
                         ),
                       ),
                       Container(
@@ -408,21 +408,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       ),
                       // view on map
                       buildMapContainer(),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(
-                      //       horizontal: 20.0, vertical: 5.0),
-                      //   child: OutlinedButton(
-                      //     style: OutlinedButton.styleFrom(),
-                      //     onPressed: () async {
-                      //       // launch(
-                      //       //     "https://www.google.com/maps/place/${pos.latitude},${pos.longitude}",
-                      //       //     webOnlyWindowName: "Title",
-                      //       //     forceWebView: true,
-                      //       //     enableJavaScript: true);
-                      //     },
-                      //     child: Text("View On Map"),
-                      //   ),
-                      // ),
+
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 5.0),
@@ -472,10 +458,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                       ),
                                     );
                                   });
-                              // var pos = await GeolocatorPlatform.instance
-                              //     .getCurrentPosition(
-                              //         desiredAccuracy:
-                              //             LocationAccuracy.bestForNavigation);
                               var outlet = Outlet(
                                 id: DateTime.now().millisecondsSinceEpoch,
                                 contact: _phoneCntrl.text,
@@ -484,10 +466,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 ownerName: _ownerCntrl.text,
                                 type: _type,
                                 longitude: position.longitude,
-                                provinceId: selectedProvince.value.id,
-                                districtId: selectedDistrict.value.id,
-                                areaId: selectedArea.value.id,
-                                street: _streetCntrl.text,
+                                addressId: Get.find<AddressController>()
+                                    .selectedAreaId,
+                                street: street.value,
                                 image: base64Image,
                                 distributorId:
                                     Constants.selectedDistributor.id.toString(),

@@ -16,6 +16,7 @@ class ApiUrls {
       _endPoint + 'check_in_outs'; //get to fetch data and post to check in
   static final String checkOut = _endPoint + 'checkout';
   static final String dailyLocation = _endPoint + 'daily_locations';
+  static final String monthlyTour = _endPoint + 'monthly_tours';
 
   static final String storageURL = _mainUrl + 'dv_group/public';
 

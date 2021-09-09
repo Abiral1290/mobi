@@ -8,32 +8,57 @@ import 'package:http/http.dart' as http;
 
 class Address {
   int id;
-  String name;
-  List<Districts> districts;
+  String province;
+  String district;
+  String localLevelEn;
 
-  Address({this.id, this.name, this.districts});
+  Address({this.id, this.province, this.district, this.localLevelEn});
 
   Address.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    if (json['districts'] != null) {
-      districts = [];
-      json['districts'].forEach((v) {
-        districts.add(new Districts.fromJson(v));
-      });
-    }
+    province = json['province'];
+    district = json['district'];
+    localLevelEn = json['local_level_en'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['name'] = this.name;
-    if (this.districts != null) {
-      data['districts'] = this.districts.map((v) => v.toJson()).toList();
-    }
+    data['province'] = this.province;
+    data['district'] = this.district;
+    data['local_level_en'] = this.localLevelEn;
     return data;
   }
 }
+
+// class Address {
+//   int id;
+//   String name;
+//   List<Districts> districts;
+
+//   Address({this.id, this.name, this.districts});
+
+//   Address.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     name = json['name'];
+//     if (json['districts'] != null) {
+//       districts = [];
+//       json['districts'].forEach((v) {
+//         districts.add(new Districts.fromJson(v));
+//       });
+//     }
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['id'] = this.id;
+//     data['name'] = this.name;
+//     if (this.districts != null) {
+//       data['districts'] = this.districts.map((v) => v.toJson()).toList();
+//     }
+//     return data;
+//   }
+// }
 
 class Districts {
   int id;
@@ -127,23 +152,23 @@ Future<ApiResponse<List<Address>>> fetchAddressApi() async {
     'Accept': 'application/json'
   };
 
-  try {
-    var res = await http.get(Uri.parse(ApiUrls.address), headers: headers);
-    Map<String, dynamic> obj = json.decode(res.body);
+  // try {
+  var res = await http.get(Uri.parse(ApiUrls.address), headers: headers);
+  Map<String, dynamic> obj = json.decode(res.body);
 
-    if (res.statusCode == 200) {
-      final data = obj["data"].cast<Map<String, dynamic>>();
-      List<Address> address = await data.map<Address>((json) {
-        return Address.fromJson(json);
-      }).toList();
-      return ApiResponse(true, obj['message'], address);
-    } else {
-      print(obj);
-      return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
-    }
-  } catch (e) {
-    print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+  if (res.statusCode == 200) {
+    final data = obj["data"].cast<Map<String, dynamic>>();
+    List<Address> address = await data.map<Address>((json) {
+      return Address.fromJson(json);
+    }).toList();
+    return ApiResponse(true, obj['message'], address);
+  } else {
+    print(obj);
+    return ApiResponse(
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
   }
+  // } catch (e) {
+  //   print(e.toString());
+  //   return ApiResponse(false, e.toString(), null);
+  // }
 }

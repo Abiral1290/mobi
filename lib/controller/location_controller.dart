@@ -17,9 +17,9 @@ class LocationController extends GetxController {
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   Position userPosition;
   StreamSubscription<Position> positionStream;
-  String nearestOutlet = 'To be Determined';
+  String nearestOutletName = 'To be Determined';
+  Outlet nearestOutlet;
 
-  // var outlets = Get.put(OutletsController());
   var preference = Get.put(PreferenceController());
 
   Future<bool> _checkLocation() async {
@@ -29,7 +29,6 @@ class LocationController extends GetxController {
     if (!isLocationOpened) {
       Utilities.showInToast('Please enable location!',
           toastType: ToastType.INFO);
-      // Geolocator.openAppSettings();
       await Geolocator.openLocationSettings();
     } else {
       hasPerm = await Geolocator.checkPermission().then((value) {
@@ -107,14 +106,14 @@ class LocationController extends GetxController {
     }
   }
 
-  setNearestOutletName(Position userPos) async {
-    var outletsController = Get.find<OutletsController>().outletList;
-    if (outletsController.isNotEmpty) {
+  setNearestOutletName() async {
+    var outletLists = Get.find<OutletsController>().outletList;
+    if (Constants.selectedDistributor != null && outletLists.isNotEmpty) {
       Map<Outlet, double> values = new Map<Outlet, double>();
 
-      for (var o in outletsController) {
-        var dist = Geolocator.distanceBetween(
-            o.latitude, o.longitude, userPos.latitude, userPos.longitude);
+      for (var o in outletLists) {
+        var dist = Geolocator.distanceBetween(o.latitude, o.longitude,
+            userPosition.latitude, userPosition.longitude);
         values[o] = dist;
       }
       var nearOut = values.entries.first;
@@ -123,7 +122,8 @@ class LocationController extends GetxController {
           nearOut = MapEntry(key, value);
         }
       });
-      nearestOutlet = nearOut.key.name;
+      nearestOutletName = nearOut.key.name;
+      nearestOutlet = nearOut.key;
 
       update();
     }
@@ -136,9 +136,6 @@ class LocationController extends GetxController {
       desiredAccuracy: LocationAccuracy.bestForNavigation,
     ).listen((Position position) async {
       if (position != null) {
-        if (Constants.selectedDistributor != null)
-          setNearestOutletName(position);
-
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
           latitude: position.latitude.toString(),
@@ -149,19 +146,7 @@ class LocationController extends GetxController {
 
         postLocation(model, false);
 
-        // if (await Utilities.isInternetWorking()) {
-        //   postLocationApi(model, false).then((value) {
-        //     if (value.success) {
-        //       print("Location send success");
-        //     } else {
-        //       Get.find<LocationController>().addLocation(model, false);
-        //     }
-        //   });
-        // } else {
-        //   Get.find<LocationController>().addLocation(model, false);
-        // }
-
-        position = position;
+        userPosition = position;
         update();
       }
     });
@@ -190,9 +175,8 @@ class LocationController extends GetxController {
 
   stopBackgroundLocationService() {
     BackgroundLocation.stopLocationService();
-    // timer?.cancel();
     positionStream.cancel();
-    nearestOutlet = 'To be Determined';
+    nearestOutletName = 'To be Determined';
     update();
 
     print("Stream cancelled");
@@ -225,17 +209,13 @@ class LocationController extends GetxController {
 
   deleteAllLocation() {
     databaseHelper.removeAllLocationData().then((value) {
-      // if (value == 1) {
       locationList.clear();
       update();
-      // } else {}
     });
   }
 
   @override
   void dispose() {
-    // BackgroundLocation.stopLocationService();
-    // timer?.cancel();
     super.dispose();
   }
 }

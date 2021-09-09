@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -66,6 +67,7 @@ class OutletsController extends GetxController {
         .toList();
     update();
     print(outletList);
+    Get.find<LocationController>().setNearestOutletName();
   }
 
   searchOutlets(String text) {

@@ -123,13 +123,18 @@ class ViewProductsPage extends StatelessWidget {
                 )
               : Get.find<ProductsController>().productList.isEmpty
                   ? Center(child: Text("No Products"))
-                  : ListView.builder(
-                      itemCount:
-                          Get.find<ProductsController>().productList.length,
-                      itemBuilder: (context, index) {
-                        return buildMainTile(
-                            Get.find<ProductsController>().productList[index]);
-                      });
+                  : Scrollbar(
+                      isAlwaysShown: true,
+                      interactive: true,
+                      thickness: 6.0,
+                      child: ListView.builder(
+                          itemCount:
+                              Get.find<ProductsController>().productList.length,
+                          itemBuilder: (context, index) {
+                            return buildMainTile(Get.find<ProductsController>()
+                                .productList[index]);
+                          }),
+                    );
         },
       ),
     );
