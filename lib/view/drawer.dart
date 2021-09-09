@@ -290,8 +290,16 @@ class DrawerPage extends StatelessWidget {
                   ),
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => RegisterMonthlyTourPage());
+                      onPressed: () async {
+                        DateTime dateTime = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2050));
+                        if (dateTime != null)
+                          Get.to(() => RegisterMonthlyTourPage(
+                                dateTime: dateTime,
+                              ));
                       },
                       child: Text("Add Monthly Tour"),
                       style: expandedButtonStyle,
