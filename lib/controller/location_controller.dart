@@ -21,6 +21,7 @@ class LocationController extends GetxController {
   Outlet nearestOutlet;
 
   var preference = Get.put(PreferenceController());
+  var outlets = Get.lazyPut(() => OutletsController());
 
   Future<bool> _checkLocation() async {
     bool isLocationOpened = await Geolocator.isLocationServiceEnabled();
@@ -108,7 +109,9 @@ class LocationController extends GetxController {
 
   setNearestOutletName() async {
     var outletLists = Get.find<OutletsController>().outletList;
-    if (Constants.selectedDistributor != null && outletLists.isNotEmpty) {
+    if (Constants.selectedDistributor != null &&
+        outletLists.isNotEmpty &&
+        userPosition != null) {
       Map<Outlet, double> values = new Map<Outlet, double>();
 
       for (var o in outletLists) {

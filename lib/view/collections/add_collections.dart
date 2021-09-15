@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobitrack_dv_flutter/controller/bank_controller.dart';
@@ -23,6 +24,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
 
   var chequeImage = "".obs;
   var bankName = "Select Bank".obs;
+  var paymentMode = "Cash".obs;
+  var accountOf = "GNP".obs;
 
   bool validator() {
     return collection.value.mode == PaymentMode.cheque
@@ -86,16 +89,28 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () async {
             FocusScope.of(context).unfocus();
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) => WillPopScope(
+                  child: CupertinoAlertDialog(
+                    title: new Text("Please Wait"),
+                    content: Column(
+                      children: [
+                        new Text("Your data is being submitted."),
+                        CupertinoActivityIndicator()
+                      ],
+                    ),
+                    actions: <Widget>[],
+                  ),
+                  onWillPop: () async {
+                    return false;
+                  }),
+            );
             if (validator() &&
                 collection.value.amount > 0 &&
                 collection.value.bankName.isNotEmpty) {
               if (Constants.selectedDistributor != null) {
-                Utilities.showPlatformSpecificAlert(
-                    canclose: false,
-                    title: 'Please wait',
-                    body: 'Storing collection',
-                    context: context,
-                    dismissable: false);
                 collection.value.distributorId =
                     Constants.selectedDistributor.id;
                 collection.value.id = DateTime.now().microsecondsSinceEpoch;
@@ -118,10 +133,12 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                 }
                 Get.back();
               } else {
+                Get.back();
                 Utilities.showInToast('Please select your distributor first!',
                     toastType: ToastType.ERROR);
               }
             } else {
+              Get.back();
               Utilities.showInToast('Please complete the form!',
                   toastType: ToastType.ERROR);
             }
@@ -241,7 +258,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                   children: [
                     Obx(
                       () => DropdownButton<String>(
-                        hint: Text(collection.value.mode),
+                        hint: Text(paymentMode.value),
                         items:
                             [PaymentMode.cash, PaymentMode.cheque].map((value) {
                           return DropdownMenuItem<String>(
@@ -253,6 +270,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                         }).toList(),
                         onChanged: (s) {
                           collection.value.mode = s;
+                          paymentMode.value = s;
                         },
                       ),
                     ),
@@ -261,7 +279,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                     ),
                     Obx(
                       () => DropdownButton<String>(
-                        hint: Text(collection.value.accountOf),
+                        hint: Text(accountOf.value),
                         items: [AccountOf.gnp, AccountOf.gsi].map((value) {
                           return DropdownMenuItem<String>(
                               value: value,
@@ -272,6 +290,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                         }).toList(),
                         onChanged: (s) {
                           collection.value.accountOf = s;
+                          accountOf.value = s;
                         },
                       ),
                     ),

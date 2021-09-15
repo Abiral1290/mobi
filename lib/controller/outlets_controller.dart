@@ -10,6 +10,7 @@ class OutletsController extends GetxController {
   List<Outlet> searchList = [];
 
   OutletsController() {
+    // if (Constants.selectedDistributor != null)
     fetchOutlets();
   }
 

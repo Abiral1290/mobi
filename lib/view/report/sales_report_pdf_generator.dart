@@ -11,6 +11,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
 class PdfParagraphApi {
+  var outlets = Get.lazyPut(() => OutletsController());
   static Future<File> generate(List<SalesReport> salesList,
       {Distributor distributor}) async {
     final pdf = Document();

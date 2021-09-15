@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/address_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
+import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 
 class ViewOutletsPage extends StatelessWidget {
-  var outlet = Get.put(OutletsController());
+  var outlet = Get.lazyPut(() => OutletsController());
 
   bool _lock = false;
   @override
@@ -40,176 +41,184 @@ class ViewOutletsPage extends StatelessWidget {
           title: Text('Outlets'),
         ),
         body: GetBuilder<OutletsController>(
-          // initState: Get.find<OutletsController>().fetchOutlets(),
           builder: (outletController) {
-            return Scrollbar(
-              isAlwaysShown: true,
-              interactive: true,
-              thickness: 6.0,
-              child: ListView.builder(
-                itemCount: Get.find<OutletsController>().outletList.length,
-                itemBuilder: (context, index) {
-                  var list = Get.find<OutletsController>().outletList;
-                  print(list);
-                  var item = Get.find<OutletsController>().outletList[index];
-                  print(Get.find<AddressController>().addressList);
-                  // String province = Get.find<AddressController>()
-                  //     .addressList
-                  //     .where((element) => element.id == item.provinceId)
-                  //     .toList()
-                  //     .first
-                  //     .name;
-                  // String district = Get.find<AddressController>()
-                  //     .addressList
-                  //     .where((element) => element.id == item.provinceId)
-                  //     .toList()
-                  //     .first
-                  //     .districts
-                  //     .where((element) => element.id == item.districtId)
-                  //     .toList()
-                  //     .first
-                  //     .name;
-                  // String area = Get.find<AddressController>()
-                  //     .addressList
-                  //     .where((element) => element.id == item.provinceId)
-                  //     .toList()
-                  //     .first
-                  //     .districts
-                  //     .where((element) => element.id == item.districtId)
-                  //     .toList()
-                  //     .first
-                  //     .areas
-                  //     .where((element) => element.id == item.areaId)
-                  //     .toList()
-                  //     .first
-                  //     .name;
+            return Get.find<OutletsController>().outletList.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Distributor: " +
+                            Constants.selectedDistributor.name.toString()),
+                        Text("No outlet found for selected distributor"),
+                      ],
+                    ),
+                  )
+                : Scrollbar(
+                    isAlwaysShown: true,
+                    interactive: true,
+                    thickness: 6.0,
+                    child: ListView.builder(
+                      itemCount:
+                          Get.find<OutletsController>().outletList.length,
+                      itemBuilder: (context, index) {
+                        var list = Get.find<OutletsController>().outletList;
+                        print(list);
+                        var item =
+                            Get.find<OutletsController>().outletList[index];
+                        print(Get.find<AddressController>().addressList);
+                        String province = Get.find<AddressController>()
+                            .addressList
+                            .where((element) =>
+                                element.id ==
+                                int.parse(item.addressId.toString()))
+                            .toList()
+                            .first
+                            .province;
+                        String district = Get.find<AddressController>()
+                            .addressList
+                            .where((element) =>
+                                element.id ==
+                                int.parse(item.addressId.toString()))
+                            .toList()
+                            .first
+                            .district;
+                        String area = Get.find<AddressController>()
+                            .addressList
+                            .where((element) =>
+                                element.id ==
+                                int.parse(item.addressId.toString()))
+                            .toList()
+                            .first
+                            .localLevelEn;
 
-                  return Container(
-                    child: Card(
-                      elevation: 7,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                                child: CircleAvatar(
-                              backgroundColor:
-                                  item.synced ? Colors.green : Colors.grey,
-                              child: Icon(
-                                !item.synced
-                                    ? Icons.cloud_off_outlined
-                                    : Icons.shopping_bag_outlined,
-                                color: Colors.white,
-                              ),
-                            )),
-                          ),
-                          Center(
-                            child: Text(
-                              item.name,
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Divider(),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                        return Container(
+                          child: Card(
+                            elevation: 7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
-                                  Icons.person,
-                                  size: 16,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                      child: CircleAvatar(
+                                    backgroundColor: item.synced
+                                        ? Colors.green
+                                        : Colors.grey,
+                                    child: Icon(
+                                      !item.synced
+                                          ? Icons.cloud_off_outlined
+                                          : Icons.shopping_bag_outlined,
+                                      color: Colors.white,
+                                    ),
+                                  )),
                                 ),
-                                SizedBox(
-                                  width: 5,
+                                Center(
+                                  child: Text(
+                                    item.name,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                                Text(item.ownerName),
+                                Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(item.ownerName),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.phone,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(item.contact),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          province +
+                                              ", " +
+                                              district +
+                                              ", " +
+                                              area +
+                                              ", " +
+                                              (item.street ?? ""),
+                                          overflow: TextOverflow.visible,
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.category,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(item.type),
+                                    ],
+                                  ),
+                                ),
+                                MaterialButton(
+                                  onPressed: () {
+                                    Get.to(() => SellProductPage(
+                                        outlet: Get.find<OutletsController>()
+                                            .outletList[index]));
+                                  },
+                                  color: Colors.green[900],
+                                  minWidth: Get.size.width,
+                                  textColor: Colors.white,
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Text("Sell Product"),
+                                ),
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.phone,
-                                  size: 16,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(item.contact),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  size: 16,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                // Expanded(
-                                //   child: Text(
-                                //     province +
-                                //         ", " +
-                                //         district +
-                                //         ", " +
-                                //         area +
-                                //         ", " +
-                                //         (item.street ?? ""),
-                                //     overflow: TextOverflow.visible,
-                                //     style: TextStyle(fontSize: 12),
-                                //   ),
-                                // ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.category,
-                                  size: 16,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(item.type),
-                              ],
-                            ),
-                          ),
-                          MaterialButton(
-                            onPressed: () {
-                              Get.to(() => SellProductPage(
-                                  outlet: Get.find<OutletsController>()
-                                      .outletList[index]));
-                            },
-                            color: Colors.green[900],
-                            minWidth: Get.size.width,
-                            textColor: Colors.white,
-                            padding: EdgeInsets.all(10.0),
-                            child: Text("Sell Product"),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
+
+                      // },
                     ),
                   );
-                },
-
-                // },
-              ),
-            );
           },
         ));
   }

@@ -20,8 +20,8 @@ class ControllerBindings implements Bindings {
     Get.lazyPut<AddressController>(() => AddressController());
     Get.lazyPut<SalesReportController>(() => SalesReportController());
     Get.lazyPut<BankController>(() => BankController());
-    Get.lazyPut<OutletsController>(() => OutletsController());
     Get.lazyPut<DistributorController>(() => DistributorController());
     Get.lazyPut<CollectionController>(() => CollectionController());
+    Get.lazyPut<OutletsController>(() => OutletsController());
   }
 }

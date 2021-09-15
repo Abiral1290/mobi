@@ -5,7 +5,6 @@ import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
-import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class MonthlyTourApiData {
   String data;

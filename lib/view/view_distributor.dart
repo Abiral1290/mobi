@@ -15,6 +15,8 @@ class ViewDistributorPage extends StatelessWidget {
   var selectedDistributor = Distributor()
       .obs; // if user tried to select next time then constants.selectedDistributor is not null so validate using this variable
 
+  var outlets = Get.lazyPut(() => OutletsController());
+
   @override
   Widget build(BuildContext context) {
     Widget listSegment(List<Distributor> distList) {

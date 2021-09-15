@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/sales_report_controller.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
@@ -18,6 +19,7 @@ class SalesReportPage extends StatefulWidget {
 class _SalesReportPageState extends State<SalesReportPage> {
   var salesReportController = Get.lazyPut(() => SalesReportController());
   var distributorController = Get.lazyPut(() => DistributorController());
+  var outletController = Get.lazyPut(() => OutletsController());
 
   Distributor selectedDistributor;
 

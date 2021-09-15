@@ -15,9 +15,17 @@ import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
+import 'package:mobitrack_dv_flutter/view/collections/add_collections.dart';
+import 'package:mobitrack_dv_flutter/view/collections/view_collection.dart';
 import 'package:mobitrack_dv_flutter/view/location_status.dart';
 import 'package:mobitrack_dv_flutter/view/drawer.dart';
+import 'package:mobitrack_dv_flutter/view/monthly_tour/register_monthly_tour.dart';
+import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
+import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
+import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
+import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/glow.dart';
 
@@ -63,6 +71,42 @@ class _HomePageState extends State<HomePage> {
     });
 
     super.initState();
+  }
+
+  Widget singleTileItem(
+      IconData icon, String title, Color color, VoidCallback onPressed) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12.0),
+      onTap: onPressed,
+      enableFeedback: true,
+      child: Card(
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        shadowColor: color,
+        color: color,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: Colors.white70,
+                size: 30,
+              ),
+              SizedBox(
+                height: Get.size.height * 0.02,
+              ),
+              Text(
+                title,
+                style: TextStyle(color: Colors.white70, fontSize: 20),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -232,77 +276,166 @@ class _HomePageState extends State<HomePage> {
                         labelColor: Colors.white,
                       ),
               ],
-              body: Stack(
+
+              body: GridView.count(
+                crossAxisCount: 2,
                 children: [
-                  // Align(
-                  //   alignment: Alignment.topCenter,
-                  //   child: Text("You are near: "),
-                  // ),
-                  // if (Get.find<PreferenceController>().isCheckedIn)
-                  //   Align(
-                  //     alignment: Alignment.center,
-                  //     child: Glow(
-                  //       child: Container(),
-                  //       startDelay: Duration(milliseconds: 000),
-                  //       glowColor: Colors.blue[500],
-                  //       endRadius: 200.0,
-                  //     ),
-                  //   ),
-                  Center(
-                    child: GetBuilder<LocationController>(
-                      builder: (controller) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "You are near:",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: Get.size.height * 0.05,
-                            ),
-                            Get.find<PreferenceController>().isCheckedIn
-                                ? Glow(
-                                    startDelay: Duration(milliseconds: 000),
-                                    glowColor: Colors.blue[500],
-                                    endRadius: 200.0,
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (Get.find<LocationController>()
-                                                    .nearestOutletName !=
-                                                "To be Determined" &&
-                                            Get.find<LocationController>()
-                                                    .nearestOutlet !=
-                                                null) {
-                                          Get.to(() => SellProductPage(
-                                              outlet:
-                                                  Get.find<LocationController>()
-                                                      .nearestOutlet));
-                                        }
-                                      },
-                                      child: Text(
-                                        Get.find<LocationController>()
-                                            .nearestOutletName,
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  )
-                                : Text(
-                                    "To Be Determined",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                          ],
-                        );
-                      },
-                    ),
+                  singleTileItem(Icons.shop_two, "View Shop", Colors.blue[900],
+                      () => Get.to(() => ViewOutletsPage())),
+                  singleTileItem(
+                    Icons.shopping_bag_outlined,
+                    "Register Shop",
+                    Colors.blue[900],
+                    () async {
+                      var res =
+                          await GeolocatorPlatform.instance.checkPermission();
+
+                      if (res == LocationPermission.whileInUse ||
+                          res == LocationPermission.always) {
+                        var res = await GeolocatorPlatform.instance
+                            .isLocationServiceEnabled();
+                        if (!res) {
+                          Utilities.showInToast(
+                              'Please enable location services and permision',
+                              toastType: ToastType.INFO);
+                          await GeolocatorPlatform.instance
+                              .openLocationSettings();
+                        } else {
+                          Get.to(() => RegisterShopPage());
+                        }
+                      } else {
+                        Utilities.showInToast(
+                            'Please enable location services and permision',
+                            toastType: ToastType.INFO);
+                        await GeolocatorPlatform.instance
+                            .openLocationSettings();
+                        await GeolocatorPlatform.instance.requestPermission();
+                      }
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.category_outlined,
+                    "Products",
+                    Colors.red[900],
+                    () {
+                      Get.to(() => ViewProductsPage());
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.select_all,
+                    "Distributors",
+                    Colors.red[900],
+                    () {
+                      Get.to(() => ViewDistributorPage());
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.list,
+                    "Sales Report",
+                    Colors.green[900],
+                    () {
+                      Get.to(() => SalesReportPage());
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.list_alt_rounded,
+                    "Attendance Report",
+                    Colors.green[900],
+                    () {
+                      Get.to(() => AttendancePage());
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.collections_sharp,
+                    "View Collection",
+                    Colors.amber[900],
+                    () {
+                      Get.to(() => ViewCollectionPage());
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.control_point_duplicate_outlined,
+                    "Store Collection",
+                    Colors.amber[900],
+                    () {
+                      Get.to(() => AddCollectionsPage());
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.tour_rounded,
+                    "Monthly Tour",
+                    Colors.red[900],
+                    () async {
+                      DateTime dateTime = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2050));
+                      if (dateTime != null)
+                        Get.to(() => RegisterMonthlyTourPage(
+                              dateTime: dateTime,
+                            ));
+                    },
                   ),
                 ],
               ),
+              // body: Stack(
+              //   children: [
+              //     Center(
+              //       child: GetBuilder<LocationController>(
+              //         builder: (controller) {
+              //           return Column(
+              //             mainAxisAlignment: MainAxisAlignment.center,
+              //             children: [
+              //               Text(
+              //                 "You are near:",
+              //                 style: TextStyle(
+              //                     fontSize: 20, fontWeight: FontWeight.bold),
+              //               ),
+              //               SizedBox(
+              //                 height: Get.size.height * 0.05,
+              //               ),
+              //               Get.find<PreferenceController>().isCheckedIn
+              //                   ? Glow(
+              //                       startDelay: Duration(milliseconds: 000),
+              //                       glowColor: Colors.blue[500],
+              //                       endRadius: 200.0,
+              //                       child: InkWell(
+              //                         onTap: () {
+              //                           if (Get.find<LocationController>()
+              //                                       .nearestOutletName !=
+              //                                   "To be Determined" &&
+              //                               Get.find<LocationController>()
+              //                                       .nearestOutlet !=
+              //                                   null) {
+              //                             Get.to(() => SellProductPage(
+              //                                 outlet:
+              //                                     Get.find<LocationController>()
+              //                                         .nearestOutlet));
+              //                           }
+              //                         },
+              //                         child: Text(
+              //                           Get.find<LocationController>()
+              //                               .nearestOutletName,
+              //                           style: TextStyle(
+              //                               fontSize: 20,
+              //                               fontWeight: FontWeight.bold),
+              //                         ),
+              //                       ),
+              //                     )
+              //                   : Text(
+              //                       "To Be Determined",
+              //                       style: TextStyle(
+              //                           fontSize: 20,
+              //                           fontWeight: FontWeight.bold),
+              //                     ),
+              //             ],
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
             );
           },
         ),

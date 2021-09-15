@@ -6,6 +6,7 @@ import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/call_server.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -53,7 +54,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             actions: <Widget>[],
           ),
-          onWillPop: () {}),
+          onWillPop: () async {
+            return false;
+          }),
     );
 
     var resp = await Get.find<AuthController>().signIn(_userNUmber);
@@ -78,7 +81,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             actions: <Widget>[],
           ),
-          onWillPop: () {}),
+          onWillPop: () async {
+            return false;
+          }),
     );
 
     await Future.delayed(Duration(seconds: Constants.callWaitSec));
@@ -130,11 +135,11 @@ class _LoginPageState extends State<LoginPage> {
               var conn = await Utilities.isInternetWorking();
               if (conn) {
                 // code to bypass call server
-                byPassCallServer();
+                // byPassCallServer();
 
                 // code to verify call server
-                // launch('tel://$_callServerNum');
-                // showLoadingandCheckAPI();
+                launch('tel://$_callServerNum');
+                showLoadingandCheckAPI();
               } else {
                 Utilities.showInToast('No internet',
                     toastType: ToastType.ERROR);

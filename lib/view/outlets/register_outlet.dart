@@ -285,13 +285,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         body: GetBuilder<LocationController>(
           builder: (locationController) {
             return Get.find<LocationController>().userPosition == null
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("Please enable location"),
-                      CupertinoActivityIndicator(),
-                    ],
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Please enable location"),
+                        CupertinoActivityIndicator(),
+                      ],
+                    ),
                   )
                 : ListView(
                     children: [
