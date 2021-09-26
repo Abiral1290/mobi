@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
+import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
@@ -23,11 +25,12 @@ import 'package:mobitrack_dv_flutter/view/drawer.dart';
 import 'package:mobitrack_dv_flutter/view/monthly_tour/register_monthly_tour.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
-import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
+import 'package:mobitrack_dv_flutter/view/stock_count/add_stock_count.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
-import 'package:mobitrack_dv_flutter/view/widgets/glow.dart';
+import 'package:nepali_date_picker/nepali_date_picker.dart';
+import 'package:nepali_date_picker/nepali_date_picker.dart' as picker;
 
 class HomePage extends StatefulWidget {
   @override
@@ -366,15 +369,54 @@ class _HomePageState extends State<HomePage> {
                     "Monthly Tour",
                     Colors.red[900],
                     () async {
-                      DateTime dateTime = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2050));
+                      NepaliDateTime dateTime =
+                          await picker.showMaterialDatePicker(
+                        context: context,
+                        initialDate: NepaliDateTime.now(),
+                        firstDate: NepaliDateTime(1970),
+                        lastDate: NepaliDateTime(2100),
+                        initialDatePickerMode: DatePickerMode.day,
+                      );
                       if (dateTime != null)
                         Get.to(() => RegisterMonthlyTourPage(
                               dateTime: dateTime,
                             ));
+                    },
+                  ),
+                  singleTileItem(
+                    Icons.format_list_numbered,
+                    "Store Stock Count",
+                    Colors.purple[900],
+                    () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CupertinoAlertDialog(
+                            content: Column(
+                              children: [
+                                Text("Stock Status is being fetch!"),
+                                CupertinoActivityIndicator(),
+                              ],
+                            ),
+                          );
+                        },
+                        barrierDismissible: false,
+                      );
+                      fetchStockStatus(
+                              Constants.selectedDistributor.id.toString())
+                          .then((value) {
+                        Get.back();
+                        if (value.success) {
+                          print(value.response);
+                          Get.to(() => AddStockCount(
+                                stockType: value.response,
+                              ));
+                        } else {
+                          Utilities.showInToast(
+                              "Could not fetch stock status data. Please try again later",
+                              toastType: ToastType.ERROR);
+                        }
+                      });
                     },
                   ),
                 ],

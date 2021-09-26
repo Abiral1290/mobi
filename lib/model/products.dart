@@ -215,3 +215,62 @@ Future<ApiResponse<Sales>> sellProductApi(Sales sales) async {
     return ApiResponse(false, e.toString(), null);
   }
 }
+
+Future<ApiResponse<Sales>> addStockCountApi(
+    String stock, String distributorId, String type) async {
+  var body = {
+    "stock": stock,
+    "type": type,
+    "date": DateTime.now().toString(),
+    "distributor_id": distributorId,
+  };
+  var headers = {
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Accept': 'application/json'
+  };
+
+  try {
+    var resp = await http.post(Uri.parse(ApiUrls.stockCounts),
+        headers: headers, body: body);
+    print(resp);
+    Map<String, dynamic> obj = json.decode(resp.body);
+
+    if (resp.statusCode == 200) {
+      return ApiResponse(obj['success'], obj['message'], null);
+    } else {
+      print(obj);
+      return ApiResponse(
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+    }
+  } catch (e) {
+    print(e.toString());
+    return ApiResponse(false, e.toString(), null);
+  }
+}
+
+Future<ApiResponse<String>> fetchStockStatus(String distributorId) async {
+  var headers = {
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Accept': 'application/json'
+  };
+
+  try {
+    var res = await http.get(
+        Uri.parse(ApiUrls.stockCounts + "?distributor_id=$distributorId"),
+        headers: headers);
+    Map<String, dynamic> obj = json.decode(res.body);
+
+    if (res.statusCode == 200) {
+      final data = obj["data"];
+
+      return ApiResponse(true, obj['message'], data);
+    } else {
+      print(obj);
+      return ApiResponse(
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+    }
+  } catch (e) {
+    print(e.toString());
+    return ApiResponse(false, e.toString(), null);
+  }
+}

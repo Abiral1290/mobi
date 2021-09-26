@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
+import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
@@ -14,7 +16,10 @@ import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
 import 'package:mobitrack_dv_flutter/view/collections/add_collections.dart';
 import 'package:mobitrack_dv_flutter/view/collections/view_collection.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
+import 'package:mobitrack_dv_flutter/view/stock_count/add_stock_count.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
+import 'package:nepali_date_picker/nepali_date_picker.dart';
+import 'package:nepali_date_picker/nepali_date_picker.dart' as picker;
 
 class DrawerPage extends StatelessWidget {
   final ButtonStyle buttonStyle = ButtonStyle(
@@ -291,17 +296,75 @@ class DrawerPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        DateTime dateTime = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2050));
+                        NepaliDateTime dateTime =
+                            await picker.showMaterialDatePicker(
+                          context: context,
+                          initialDate: NepaliDateTime.now(),
+                          firstDate: NepaliDateTime(1970),
+                          lastDate: NepaliDateTime(2100),
+                          initialDatePickerMode: DatePickerMode.day,
+                        );
                         if (dateTime != null)
                           Get.to(() => RegisterMonthlyTourPage(
                                 dateTime: dateTime,
                               ));
                       },
-                      child: Text("Add Monthly Tour"),
+                      child: Text("Store Monthly Tour"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
+                ),
+                SizedBox(height: Get.size.height * 0.01),
+                ExpansionTile(
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.format_list_numbered),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Stock Count",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return CupertinoAlertDialog(
+                              content: Column(
+                                children: [
+                                  Text("Stock Status is being fetch!"),
+                                  CupertinoActivityIndicator(),
+                                ],
+                              ),
+                            );
+                          },
+                          barrierDismissible: false,
+                        );
+                        fetchStockStatus(
+                                Constants.selectedDistributor.id.toString())
+                            .then((value) {
+                          Get.back();
+                          if (value.success) {
+                            print(value.response);
+                            Get.to(() => AddStockCount(
+                                  stockType: value.response,
+                                ));
+                          } else {
+                            Utilities.showInToast(
+                                "Could not fetch stock status data. Please try again later",
+                                toastType: ToastType.ERROR);
+                          }
+                        });
+                      },
+                      child: Text("Store Stock Count"),
                       style: expandedButtonStyle,
                     ),
                   ],

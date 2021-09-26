@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                 // byPassCallServer();
 
                 // code to verify call server
-                launch('tel://$_callServerNum');
+                launch('tel:$_callServerNum');
                 showLoadingandCheckAPI();
               } else {
                 Utilities.showInToast('No internet',

@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobitrack_dv_flutter/controller/bank_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
 import 'package:mobitrack_dv_flutter/model/bank.dart';
 import 'package:mobitrack_dv_flutter/model/collections.dart';
+import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:get/get.dart';
@@ -26,6 +28,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
   var bankName = "Select Bank".obs;
   var paymentMode = "Cash".obs;
   var accountOf = "GNP".obs;
+
+  var selectedDistributor = Constants.selectedDistributor.obs;
 
   bool validator() {
     return collection.value.mode == PaymentMode.cheque
@@ -110,9 +114,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
             if (validator() &&
                 collection.value.amount > 0 &&
                 collection.value.bankName.isNotEmpty) {
-              if (Constants.selectedDistributor != null) {
-                collection.value.distributorId =
-                    Constants.selectedDistributor.id;
+              if (selectedDistributor.value != null) {
+                collection.value.distributorId = selectedDistributor.value.id;
                 collection.value.id = DateTime.now().microsecondsSinceEpoch;
                 collection.value.deviceTime = DateTime.now().toString();
                 collection.value.createdAt = DateTime.now().toString();
@@ -149,34 +152,60 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
-              // distributor name field
-              Text(
-                "Distributor: ${Constants.selectedDistributor.name}",
-                style: TextStyle(fontSize: 20.0),
+              Obx(
+                () => Text(
+                  "Distributor: ${selectedDistributor.value.name}",
+                  style: TextStyle(fontSize: 20.0),
+                ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: TextField(
-              //     onChanged: (s) => collection.value.bankName = s,
-              //     decoration: InputDecoration(
-              //         labelText: 'Bank Name',
-              //         prefixIcon: Icon(Icons.business_rounded)),
-              //   ),
-              // ),
+              // distributor name field
 
+              GetBuilder<DistributorController>(
+                  init: DistributorController(),
+                  builder: (controller) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Obx(
+                        () => DropdownButton<Distributor>(
+                          isDense: true,
+                          isExpanded: true,
+                          hint: Text(selectedDistributor.value.name),
+                          items: Get.find<DistributorController>()
+                              .distributorList
+                              .map((value) {
+                            return DropdownMenuItem<Distributor>(
+                                value: value,
+                                child: Text(
+                                  value.name,
+                                  style: TextStyle(color: Colors.black),
+                                ));
+                          }).toList(),
+                          onChanged: (s) {
+                            selectedDistributor.value = s;
+                          },
+                        ),
+                      ),
+                    );
+                  }),
+              SizedBox(
+                height: Get.size.height * 0.03,
+              ),
               // bank dropdown field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Obx(
                   () => DropdownButton<Bank>(
+                    isExpanded: true,
+                    isDense: true,
                     hint: Text(bankName.value),
                     items: Get.find<BankController>().bankList.map((value) {
                       return DropdownMenuItem<Bank>(
-                          value: value,
-                          child: Text(
-                            value.bankName,
-                            style: TextStyle(color: Colors.black),
-                          ));
+                        value: value,
+                        child: Text(
+                          value.bankName,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      );
                     }).toList(),
                     onChanged: (s) {
                       collection.value.bankName = s.bankName;

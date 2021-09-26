@@ -12,6 +12,9 @@ class ProductsController extends GetxController {
   List<Product> productList = [];
   List<Product> searchProductList;
   List<Sales> localSalesList = [];
+
+  Map<String, String> stockCountList = {};
+
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   var location = Get.lazyPut(() => LocationController());
   var locationController = Get.find<LocationController>();
@@ -40,12 +43,28 @@ class ProductsController extends GetxController {
     databaseHelper.getAllProductsData().then((value) {
       if (value != null) {
         productList = value;
+        setStockCountData();
+        // productList.forEach((element) {
+        //   stockCountList[element.id.toString()] = "0";
+        // });
         update();
       } else {
         productList = [];
         update();
       }
     });
+  }
+
+  setStockCountData() {
+    productList.forEach((element) {
+      stockCountList[element.id.toString()] = "0";
+    });
+    update();
+  }
+
+  addStockCount(String id, String count) {
+    stockCountList[id] = count;
+    update();
   }
 
   searchProducts(String text) {

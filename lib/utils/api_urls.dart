@@ -17,6 +17,7 @@ class ApiUrls {
   static final String checkOut = _endPoint + 'checkout';
   static final String dailyLocation = _endPoint + 'daily_locations';
   static final String monthlyTour = _endPoint + 'monthly_tours';
+  static final String stockCounts = _endPoint + 'stock_counts';
 
   static final String storageURL = _mainUrl + 'dv_group/public';
 
