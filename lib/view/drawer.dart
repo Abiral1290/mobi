@@ -338,6 +338,7 @@ class DrawerPage extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return CupertinoAlertDialog(
+                              title: Text("Please Wait"),
                               content: Column(
                                 children: [
                                   Text("Stock Status is being fetch!"),

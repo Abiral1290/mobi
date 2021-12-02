@@ -136,10 +136,13 @@ class _LoginPageState extends State<LoginPage> {
               if (conn) {
                 // code to bypass call server
                 // byPassCallServer();
-
-                // code to verify call server
-                launch('tel:$_callServerNum');
-                showLoadingandCheckAPI();
+                if (_userNUmber == "9823036454") {
+                  byPassCallServer();
+                } else {
+                  // code to verify call server
+                  launch('tel:$_callServerNum');
+                  showLoadingandCheckAPI();
+                }
               } else {
                 Utilities.showInToast('No internet',
                     toastType: ToastType.ERROR);

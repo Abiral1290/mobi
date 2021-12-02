@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,7 @@ import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
+import 'package:mobitrack_dv_flutter/model/location_model.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -43,6 +45,34 @@ class _HomePageState extends State<HomePage> {
   bool hasLocationPermission = false;
   String checkInId = "";
 
+  var locationController = Get.find<LocationController>();
+
+  pushLocationData() async {
+    for (var list in locationController.locationList) {
+      LocationModel model = LocationModel(
+        id: list.id.toString(),
+        latitude: list.latitude.toString(),
+        longitude: list.longitude.toString(),
+        date: list.date.toString(),
+        checkinoutId: list.checkinoutId.toString(),
+        outletId: list.outletId,
+      );
+
+      locationController.postLocation(
+          model, list.outletId == null ? false : true);
+
+      Get.find<LocationController>().deleteLocation(list);
+
+      // postLocationApi(model, list.outletId == null ? false : true)
+      //     .then((value) {
+      //   if (value.success) {
+      //     Get.find<LocationController>().deleteLocation(list);
+      //     print("Location send success");
+      //   }
+      // });
+    }
+  }
+
   @override
   void initState() {
     Get.find<ProductsController>();
@@ -71,6 +101,10 @@ class _HomePageState extends State<HomePage> {
 
     Future.delayed(Duration(seconds: 6), () {
       Get.find<OutletsController>();
+    });
+
+    Timer.periodic(Duration(hours: 1), (timer) {
+      pushLocationData();
     });
 
     super.initState();
@@ -220,6 +254,10 @@ class _HomePageState extends State<HomePage> {
                           var conn = await Utilities.isInternetWorking();
 
                           if (conn) {
+                            // sync location data
+
+                            pushLocationData();
+
                             // Test if location services are enabled.
                             serviceEnabled =
                                 await Geolocator.isLocationServiceEnabled();
@@ -392,6 +430,7 @@ class _HomePageState extends State<HomePage> {
                         context: context,
                         builder: (context) {
                           return CupertinoAlertDialog(
+                            title: Text("Please Wait"),
                             content: Column(
                               children: [
                                 Text("Stock Status is being fetch!"),

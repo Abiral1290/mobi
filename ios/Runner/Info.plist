@@ -2,18 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>https</string>
-		<string>http</string>
-	</array>
-
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.technosales.mobitrack-dv</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>DV Group</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -30,6 +26,11 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -55,12 +56,12 @@
 	<string>This app requires location access for location tracking of Sales Officer</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app requires location access for location tracking of Sales Officer.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app need access to your Microphone to record audio.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>This app need access to your motion sensors to track your movement.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app need access to your gallery to import cheque photo.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app need access to your Microphone to record audio.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app need to recognize your speech for translation.</string>
 	<key>UIBackgroundModes</key>

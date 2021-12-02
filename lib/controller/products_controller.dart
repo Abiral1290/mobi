@@ -63,8 +63,8 @@ class ProductsController extends GetxController {
   }
 
   addStockCount(String id, String count) {
-    stockCountList[id] = count;
-    update();
+    stockCountList[id] = count == "" ? "0" : count;
+    // update();
   }
 
   searchProducts(String text) {
