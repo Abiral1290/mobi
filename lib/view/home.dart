@@ -13,6 +13,7 @@ import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
+import 'package:mobitrack_dv_flutter/main.dart';
 import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
@@ -33,6 +34,7 @@ import 'package:mobitrack_dv_flutter/view/stock_count/add_stock_count.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:nepali_date_picker/nepali_date_picker.dart';
 import 'package:nepali_date_picker/nepali_date_picker.dart' as picker;
+import 'package:workmanager/workmanager.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -62,15 +64,20 @@ class _HomePageState extends State<HomePage> {
           model, list.outletId == null ? false : true);
 
       Get.find<LocationController>().deleteLocation(list);
-
-      // postLocationApi(model, list.outletId == null ? false : true)
-      //     .then((value) {
-      //   if (value.success) {
-      //     Get.find<LocationController>().deleteLocation(list);
-      //     print("Location send success");
-      //   }
-      // });
     }
+  }
+
+  workManagerInitialization() {
+    // background register
+    Workmanager().initialize(
+      callbackDispatcher,
+    );
+
+    Workmanager().registerPeriodicTask(
+      "1",
+      fetchBackground,
+      frequency: Duration(minutes: 15),
+    );
   }
 
   @override
@@ -97,15 +104,15 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    // Get.find<OutletsController>();
-
     Future.delayed(Duration(seconds: 6), () {
       Get.find<OutletsController>();
     });
 
-    Timer.periodic(Duration(hours: 1), (timer) {
-      pushLocationData();
-    });
+    // Timer.periodic(Duration(hours: 1), (timer) {
+    //   pushLocationData();
+    // });
+
+    pushLocationData();
 
     super.initState();
   }
@@ -183,6 +190,8 @@ class _HomePageState extends State<HomePage> {
                     ? HawkFabMenuItem(
                         label: 'Check In',
                         ontap: () async {
+                          workManagerInitialization();
+
                           var conn = await Utilities.isInternetWorking();
 
                           if (conn) {
@@ -251,12 +260,15 @@ class _HomePageState extends State<HomePage> {
                     : HawkFabMenuItem(
                         label: 'Check Out',
                         ontap: () async {
+                          // cancel workmanager
+                          Workmanager().cancelAll();
+
                           var conn = await Utilities.isInternetWorking();
 
                           if (conn) {
                             // sync location data
 
-                            pushLocationData();
+                            await pushLocationData();
 
                             // Test if location services are enabled.
                             serviceEnabled =
@@ -308,8 +320,6 @@ class _HomePageState extends State<HomePage> {
                                 'Please connect to the internet to check out!',
                                 toastType: ToastType.ERROR);
                           }
-
-                          //down
                         },
                         icon: Icon(Icons.logout),
                         color: Colors.red[900],

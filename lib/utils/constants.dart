@@ -8,7 +8,7 @@ class Constants {
   static String appVername = '';
   static final String tempApkName = 'temp_dv.apk';
   static String checkInOut;
-  static double locationRadius = 20.0; // in meter
+  static double locationRadius = 10.0; // in meter
   static const googleAPIKey = "AIzaSyC_siAOGtkjHJ4i_1SzyjaSV8VC83vfYAw";
 }
 
