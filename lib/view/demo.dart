@@ -124,7 +124,8 @@ class MonthlyTourFormPage extends StatelessWidget {
   String date;
   String day;
 
-  TextEditingController townController = TextEditingController();
+  TextEditingController
+  townController = TextEditingController();
   TextEditingController routeController = TextEditingController();
   TextEditingController nightHaltController = TextEditingController();
   TextEditingController contactAddressController = TextEditingController();

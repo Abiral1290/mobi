@@ -16,6 +16,7 @@ class _AttendancePageState extends State<AttendancePage> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text('Attendance'),
       ),
       body: FutureBuilder<ApiResponse<List<CheckInOut>>>(
@@ -90,7 +91,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                       children: [
                                         Text("OUT"),
                                         e.checkoutDeviceTime == null
-                                            ? Text("null")
+                                            ? Text("Not Checkedout")
                                             : Text(e.checkoutDeviceTime.hour
                                                     .toString() +
                                                 ":" +

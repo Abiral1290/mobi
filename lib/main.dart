@@ -5,6 +5,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
+import 'package:mobitrack_dv_flutter/view/credentials/checkauth.dart';
+import 'package:mobitrack_dv_flutter/view/credentials/first_widget.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:yaml/yaml.dart';
 
@@ -49,10 +51,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'MobiTrack DV',
+      title: 'DV Trading',
       initialBinding: ControllerBindings(),
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
+      defaultTransition: Transition.fade,
       home: SplashScreen(),
     );
   }

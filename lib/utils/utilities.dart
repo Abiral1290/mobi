@@ -77,6 +77,9 @@ class Utilities {
     return res;
   }
 
+  static void alertdialog(){
+
+  }
   ///0 is top
   ///
   ///1 is centre

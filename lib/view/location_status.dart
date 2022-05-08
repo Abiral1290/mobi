@@ -35,8 +35,8 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
                       outletId: list.outletId,
                     );
 
-                    locationController.postLocation(
-                        model, list.outletId == null ? false : true);
+                    // locationController.postLocation(
+                    //     model, list.outletId == null ? false : true);
 
                     Get.find<LocationController>().deleteLocation(list);
 

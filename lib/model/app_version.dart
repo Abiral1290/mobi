@@ -24,7 +24,7 @@ class AppVersion {
   AppVersion.fromJson(Map<String, dynamic> json) {
     versionId = int.parse(json['version'].toString());
     versionName = json['version'];
-    url = ApiUrls.downloadUrl + json['url'];
+    url = ApiUrls.downloadUrl + json['link'];
     remarks = json['remarks'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -34,7 +34,7 @@ class AppVersion {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.versionId;
     data['version'] = this.versionName;
-    data['url'] = this.url;
+    data['link'] = this.url;
     data['remarks'] = this.remarks;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
@@ -47,6 +47,7 @@ Future<ApiResponse<AppVersion>> checkForUpdate() async {
     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
     'Accept': 'application/json'
   };
+
 
   try {
     var resp =

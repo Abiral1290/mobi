@@ -18,6 +18,9 @@ class AddStockCount extends StatefulWidget {
 }
 
 class _AddStockCountState extends State<AddStockCount> {
+
+
+  var stock =Get.lazyPut(()=>ProductsController());
   final TextStyle titleStyle = TextStyle(
     fontSize: 18,
   );
@@ -109,7 +112,6 @@ class _AddStockCountState extends State<AddStockCount> {
           TextButton(
             onPressed: () async {
               print(Get.find<ProductsController>().stockCountList);
-
               var conn = await Utilities.isInternetWorking();
               if (selectedStockType.value != "Select") {
                 if (conn) {

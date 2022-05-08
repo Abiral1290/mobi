@@ -21,6 +21,26 @@ class DistributorController extends GetxController {
         update();
       }
     });
+
+  }
+  Future<bool> syncData() async {
+    var offlineList = distributorList.where((element) => !element.synced).toList();
+    for (var i = 0; i < offlineList.length; i++) {
+      var item = offlineList[i];
+
+      // var res = await fetchDistributorsApi(item);
+      // if (res.success) {
+      //   await DatabaseHelper.instance.updateOutlet(item);
+      //   outletList
+      //       .where((element) => element.outid == item.outid)
+      //       .toList()
+      //       .first
+      //       .synced = true;
+      //   update();
+      // }
+    }
+    update();
+    return true;
   }
 
   searchDistributor(String text) {

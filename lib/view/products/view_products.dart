@@ -12,7 +12,7 @@ class ViewProductsPage extends StatelessWidget {
   final TextStyle contentStyle = TextStyle(
     fontSize: 17,
   );
-
+  
   @override
   Widget build(BuildContext context) {
     Widget buildBatchTile(Batches batches, Product products) {
@@ -119,22 +119,22 @@ class ViewProductsPage extends StatelessWidget {
         builder: (productsController) {
           return Get.find<ProductsController>().productList == null
               ? Center(
-                  child: CircularProgressIndicator(),
-                )
+            child: CircularProgressIndicator(),
+          )
               : Get.find<ProductsController>().productList.isEmpty
-                  ? Center(child: Text("No Products"))
-                  : Scrollbar(
-                      isAlwaysShown: true,
-                      interactive: true,
-                      thickness: 6.0,
-                      child: ListView.builder(
-                          itemCount:
-                              Get.find<ProductsController>().productList.length,
-                          itemBuilder: (context, index) {
-                            return buildMainTile(Get.find<ProductsController>()
-                                .productList[index]);
-                          }),
-                    );
+              ? Center(child: Text("No Products"))
+              : Scrollbar(
+            isAlwaysShown: true,
+            interactive: true,
+            thickness: 6.0,
+            child: ListView.builder(
+                itemCount:
+                Get.find<ProductsController>().productList.length,
+                itemBuilder: (context, index) {
+                  return buildMainTile(Get.find<ProductsController>()
+                      .productList[index]);
+                }),
+          );
         },
       ),
     );

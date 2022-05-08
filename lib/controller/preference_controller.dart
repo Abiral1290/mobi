@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceController extends GetxController {
@@ -7,7 +8,10 @@ class PreferenceController extends GetxController {
   String user = "user";
   String distributors = "distributors";
   String address = "address";
+  String product = "product";
   String location = "location";
+  String outlet = "outlet";
+  String calls = "call";
   bool isCheckedIn = false;
 
   clear() async {
@@ -46,6 +50,37 @@ class PreferenceController extends GetxController {
     }
   }
 
+  saveCall(String call) async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      pref.setString(calls, call);
+    } catch (e) {
+      print("failed to store user");
+      print(e);
+    }
+  }
+
+  saveProduct(String ProductData) async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      pref.setString(product, ProductData);
+    } catch (e) {
+      print("failed to store user");
+      print(e);
+    }
+  }
+
+  Future<String> getProduct() async {
+    try {
+      var pref = await SharedPreferences.getInstance();
+      return pref.getString(product);
+    } catch (e) {
+      print("failed to get user");
+      print(e);
+      return null;
+    }
+  }
+
   Future<String> getAddress() async {
     try {
       var pref = await SharedPreferences.getInstance();
@@ -62,7 +97,7 @@ class PreferenceController extends GetxController {
     try {
       _preferences
           .setString(checkIn,
-              DateTime.now().toString() + "//$checkInId" + "//$checkInData")
+              DateTime.now().minute.toString() + "//$checkInId" + "//$checkInData")
           .then((value) {
         if (value) isCheckedIn = checkInData;
         update();
@@ -113,6 +148,27 @@ class PreferenceController extends GetxController {
     } catch (e) {
       print("failed to store distributor");
       print(e);
+    }
+  }
+
+  setOutlet(String Outletdata) async{
+    try {
+      var pref = await SharedPreferences.getInstance();
+      pref.setString(outlet, Outletdata);
+    } catch (e) {
+    print("failed to store outlet");
+    print(e);
+    }
+  }
+
+  Future<String> getOutlet() async{
+    try{
+      var pre = await SharedPreferences.getInstance();
+      return pre.getString(outlet)?? '';
+    }catch(e){
+      print('failed to get Outlets');
+      print(e);
+      return null;
     }
   }
 

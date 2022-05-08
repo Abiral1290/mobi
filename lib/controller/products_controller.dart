@@ -71,12 +71,16 @@ class ProductsController extends GetxController {
     if (productList != null && productList.isNotEmpty) {
       searchProductList = productList
           .where((element) =>
-              element.name.toLowerCase().contains(text.toLowerCase()))
+          element.name.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }
   }
 
+  addremark(Sales sales){
+    localSalesList.add(sales);
+    update();
+  }
   addProductInList(String productId) {
     for (var product in productList) {
       if (productId == product.id.toString()) {
@@ -99,14 +103,13 @@ class ProductsController extends GetxController {
       if (value.success) {
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
-          latitude: sales.outletLatitude.toString(),
-          longitude: sales.outletLongitude.toString(),
           date: DateTime.now().toString(),
           checkinoutId: Constants.checkInOut,
           outletId: sales.outletId,
         );
 
         locationController.postLocation(model, true);
+
 
         // postLocationApi(model, true).then((value) {
         //   if (value.success) {
@@ -157,8 +160,8 @@ class ProductsController extends GetxController {
       if (res.success) {
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
-          latitude: item.outletLatitude.toString(),
-          longitude: item.outletLongitude.toString(),
+          // latitude: item.outletLatitude.toString(),
+          // longitude: item.outletLongitude.toString(),
           date: DateTime.now().toString(),
           checkinoutId: Constants.checkInOut,
           outletId: item.outletId,

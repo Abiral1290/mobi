@@ -8,6 +8,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: Text("Profile"),
       ),
       body: SingleChildScrollView(
@@ -17,6 +18,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               children: [
                 CircleAvatar(
+                  backgroundColor: Colors.black,
                   child: Icon(Icons.person),
                   radius: 50,
                 ),
@@ -50,12 +52,12 @@ class ProfilePage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "Distributor:",
+                      "Route:",
                       style: TextStyle(fontSize: 18),
                     ),
                     Spacer(),
                     Text(
-                      Constants.selectedDistributor.name,
+                      Constants.selectedRoute == null ? "" : Constants.selectmyRoute,
                       overflow: TextOverflow.visible,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -63,21 +65,21 @@ class ProfilePage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: Get.size.height * 0.01),
-                Row(
-                  children: [
-                    Text(
-                      "Address:",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Spacer(),
-                    Text(
-                      Constants.selectedDistributor.location,
-                      overflow: TextOverflow.visible,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Text(
+                //       "Address:",
+                //       style: TextStyle(fontSize: 18),
+                //     ),
+                //     Spacer(),
+                //     Text(
+                //       Constants.selectedDistributor.location,
+                //       overflow: TextOverflow.visible,
+                //       style:
+                //           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

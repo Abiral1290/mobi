@@ -6,9 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:mobitrack_dv_flutter/controller/bank_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/routes_controller.dart';
 import 'package:mobitrack_dv_flutter/model/bank.dart';
 import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
+import 'package:mobitrack_dv_flutter/model/routes.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'package:get/get.dart';
@@ -23,13 +25,16 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
   var collection =
       Collections(mode: PaymentMode.cash, accountOf: AccountOf.gnp).obs;
   TextEditingController amtCntrl = new TextEditingController(text: '0');
+  var route = Get.lazyPut(()=>Routecontroller());
 
   var chequeImage = "".obs;
   var bankName = "Select Bank".obs;
   var paymentMode = "Cash".obs;
   var accountOf = "GNP".obs;
 
-  var selectedDistributor = Constants.selectedDistributor.obs;
+  var selectedRoute = Constants.selectedRoute.obs;
+  var bank =Get.lazyPut(()=>BankController());
+
 
   bool validator() {
     return collection.value.mode == PaymentMode.cheque
@@ -114,8 +119,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
             if (validator() &&
                 collection.value.amount > 0 &&
                 collection.value.bankName.isNotEmpty) {
-              if (selectedDistributor.value != null) {
-                collection.value.distributorId = selectedDistributor.value.id;
+              if (selectedRoute.value != null) {
+                collection.value.distributorId = selectedRoute.value.id;
                 collection.value.id = DateTime.now().microsecondsSinceEpoch;
                 collection.value.deviceTime = DateTime.now().toString();
                 collection.value.createdAt = DateTime.now().toString();
@@ -154,7 +159,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
             children: [
               Obx(
                 () => Text(
-                  "Distributor: ${selectedDistributor.value.name}",
+                  "Distributor: ${selectedRoute.value.routename}",
                   style: TextStyle(fontSize: 20.0),
                 ),
               ),
@@ -163,25 +168,29 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
               GetBuilder<DistributorController>(
                   init: DistributorController(),
                   builder: (controller) {
-                    return Padding(
+                    return Get.find<DistributorController>().distributorList == null
+                        ? Center(
+                      child: CircularProgressIndicator(),
+                    ):
+                      Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Obx(
-                        () => DropdownButton<Distributor>(
+                        () => DropdownButton<Routees>(
                           isDense: true,
                           isExpanded: true,
-                          hint: Text(selectedDistributor.value.name),
-                          items: Get.find<DistributorController>()
-                              .distributorList
+                          hint: Text(selectedRoute.value.routename),
+                          items: Get.find<Routecontroller>()
+                              .routeList
                               .map((value) {
-                            return DropdownMenuItem<Distributor>(
+                            return DropdownMenuItem<Routees>(
                                 value: value,
                                 child: Text(
-                                  value.name,
+                                  value.routename,
                                   style: TextStyle(color: Colors.black),
                                 ));
                           }).toList(),
                           onChanged: (s) {
-                            selectedDistributor.value = s;
+                            selectedRoute.value = s;
                           },
                         ),
                       ),
@@ -191,29 +200,42 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                 height: Get.size.height * 0.03,
               ),
               // bank dropdown field
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Obx(
-                  () => DropdownButton<Bank>(
-                    isExpanded: true,
-                    isDense: true,
-                    hint: Text(bankName.value),
-                    items: Get.find<BankController>().bankList.map((value) {
-                      return DropdownMenuItem<Bank>(
-                        value: value,
-                        child: Text(
-                          value.bankName,
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (s) {
-                      collection.value.bankName = s.bankName;
-                      bankName.value = s.bankName;
-                    },
-                  ),
-                ),
-              ),
+
+              GetBuilder<BankController>(
+                init: BankController(),
+                  builder: (controller){
+                return   Get.find<BankController>().bankList == null
+                    ? Center(
+                  child: CircularProgressIndicator(),
+                ):
+                  Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Obx(
+
+                        () => DropdownButton<Bank>(
+                      isExpanded: true,
+                      isDense: true,
+                      hint: Text(bankName.value),
+
+                      items: Get.find<BankController>().bankList.map((value) {
+                        return DropdownMenuItem<Bank>(
+
+                          value: value,
+                          child: Text(
+                            value.bankName,
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (s) {
+                        collection.value.bankName = s.bankName;
+                        bankName.value = s.bankName;
+                      },
+                    ),
+                  )
+
+                );}),
+
 
               // cheque number textfield
               Padding(

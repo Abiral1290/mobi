@@ -45,23 +45,23 @@ class ViewSalesPage extends StatelessWidget {
                     title: Text(Get.find<OutletsController>()
                         .outletList
                         .where((element) =>
-                            element.id ==
-                            int.parse(Get.find<ProductsController>()
-                                .localSalesList[index]
-                                .outletId))
+                    element.id ==
+                        int.parse(Get.find<ProductsController>()
+                            .localSalesList[index]
+                            .outletId))
                         .toList()
                         .first
                         .name),
                     children: jsonDecode((Get.find<ProductsController>()
-                            .localSalesList[index]
-                            .orders))
+                        .localSalesList[index]
+                        .orders))
                         .map<Widget>((product) {
                       print(product);
                       return ListTile(
                         title: Text(Get.find<ProductsController>()
                             .productList
                             .where((element) =>
-                                element.id == int.parse(product["product_id"]))
+                        element.id == int.parse(product["product_id"]))
                             .toList()
                             .first
                             .name),
