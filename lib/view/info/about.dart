@@ -13,7 +13,7 @@ class AboutPage extends StatelessWidget {
       body: Column(
         children: [
           Image.asset('assets/DV_banner.png'),
-          Text('V ' + Constants.appVername)
+          Text('V: 1.0.1' )
         ],
       ),
     );

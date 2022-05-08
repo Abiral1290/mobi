@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:background_location/background_location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -13,6 +12,7 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationController extends GetxController {
+  var outlet = Get.lazyPut(()=>OutletsController());
   List<LocationModel> locationList = [];
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
   Position userPosition;
@@ -107,36 +107,36 @@ class LocationController extends GetxController {
     }
   }
 
-  setNearestOutletName() async {
-    var outletLists = Get.find<OutletsController>().outletList;
-    if (Constants.selectedDistributor != null &&
-        outletLists.isNotEmpty &&
-        userPosition != null) {
-      Map<Outlet, double> values = new Map<Outlet, double>();
-
-      for (var o in outletLists) {
-        var dist = Geolocator.distanceBetween(o.latitude, o.longitude,
-            userPosition.latitude, userPosition.longitude);
-        values[o] = dist;
-      }
-      var nearOut = values.entries.first;
-      values.forEach((key, value) {
-        if (value < nearOut.value) {
-          nearOut = MapEntry(key, value);
-        }
-      });
-      nearestOutletName = nearOut.key.name;
-      nearestOutlet = nearOut.key;
-
-      update();
-    }
-  }
+  // setNearestOutletName() async {
+  //   var outletLists = Get.find<OutletsController>().outletList;
+  //   if (Constants.selectedDistributor != null &&
+  //       outletLists.isNotEmpty &&
+  //       userPosition != null) {
+  //     Map<Outlet, double> values = new Map<Outlet, double>();
+  //
+  //     for (var o in outletLists) {
+  //       var dist = Geolocator.distanceBetween(o.latitude, o.longitude,
+  //           userPosition.latitude, userPosition.longitude);
+  //       values[o] = dist;
+  //     }
+  //     var nearOut = values.entries.first;
+  //     values.forEach((key, value) {
+  //       if (value < nearOut.value) {
+  //         nearOut = MapEntry(key, value);
+  //       }
+  //     });
+  //     nearestOutletName = nearOut.key.name;
+  //     nearestOutlet = nearOut.key;
+  //
+  //     update();
+  //   }
+  // }
 
   getPositionStream() async {
     positionStream = Geolocator.getPositionStream(
-      distanceFilter: 100,
-      intervalDuration: Duration(minutes: 1),
-      desiredAccuracy: LocationAccuracy.bestForNavigation,
+      // distanceFilter: 100,
+      // intervalDuration: Duration(minutes: 1),
+      // desiredAccuracy: LocationAccuracy.bestForNavigation,
     ).listen((Position position) async {
       if (position != null) {
         LocationModel model = LocationModel(
@@ -171,7 +171,7 @@ class LocationController extends GetxController {
       icon: "@mipmap/ic_launcher",
     );
     await BackgroundLocation.setAndroidConfiguration(1000);
-    await BackgroundLocation.startLocationService(distanceFilter: 0);
+ //   await BackgroundLocation.startLocationService(distanceFilter: 0);
 
     getPositionStream();
   }

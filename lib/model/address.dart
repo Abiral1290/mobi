@@ -6,11 +6,13 @@ import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
-class Address {
+class
+Address {
   int id;
   String province;
   String district;
   String localLevelEn;
+  String route;
 
   Address({this.id, this.province, this.district, this.localLevelEn});
 
@@ -91,6 +93,23 @@ class Areas {
     if (this.streets != null) {
       data['streets'] = this.streets.map((v) => v.toJson()).toList();
     }
+    return data;
+  }
+}
+
+class Route{
+  int id;
+  String route_name;
+
+  Route({this.id,this.route_name});
+  Route.fromJson(Map<String,dynamic> json){
+    id = json['id'];
+    route_name = json['route_name'];
+  }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['route_name'] = this.route_name;
     return data;
   }
 }

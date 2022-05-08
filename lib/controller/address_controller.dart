@@ -12,10 +12,16 @@ class AddressController extends GetxController {
   List<String> provinceList = [];
   List<String> districtList = [];
   List<String> areaList = [];
+  List<String> zonelist = [];
+  List<String> townlist = [];
+  List<String> routelist = [];
 
   String selectedProvince = "";
   String selectedDistrict = "";
   String selectedArea = "";
+  String selectedzone = "";
+  String selectedtown = "";
+  String selectedroute = "";
 
   String selectedAreaId = "";
 
@@ -39,6 +45,10 @@ class AddressController extends GetxController {
     selectedProvince = province;
     update();
   }
+  setSelectedroute(String route) {
+    selectedroute = route;
+    update();
+  }
 
   setSelectedDistrict(String district) {
     selectedDistrict = district;
@@ -54,6 +64,19 @@ class AddressController extends GetxController {
   getProvinceList() {
     var newprovinceList =
         addressList.groupListsBy((element) => element.province);
+    for (var list in newprovinceList.keys) {
+      provinceList.add(list);
+    }
+    setSelectedProvince(provinceList.first);
+
+    getDistrictList(provinceList.first);
+
+    update();
+  }
+
+  getzoneList() {
+    var newprovinceList =
+    addressList.groupListsBy((element) => element.province);
     for (var list in newprovinceList.keys) {
       provinceList.add(list);
     }
@@ -95,6 +118,11 @@ class AddressController extends GetxController {
     update();
   }
 
+
+  getroutelist(String selectedroute){
+    routelist = [];
+
+  }
   getAddressList() async {
     var conn = await Utilities.isInternetWorking();
     if (conn) {

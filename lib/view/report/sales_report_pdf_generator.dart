@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/productbrand_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
+import 'package:mobitrack_dv_flutter/model/routes.dart';
 import 'package:mobitrack_dv_flutter/model/sales_report.dart';
 import 'package:mobitrack_dv_flutter/utils/pdf_api.dart';
 import 'package:pdf/pdf.dart';
@@ -13,7 +15,7 @@ import 'package:pdf/widgets.dart';
 class PdfParagraphApi {
   var outlets = Get.lazyPut(() => OutletsController());
   static Future<File> generate(List<SalesReport> salesList,
-      {Distributor distributor}) async {
+      {Routees distributor}) async {
     final pdf = Document();
     final soldDate = DateTime.parse(salesList.first.soldAt);
     pdf.addPage(
@@ -42,7 +44,7 @@ class PdfParagraphApi {
     );
     return PdfApi.saveDocument(
         name:
-            'sales_report_${soldDate.year}-${soldDate.month}-${soldDate.day}.pdf',
+        'sales_report_${soldDate.year}-${soldDate.month}-${soldDate.day}.pdf',
         pdf: pdf);
   }
 
@@ -66,58 +68,71 @@ class PdfParagraphApi {
   }
 
   static Widget buildSalesOfficerInfo() => Header(
-        child: Text(
-          "${Get.find<AuthController>().user.name} (Sales Officer)",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: PdfColors.white,
-          ),
-        ),
-        padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(color: PdfColors.red),
-      );
+    child: Text(
+      "${Get.find<AuthController>().user.name} (Sales Officer)",
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: PdfColors.white,
+      ),
+    ),
+    padding: EdgeInsets.all(4),
+    decoration: BoxDecoration(color: PdfColors.red),
+  );
 
-  static Widget buildDistributorInfo(Distributor distributor) => Header(
-        child: Text(
-          "${distributor.name} (Distributor)",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: PdfColors.white,
-          ),
-        ),
-        padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(color: PdfColors.red),
-      );
+  static Widget buildDistributorInfo(Routees distributor) => Header(
+    child: Text(
+      "${distributor.routename} (Distributor)",
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: PdfColors.white,
+      ),
+    ),
+    padding: EdgeInsets.all(4),
+    decoration: BoxDecoration(color: PdfColors.red),
+  );
 
   static Widget buildContent(List<SalesReport> salesList) {
     return Table.fromTextArray(
-      headers: ['SN.', 'Product', 'Outlet', 'Quantity', 'Discount %'],
+      headers: ['SN.', 'Product', 'Outlet', 'Quantity', 'Discount %',"Remark"],
       data: List<List<dynamic>>.generate(
         salesList.length,
-        (index) => <dynamic>[
+            (index) => <dynamic>[
           index + 1,
-          Get.find<ProductsController>()
+             salesList[index].productId == 0 ?
+              // newlist
+              //       .isEmpty ?
+             "-"
+                  :
+          Get.find<ProductBrandController>()
               .productList
-              .where((element) => element.id == salesList[index].productId)
+              .where((element) => element.id == salesList[index].productId || salesList[index].productId == 0 )
               .toList()
               .first
               .name,
+              // .isNotEmpty
+              // ? "Shop": Get.find<ProductBrandController>()
+              // .productList
+              // .where((element) => element.id == salesList[index].productId)
+              // .toList()
+              // .first
+              // .name,
           Get.find<OutletsController>()
-                  .outletList
-                  .where((element) => element.id == salesList[index].outletId)
-                  .toList()
-                  .isNotEmpty
+              .outletList
+              .where((element) => element.id == salesList[index].outletId)
+              .toList()
+              .isNotEmpty
               ? Get.find<OutletsController>()
-                  .outletList
-                  .where((element) => element.id == salesList[index].outletId)
-                  .toList()
-                  .first
-                  .name
+              .outletList
+              .where((element) => element.id == salesList[index].outletId)
+              .toList()
+              .first
+              .name
               : "N/A",
           salesList[index].quantity,
           salesList[index].discount,
+              salesList[index].remarks ==null ? "-" : salesList[index].remarks,
         ],
       ),
       headerStyle: TextStyle(

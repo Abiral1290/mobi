@@ -10,6 +10,7 @@ import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
 import 'package:mobitrack_dv_flutter/view/info/about.dart';
 import 'package:mobitrack_dv_flutter/view/monthly_tour/register_monthly_tour.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
+import 'package:mobitrack_dv_flutter/view/products/brandwiseproduct.dart';
 import 'package:mobitrack_dv_flutter/view/products/view_products.dart';
 import 'package:mobitrack_dv_flutter/view/profile.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/register_outlet.dart';
@@ -18,6 +19,7 @@ import 'package:mobitrack_dv_flutter/view/collections/view_collection.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
 import 'package:mobitrack_dv_flutter/view/stock_count/add_stock_count.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
+import 'package:mobitrack_dv_flutter/view/view_routes.dart';
 import 'package:nepali_date_picker/nepali_date_picker.dart';
 import 'package:nepali_date_picker/nepali_date_picker.dart' as picker;
 
@@ -27,7 +29,6 @@ class DrawerPage extends StatelessWidget {
     minimumSize: MaterialStateProperty.all<Size>(
         Size(Get.size.width, Get.size.height * 0.05)),
   );
-
   final ButtonStyle expandedButtonStyle = ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(Colors.blue[900]),
     minimumSize: MaterialStateProperty.all<Size>(
@@ -105,8 +106,8 @@ class DrawerPage extends StatelessWidget {
                   // collapsedBackgroundColor: Colors.green,
                   children: [
                     ElevatedButton(
-                      onPressed: Constants.selectedDistributor != null
-                          ? Constants.selectedDistributor.id != null
+                      onPressed: Constants.selectmyRoute != null
+                          ? Constants.selectmyRoute != null
                               ? () async {
                                   var res = await GeolocatorPlatform.instance
                                       .checkPermission();
@@ -122,7 +123,7 @@ class DrawerPage extends StatelessWidget {
                                       await GeolocatorPlatform.instance
                                           .openLocationSettings();
                                     } else {
-                                      Get.to(() => RegisterShopPage());
+                                //      Get.to(() => RegisterShopPage());
                                     }
                                   } else {
                                     Utilities.showInToast(
@@ -142,9 +143,9 @@ class DrawerPage extends StatelessWidget {
                       style: expandedButtonStyle,
                     ),
                     ElevatedButton(
-                      onPressed: Constants.selectedDistributor != null
-                          ? Constants.selectedDistributor.id != null
-                              ? () => Get.to(() => ViewOutletsPage())
+                      onPressed: Constants.selectmyRoute != null
+                          ? Constants.selectmyRoute != null
+                              ? () => Get.to(() => ViewOutletstPage())
                               : () => Utilities.showInToast(
                                   "Please select distributor first")
                           : () => Utilities.showInToast(
@@ -174,7 +175,7 @@ class DrawerPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(() => ViewProductsPage());
+                        Get.to(() => ViewOutletstPage());
                       },
                       child: Text("View Products"),
                       style: expandedButtonStyle,
@@ -260,7 +261,7 @@ class DrawerPage extends StatelessWidget {
                           width: 20,
                         ),
                         Text(
-                          "Distributor",
+                          "Routes",
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
@@ -269,9 +270,9 @@ class DrawerPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(() => ViewDistributorPage());
+                        Get.to(() => View_route());
                       },
-                      child: Text("View Distributor"),
+                      child: Text("View Routes"),
                       style: expandedButtonStyle,
                     ),
                   ],
@@ -391,11 +392,28 @@ class DrawerPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: Get.size.height * 0.09),
+                SizedBox(height: Get.size.height * 0.08),
+                Container(
+                    height: Get.size.height * 0.08,
+                    width: Get.size.width * 0.3,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25.0),
+                          bottomRight: Radius.circular(25.0))),
+                 // color: Colors.grey,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15 ,top: 4),
+                      child: Text("Version : ${Constants.appVerId}"
+                          " 5May 022")),
+                ),
+                SizedBox(height: Get.size.height * 0.06),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
+                      Utilities.showInToast("Logout", toastType: ToastType.SUCCESS);
                       Get.find<AuthController>().logout();
                     },
                     child: Text("Logout"),

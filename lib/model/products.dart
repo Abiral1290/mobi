@@ -12,6 +12,7 @@ class Product {
   String name;
   String unit;
   int value;
+  String brandname;
   bool selected;
   String createdAt;
   String updatedAt;
@@ -19,19 +20,21 @@ class Product {
 
   Product(
       {this.id,
-      this.name,
-      this.unit,
-      this.value,
-      this.selected,
-      this.createdAt,
-      this.updatedAt,
-      this.batches});
+        this.name,
+        this.unit,
+        this.value,
+        this.brandname,
+        this.selected,
+        this.createdAt,
+        this.updatedAt,
+        this.batches});
 
   Product.fromJson(Map<String, dynamic> json, {bool isLocalDB = false}) {
     id = json['id'];
     name = json['name'];
     unit = json['unit'];
     value = json['value'];
+    brandname = json['brand_name'];
     selected = false;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -61,6 +64,7 @@ class Product {
     data['name'] = this.name;
     data['unit'] = this.unit;
     data['value'] = this.value;
+    data['brand_name'] = this.brandname;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     if (this.batches != null) {
@@ -84,16 +88,16 @@ class Batches {
 
   Batches(
       {this.id,
-      this.productId,
-      this.expiredAt,
-      this.manufacturedAt,
-      this.stock,
-      this.createdAt,
-      this.updatedAt});
+        this.productId,
+        this.expiredAt,
+        this.manufacturedAt,
+        this.stock,
+        this.createdAt,
+        this.updatedAt});
 
   Batches.fromJson(
-    Map<String, dynamic> json,
-  ) {
+      Map<String, dynamic> json,
+      ) {
     id = json['id'];
     productId = json['product_id'];
     expiredAt = json['expired_at'];
@@ -117,46 +121,66 @@ class Batches {
 }
 
 class Sales {
-  String distributorId;
+//  String distributorId;
   String soldAt;
   String outletId;
+  String route;
+ // bool isselected;
   String orders;
-  String outletLatitude;
-  String outletLongitude;
+  String remark;
+  String latitude;
+  String longitude;
+  //String remark_image;
   int id;
 
   Sales(
-      {this.distributorId,
-      this.soldAt,
-      this.outletId,
-      this.orders,
-      this.outletLongitude,
-      this.outletLatitude,
-      this.id});
+      {
+        //this.distributorId,
+        this.soldAt,
+        this.outletId,
+        this.orders,
+        this.route,
+       // this.isselected,
+        this.remark,
+        this.latitude,
+        this.longitude,
+       // this.remark_image,
+        this.id});
 
   Sales.fromJson(Map<String, dynamic> json, [isLocalStorage = false]) {
-    distributorId = json['distributor_id'];
+
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
+    remark =json["remarks"];
     orders = json['orders'];
+    route = json['route_id'];
+    latitude = json["latitude"];
+    longitude = json["longitude"];
+  //  remark_image = json['remarks_image'];
 
     if (isLocalStorage) {
       id = json['id'];
-      outletLatitude = json["outlet_latitude"];
-      outletLongitude = json["outlet_longitude"];
+      // outletLatitude = json["outlet_latitude"];
+      // outletLongitude = json["outlet_longitude"];
     }
+  //  isselected = false;
   }
 
   Map<String, dynamic> toJson([bool isLocalStorage = false]) {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['distributor_id'] = this.distributorId;
+    // data['remarks'] = this.remark;
     data['sold_at'] = this.soldAt;
     data['outlet_id'] = this.outletId;
     data['orders'] = this.orders;
+    data['route_id'] = this.route;
+    data['remarks'] = remark;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    // data['remarks_image']= remark_image;
     if (isLocalStorage) {
       data['id'] = this.id;
-      data['outlet_latitude'] = this.outletLatitude;
-      data['outlet_longitude'] = this.outletLongitude;
+      // data['outlet_latitude'] = this.outletLatitude;
+      // data['outlet_longitude'] = this.outletLongitude;
     }
 
     return data;
@@ -199,7 +223,7 @@ Future<ApiResponse<Sales>> sellProductApi(Sales sales) async {
 
   try {
     var resp =
-        await http.post(Uri.parse(ApiUrls.sales), headers: headers, body: body);
+    await http.post(Uri.parse(ApiUrls.sales), headers: headers, body: body);
     print(resp);
     Map<String, dynamic> obj = json.decode(resp.body);
 

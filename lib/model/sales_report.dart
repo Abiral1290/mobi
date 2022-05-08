@@ -15,7 +15,12 @@ class SalesReport {
   int quantity;
   String discount;
   String soldAt;
+  String remarks;
   int outletId;
+  int route;
+  int route_id;
+  String latitude;
+  String longitude;
   String createdAt;
   String updatedAt;
 
@@ -27,6 +32,8 @@ class SalesReport {
       this.productId,
       this.quantity,
       this.discount,
+        this.route_id,
+        this.remarks,
       this.soldAt,
       this.outletId,
       this.createdAt,
@@ -42,8 +49,10 @@ class SalesReport {
     discount = json['discount'];
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
+    remarks = json['remarks'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    route_id = json['route_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -56,9 +65,11 @@ class SalesReport {
     data['quantity'] = this.quantity;
     data['discount'] = this.discount;
     data['sold_at'] = this.soldAt;
+    data['remarks'] = this.remarks;
     data['outlet_id'] = this.outletId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['route_id'] = this.route_id;
     return data;
   }
 }
