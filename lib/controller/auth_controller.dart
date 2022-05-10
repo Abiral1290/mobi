@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mobitrack_dv_flutter/model/sales_officer.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls_group.dart';
+import 'package:mobitrack_dv_flutter/view/credentials/first_widget.dart';
 //import 'package:mobitrack_dv_flutter/view/credentials/login.dart';
 
 import '../view/credentials/login.dart';
@@ -84,6 +85,6 @@ class AuthController extends GetxController {
     isLoggedIn = false;
     update();
 
-    await Get.offAll(LoginPage());
+    await Get.offAll(FirstWidget());
   }
 }

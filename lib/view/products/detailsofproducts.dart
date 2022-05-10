@@ -11,8 +11,10 @@ import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/products/brandwiseproduct.dart';
+import 'package:mobitrack_dv_flutter/view/products/punchedproduct.dart';
 import 'package:mobitrack_dv_flutter/view/products/sendproduct.dart';
 
+import '../../controller/database_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/productbrand_controller.dart';
 import '../../controller/products_controller.dart';
@@ -174,14 +176,17 @@ class _DetailsProductState extends State<DetailsProduct> {
                         // var register = Outlet(
                         //   outid:  outlet.id,
                         //   route_id: Constants.selectedRoute.toString(),
-                        //   name:  outlet.name,
+                        //   nme:  outlet.name,
                         //   contact: outlet.contact,
                         //   latitude: outlet.latitude,
                         //   longitude: outlet.longitude
                         // );
+
                         var response = await sellProductApi(saless);
                         Constants.value_increase++;
-                        Get.find<PreferenceController>().saveCall(widget.outlet.id.toString());
+                       // Get.find<PreferenceController>().saveProduct(Get.find<ProductBrandController>().selectedAreaId);
+                       //  await DatabaseHelper.instance
+                       //      .insertSales(sales);
                       //  Get.find<ProductBrandController>().value.add(saless);
                         print(Constants.value_increase++);
                         //  Constants.increase ++;
@@ -330,6 +335,9 @@ class _DetailsProductState extends State<DetailsProduct> {
             //BrandWiseProduct(outlet: _outlet )
         }, icon: Icon(Icons.arrow_back,color: Colors.black,)),
         title: Text("Products",style: TextStyle(color: Colors.black),),
+        actions: [
+          ElevatedButton(onPressed: (){Get.to(()=> PunchedProduct());}, child: Text("Press"))
+        ],
       ),
       // floatingActionButton: FloatingActionButton.extended(
       //   backgroundColor: Colors.black,
@@ -433,9 +441,10 @@ class _DetailsProductState extends State<DetailsProduct> {
               // ),
               Expanded(
                 child: Container(
-                  child: ListView.builder(
+                  child:
+                  ListView.builder(
                     shrinkWrap: true,
-                      itemCount:  searchResult.length  ,
+                      itemCount: Get.find<ProductBrandController>().name.length  ,
                       itemBuilder: (context,index){
                         var item = Get.find<ProductBrandController>().name[index];
                         return Card(
@@ -454,7 +463,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                                     Spacer(),
                                     Expanded(
                                       child: Text(
-                                        searchResult[index],
+                                       item,
                                         overflow: TextOverflow.visible,
                                         maxLines: null,
                                         style: contentStyle,

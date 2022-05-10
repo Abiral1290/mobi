@@ -43,8 +43,8 @@ class Constants {
   static bool isProduction = true;
 
   static String server = " ";
-  static const server_2 = "Server 2";
-  static const server_1 = "Server 1";
+  static const server_2 = "DV Manufacturing";
+  static const server_1 = "DV Trading";
 }
 
 class SellerType {

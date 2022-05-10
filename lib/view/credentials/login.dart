@@ -385,6 +385,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _callServerNum = '';
   String _userNUmber = '';
+  bool log = false;
 
   @override
   void initState() {
@@ -427,13 +428,25 @@ class _LoginPageState extends State<LoginPage> {
             return false;
           }),
     );
+    if(Constants.server == Constants.server_1){
+      log = true;
+      var resp = await Get.find<AuthController>().signIn(_userNUmber);
+      print("202.52.240.148:");
+      Utilities.showInToast(
 
-    var resp = await Get.find<AuthController>().signIn(_userNUmber);
+        resp.toString(),
+      );
+      print("202.52.240.148:");
+      Get.offAll(View_route());
+    }else if(Constants.server == Constants.server_1 ){
+      log = true;
+      var resp = await Get.find<AuthController>().signIn_1(_userNUmber);
+      print("202.52.240.148:5062/dv_manufacturing/public");
+      Utilities.showInToast(
 
-    Utilities.showInToast(
-
-      resp.toString(),
-    );
+        resp.toString(),
+      );
+    }
     Get.offAll(View_route());
   }
 
@@ -456,34 +469,36 @@ class _LoginPageState extends State<LoginPage> {
             return false;
           }),
     );
+    if(Constants.server ==Constants.server_1){
+      await Future.delayed(Duration(seconds: Constants.callWaitSec));
 
-    await Future.delayed(Duration(seconds: Constants.callWaitSec));
+      var res = await callServerVerify(_userNUmber, _callServerNum);
+      Get.back();
 
-    var res = await callServerVerify(_userNUmber, _callServerNum);
-    Get.back();
-
-    if (res) {
-      var resp = await Get.find<AuthController>().signIn(_userNUmber);
-      Utilities.showInToast(
-        resp,
-      );
-    } else {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) => CupertinoAlertDialog(
-            title: new Text("Error"),
-            content: new Text("Session Expired. Please call again"),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: Text('Close'),
-                onPressed: () => Get.back(),
-              )
-            ],
-          ));
-      Utilities.showInToast("Couldn't validate your number. Please try again",
-          toastType: ToastType.ERROR);
+      if (res) {
+        var resp = await Get.find<AuthController>().signIn(_userNUmber);
+        Utilities.showInToast(
+          resp,
+        );
+      } else {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: new Text("Error"),
+              content: new Text("Session Expired. Please call again"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('Close'),
+                  onPressed: () => Get.back(),
+                )
+              ],
+            ));
+        Utilities.showInToast("Couldn't validate your number. Please try again",
+            toastType: ToastType.ERROR);
+      }
     }
+
   }
 
   @override

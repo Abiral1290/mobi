@@ -5,7 +5,7 @@ class ApiUrls_Group {
   // static String get _mainUrl => Constants.isProduction
   //     ? "http://202.52.240.148:8095/dv_trading/public" //DV_Trading
   //     : "http://202.52.240.148:8095/dv_group/public"; //DV_Group
-  static final String _mainUrl = 'http://202.52.240.148:8095/dv_group/public';
+  static final String _mainUrl = '202.52.240.148:5062/dv_manufacturing/public';
   static final String _oldMainUrl = 'http://202.52.240.148:8092/';
   static final String _endPoint = _mainUrl + '/api/';
   static final String downloadUrl = _mainUrl;

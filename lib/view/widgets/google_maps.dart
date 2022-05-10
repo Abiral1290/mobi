@@ -134,8 +134,6 @@ class _GoogleMaps extends State<GoogelMaps>{
       );
     });
   }
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -196,7 +194,7 @@ class _GoogleMaps extends State<GoogelMaps>{
               zoom: 15.0,
             ),
             myLocationEnabled: true,
-            markers: _markers.toSet()  ,
+            markers: _markers.toSet() == null ? "as" :  _markers.toSet(),
           ),
           ),
         ),
@@ -260,7 +258,8 @@ class _GoogleMaps extends State<GoogelMaps>{
    void setMarkers()   {
      //var notes =  Get.find<OutletsController>().outletList ;
      List<Marker> markers = Get.find<OutletsController>().outletList.map((n) {
-       LatLng point = LatLng(double.parse(n.latitude), double.parse(n.longitude)
+       LatLng point = LatLng(double.parse(n.latitude == null? "27.45" : n.latitude) , double.parse(n.longitude == null? "89.45" :n.longitude)
+
        );
        var title = n.name;
        return Marker(

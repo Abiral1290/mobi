@@ -181,7 +181,7 @@ class ScoreBoard extends StatelessWidget {
                                           lineWidth: 18.0,
                                           animation: true,
                                           animationDuration: 1200,
-                                          percent: 0.8,
+                                          percent: 0.3,
                                           circularStrokeCap:
                                           CircularStrokeCap.butt,
                                           center:  Text(
@@ -269,7 +269,7 @@ class ScoreBoard extends StatelessWidget {
                                   lineWidth: 18.0,
                                   animation: true,
                                   animationDuration: 1200,
-                                  percent: 0.3,
+                                  percent: Constants.value_increase /2,
                                   circularStrokeCap: CircularStrokeCap.butt,
                                   center:   Text(
     (Constants.value_increase ~/2).toString(),
@@ -451,7 +451,7 @@ Widget activity() {
                   children: [
                     calls(text: Constants.increase_unsucessfulcall.toString()),
                     calls(
-                      text: "Remaining Calls",
+                      text: "Unsucessful Call",
                     ),
                   ],
                 ),

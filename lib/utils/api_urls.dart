@@ -2,8 +2,8 @@ class ApiUrls {
   static final String _mainUrl = 'http://202.52.240.148:5063/dv_trading';
 //  static final String _mainUrl_1 = 'http://202.52.240.148:5063/dv_trading/public/';
   static final String _oldMainUrl = 'http://202.52.240.148:8092/';
+  static final String manufacture = '/202.52.240.148:5062/public';
   //static final String _mainUrl = 'http://192.168.0.134:8095/dv_trading';
-
   static final String _endPoint = _mainUrl + '/api/';
   static final String downloadUrl = _mainUrl;
   static final String checkForUpdate = _endPoint + 'app_versions';
