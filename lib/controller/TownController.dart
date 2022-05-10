@@ -1,7 +1,7 @@
-import 'dart:convert';
+
 
 import 'package:get/get.dart';
-import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
+
 import 'package:mobitrack_dv_flutter/model/town.dart';
 
 import '../utils/utilities.dart';
@@ -10,9 +10,6 @@ class TownController extends GetxController {
   List<Town> townlist = [];
   List<Town> list = [];
   List<String> name = [];
-
-
-
   int selectedtown ;
   String selectedZone = "";
   int selectedZones;
@@ -21,47 +18,39 @@ class TownController extends GetxController {
   TownController() {
     getTownList();
   }
-
-  setSelectionZone(String zone ){
+  setSelectionZone(String zone){
     selectedZone =zone;
   //  selectedZones = zone_id;
-
   }
-  setSelectedTown(int town  ) {
+  setSelectedTown(int town){
     selectedtown = town;
    // selectedTown = town_id;
    //  var newlist = list.where((element) => element.town == selectedTown);
    //  selectedTown = newlist.first.id;
-
     update();
      // var newlist = list.where((element) => element.town == selectedTown);
      // selectedTown = newlist.first.id;
      // update();
   }
-
   // getTownList(){
   //    var newtownlist = townlist.groupListBy()
   // }
-  getname(){
-    var newlsit = townlist.where((element) => element.town ==selectedtown);
-    selectedTown = newlsit.first.id;
-  }
+  // getname(){
+  //   var newlsit = townlist.where((element) => element.town ==selectedtown);
+  //   selectedTown = newlsit.first.id;
+  // }
   getTownList() async {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
-
-      await fetchTownApi().then((value) async {
+      await fetchTownApi().then((value) async{
         print(value.response);
-        if (value.success) {
+        if (value.success){
           townlist = value.response;
-
           print(townlist.length);
           setSelectedTown(townlist.first.id
-
             //  townlist.first.id
           );
           setSelectionZone(townlist.first.toString());
-
           update();
            // var newlist = list.where((element) => element.town == selectedTown);
            // selectedTown = newlist.first.id;
@@ -85,7 +74,6 @@ class TownController extends GetxController {
       );
     }
   }
-
   // List<Town> lists = [];
   // getProvinceList() {
   //   var newprovinceList =

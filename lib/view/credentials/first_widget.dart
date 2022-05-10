@@ -6,7 +6,7 @@ import 'package:mobitrack_dv_flutter/view/credentials/login.dart';
 
 import '../../utils/constants.dart';
 
-class FirstWidget extends StatelessWidget{
+class  FirstWidget extends StatelessWidget{
 
   Widget individualTileWidget(BuildContext context, IconData icon, String title,
       VoidCallback onTap, Color backgroundColor) {
@@ -15,18 +15,19 @@ class FirstWidget extends StatelessWidget{
       splashColor: backgroundColor,
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(15),
         child: Column(
             children :[
               Container(
                   decoration: BoxDecoration(
                     // border: Border.all(color: Colors.white10,width: 5),
+
                       color: Colors.orange,
                       shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(20)
                   ),
                   height: Get.size.height * 0.1,
-                  width: Get.size.width /2,
+                  width: Get.size.width /1.2,
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Padding(
@@ -87,7 +88,6 @@ class FirstWidget extends StatelessWidget{
                     radius: 80,
                   ),
               ),
-
               individualTileWidget(
                   context, Icons.confirmation_num, Constants.server_1, () {
                   Colors.amber[900];

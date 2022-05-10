@@ -7,6 +7,8 @@ import 'package:mobitrack_dv_flutter/model/routes.dart';
 import 'package:mobitrack_dv_flutter/model/sales_report.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
+import 'database_controller.dart';
+
 class SalesReportController extends GetxController {
   List<SalesReport> salesReportList = [];
   List<SalesReport> formattedSalesReportList = [];
@@ -24,6 +26,7 @@ class SalesReportController extends GetxController {
       fetchSalesReport().then((value) {
         if (value.success) {
           salesReportList = value.response;
+
           update();
           formatSalesDate(DateTime.now());
         } else {
