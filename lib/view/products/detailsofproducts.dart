@@ -66,8 +66,6 @@ class _DetailsProductState extends State<DetailsProduct> {
     );
   }
 
-
-
   Product products = Product();
 
   Outlet _outlet = Outlet();
@@ -306,8 +304,6 @@ class _DetailsProductState extends State<DetailsProduct> {
         ),
       );
     }
-
-
 
     searchDistributor(String text) {
       searchResult = Get.find<ProductBrandController>().name;

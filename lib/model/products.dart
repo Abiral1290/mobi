@@ -130,6 +130,7 @@ class Sales {
   String remark;
   String latitude;
   String longitude;
+  String remark_image;
   //String remark_image;
   int id;
 
@@ -140,8 +141,9 @@ class Sales {
         this.outletId,
         this.orders,
         this.route,
-       // this.isselected,
         this.remark,
+       // this.isselected,
+        this.remark_image,
         this.latitude,
         this.longitude,
        // this.remark_image,
@@ -156,7 +158,7 @@ class Sales {
     route = json['route_id'];
     latitude = json["latitude"];
     longitude = json["longitude"];
-  //  remark_image = json['remarks_image'];
+   remark_image = json['remarks_image'];
 
     if (isLocalStorage) {
       id = json['id'];

@@ -1141,214 +1141,218 @@ class _SalesReportPageState extends State<SalesReportPage> {
               ),
               Expanded(
                 child:
-                Get.find<SalesReportController>()
-                    .formattedSalesReportList
-                    .isNotEmpty
-                    ? ListView.builder(
-                    itemCount: Get.find<SalesReportController>()
+                GetBuilder<SalesReportController>(
+                  builder: (context) {
+                    return Get.find<SalesReportController>()
                         .formattedSalesReportList
-                        .length,
-                    itemBuilder: (context, index) {
-                      var item = Get.find<SalesReportController>()
-                          .formattedSalesReportList ;
-                      var newlist = Get.find<ProductBrandController>()
-                          .productList
-                          .where((element) => element.id==item[index].productId || item[index].productId == 0 ).first.name;
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 8.0,right: 8.0),
-                        child: Table (
-                          border:   TableBorder.symmetric(inside: BorderSide(width: 1, color: Colors.blue), outside: BorderSide(width: 1)),
-                      columnWidths: {
-                      0: FractionColumnWidth(0.34),
-                      1: FractionColumnWidth(0.28),
-                        2: FractionColumnWidth(0.1),
-                        3: FractionColumnWidth(0.1),
-                        4: FractionColumnWidth(0.18),
-                      },
-                          children: [
-                            // TableRow(
-                            //   children:[
-                            //
-                            //
-                            //   ],
-                        //    ),
-                            TableRow(
+                        .isNotEmpty
+                        ? ListView.builder(
+                        itemCount: Get.find<SalesReportController>()
+                            .formattedSalesReportList
+                            .length,
+                        itemBuilder: (context, index) {
+                          var item = Get.find<SalesReportController>()
+                              .formattedSalesReportList ;
+                          var newlist = Get.find<ProductBrandController>()
+                              .productList
+                              .where((element) => element.id==item[index].productId || item[index].productId == 0 ).first.name;
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 8.0,right: 8.0),
+                            child: Table (
+                              border:   TableBorder.symmetric(inside: BorderSide(width: 1, color: Colors.blue), outside: BorderSide(width: 1)),
+                          columnWidths: {
+                          0: FractionColumnWidth(0.34),
+                          1: FractionColumnWidth(0.28),
+                            2: FractionColumnWidth(0.1),
+                            3: FractionColumnWidth(0.1),
+                            4: FractionColumnWidth(0.18),
+                          },
                               children: [
-                               Padding(
-                                 padding: const EdgeInsets.all(8.0),
-                                 child: Text( item[index].productId == 0 ?
-                                 // newlist
-                                 //       .isEmpty ?
-                                 "-"
-                                     :
-                                 Get.find<ProductBrandController>()
-                                     .productList
-                                     .where((element) => element.id == item[index].productId || item[index].productId == 0 )
-                                     .toList()
-                                     .first
-                                     .name,textAlign: TextAlign.center),
-                               ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text( Get.find<OutletsController>()
-                                      .outletList
-                                      .where((element) => element.id == item[index].outletId)
-                                      .toList()
-                                      .isNotEmpty
-                                      ? Get.find<OutletsController>()
-                                      .outletList
-                                      .where((element) => element.id == item[index].outletId)
-                                      .toList()
-                                      .first
-                                      .name
-                                      : "N/A",textAlign: TextAlign.center),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(item[index].quantity.toString(),textAlign: TextAlign.center),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text( item[index].discount,textAlign: TextAlign.center),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(  item[index].remarks ==null ? "-" : item[index].remarks,textAlign: TextAlign.center),
-                                )
+                                // TableRow(
+                                //   children:[
+                                //
+                                //
+                                //   ],
+                            //    ),
+                                TableRow(
+                                  children: [
+                                   Padding(
+                                     padding: const EdgeInsets.all(8.0),
+                                     child: Text( item[index].productId == 0 ?
+                                     // newlist
+                                     //       .isEmpty ?
+                                     "-"
+                                         :
+                                     Get.find<ProductBrandController>()
+                                         .productList
+                                         .where((element) => element.id == item[index].productId || item[index].productId == 0 )
+                                         .toList()
+                                         .first
+                                         .name,textAlign: TextAlign.center),
+                                   ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text( Get.find<OutletsController>()
+                                          .outletList
+                                          .where((element) => element.id == item[index].outletId)
+                                          .toList()
+                                          .isNotEmpty
+                                          ? Get.find<OutletsController>()
+                                          .outletList
+                                          .where((element) => element.id == item[index].outletId)
+                                          .toList()
+                                          .first
+                                          .name
+                                          : "N/A",textAlign: TextAlign.center),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(item[index].quantity.toString(),textAlign: TextAlign.center),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text( item[index].discount,textAlign: TextAlign.center),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(  item[index].remarks ==null ? "-" : item[index].remarks,textAlign: TextAlign.center),
+                                    )
 
-                              ]
-                            )
-                          ],
-                          // headers: [, 'Product', 'Outlet', 'Quantity', 'Discount %',"Remark"],
-                          // data: List<List<dynamic>>.generate(
-                          //   item.length,
-                          //       (index) => <dynamic>[
-                          //     index + 1,
-                          //     item[index].productId == 0 ?
-                          //     // newlist
-                          //     //       .isEmpty ?
-                          //     "-"
-                          //         :
-                          //     Get.find<ProductBrandController>()
-                          //         .productList
-                          //         .where((element) => element.id == item[index].productId || item[index].productId == 0 )
-                          //         .toList()
-                          //         .first
-                          //         .name,
-                          //     // .isNotEmpty
-                          //     // ? "Shop": Get.find<ProductBrandController>()
-                          //     // .productList
-                          //     // .where((element) => element.id == salesList[index].productId)
-                          //     // .toList()
-                          //     // .first
-                          //     // .name,
-                          //     Get.find<OutletsController>()
-                          //         .outletList
-                          //         .where((element) => element.id == item[index].outletId)
-                          //         .toList()
-                          //         .isNotEmpty
-                          //         ? Get.find<OutletsController>()
-                          //         .outletList
-                          //         .where((element) => element.id == item[index].outletId)
-                          //         .toList()
-                          //         .first
-                          //         .name
-                          //         : "N/A",
-                          //    item[index].quantity,
-                          //     item[index].discount,
-                          //     item[index].remarks ==null ? "-" : item[index].remarks,
-                          //   ],
-                          // ),
-                          // headerStyle: TextStyle(
-                          //   color: Colors.white,
-                          //   fontWeight: FontWeight.bold,
-                          // ),
-                          // headerDecoration: BoxDecoration(
-                          //   color:  Colors.cyan,
-                          // ),
-                          // rowDecoration: BoxDecoration(
-                          //   border: Border(
-                          //     bottom: BorderSide(
-                          //       color:  Colors.cyan,
-                          //       width: .5,
-                          //     ),
+                                  ]
+                                )
+                              ],
+                              // headers: [, 'Product', 'Outlet', 'Quantity', 'Discount %',"Remark"],
+                              // data: List<List<dynamic>>.generate(
+                              //   item.length,
+                              //       (index) => <dynamic>[
+                              //     index + 1,
+                              //     item[index].productId == 0 ?
+                              //     // newlist
+                              //     //       .isEmpty ?
+                              //     "-"
+                              //         :
+                              //     Get.find<ProductBrandController>()
+                              //         .productList
+                              //         .where((element) => element.id == item[index].productId || item[index].productId == 0 )
+                              //         .toList()
+                              //         .first
+                              //         .name,
+                              //     // .isNotEmpty
+                              //     // ? "Shop": Get.find<ProductBrandController>()
+                              //     // .productList
+                              //     // .where((element) => element.id == salesList[index].productId)
+                              //     // .toList()
+                              //     // .first
+                              //     // .name,
+                              //     Get.find<OutletsController>()
+                              //         .outletList
+                              //         .where((element) => element.id == item[index].outletId)
+                              //         .toList()
+                              //         .isNotEmpty
+                              //         ? Get.find<OutletsController>()
+                              //         .outletList
+                              //         .where((element) => element.id == item[index].outletId)
+                              //         .toList()
+                              //         .first
+                              //         .name
+                              //         : "N/A",
+                              //    item[index].quantity,
+                              //     item[index].discount,
+                              //     item[index].remarks ==null ? "-" : item[index].remarks,
+                              //   ],
+                              // ),
+                              // headerStyle: TextStyle(
+                              //   color: Colors.white,
+                              //   fontWeight: FontWeight.bold,
+                              // ),
+                              // headerDecoration: BoxDecoration(
+                              //   color:  Colors.cyan,
+                              // ),
+                              // rowDecoration: BoxDecoration(
+                              //   border: Border(
+                              //     bottom: BorderSide(
+                              //       color:  Colors.cyan,
+                              //       width: .5,
+                              //     ),
+                              //   ),
+                              // ),
+                              // cellAlignment: Alignment.centerRight,
+                              // cellAlignments: {0: Alignment.centerLeft},
+                            ),
+                          );
+                          //   ListTile(
+                          //   subtitle: Row(
+                          //     children: [
+                          //       // ElevatedButton(onPressed: (){
+                          //       //   setState(() {
+                          //       //     print(Get.find<SalesReportController>()
+                          //       //         .formattedSalesReportList[index].productId);
+                          //       // //    Get.find<ProductsController>()
+                          //       // //         .productList
+                          //       // //         .firstWhere((element) => element.id == Get.find<SalesReportController>()
+                          //       // //         .formattedSalesReportList[index].productId, orElse: ()=> null).name;
+                          //       //     //      Get.find<ProductBrandController>().productList.length;
+                          //       //   //  print(Get.find<SalesReportController>().formattedSalesReportList.length);
+                          //       //     //   print(Get.find<SalesReportController>().formattedformattedSalesReportList.first.productId);
+                          //       //   });
+                          //       // }
+                          //       //     , child: Text("Press")),
+                          //       // Text(Get.find<SalesReportController>()
+                          //       //     .formattedSalesReportList[index]
+                          //       //     .remarks
+                          //       //     .toString()),
+                          //       Text(Get.find<SalesReportController>()
+                          //           .formattedSalesReportList[index]
+                          //           .quantity
+                          //           .toString()),
+                          //       Spacer(),
+                          //       Get.find<SalesReportController>()
+                          //           .formattedSalesReportList[index]
+                          //           .discount ==
+                          //           null
+                          //           ? Text("Discount: 0 %")
+                          //           : Text(
+                          //           "Discount: ${Get.find<SalesReportController>().formattedSalesReportList[index].discount} %"),
+                          //     ],
                           //   ),
-                          // ),
-                          // cellAlignment: Alignment.centerRight,
-                          // cellAlignments: {0: Alignment.centerLeft},
-                        ),
-                      );
-                      //   ListTile(
-                      //   subtitle: Row(
-                      //     children: [
-                      //       // ElevatedButton(onPressed: (){
-                      //       //   setState(() {
-                      //       //     print(Get.find<SalesReportController>()
-                      //       //         .formattedSalesReportList[index].productId);
-                      //       // //    Get.find<ProductsController>()
-                      //       // //         .productList
-                      //       // //         .firstWhere((element) => element.id == Get.find<SalesReportController>()
-                      //       // //         .formattedSalesReportList[index].productId, orElse: ()=> null).name;
-                      //       //     //      Get.find<ProductBrandController>().productList.length;
-                      //       //   //  print(Get.find<SalesReportController>().formattedSalesReportList.length);
-                      //       //     //   print(Get.find<SalesReportController>().formattedformattedSalesReportList.first.productId);
-                      //       //   });
-                      //       // }
-                      //       //     , child: Text("Press")),
-                      //       // Text(Get.find<SalesReportController>()
-                      //       //     .formattedSalesReportList[index]
-                      //       //     .remarks
-                      //       //     .toString()),
-                      //       Text(Get.find<SalesReportController>()
-                      //           .formattedSalesReportList[index]
-                      //           .quantity
-                      //           .toString()),
-                      //       Spacer(),
-                      //       Get.find<SalesReportController>()
-                      //           .formattedSalesReportList[index]
-                      //           .discount ==
-                      //           null
-                      //           ? Text("Discount: 0 %")
-                      //           : Text(
-                      //           "Discount: ${Get.find<SalesReportController>().formattedSalesReportList[index].discount} %"),
-                      //     ],
-                      //   ),
-                      //   title:
-                      //   Text(
-                      //    //  newlist == null ? "Please Click The Show Button Above" :  newlist.toString()
-                      //    item[index].productId == 0 ?
-                      //       // newlist
-                      //       //       .isEmpty ?
-                      //       Get.find<SalesReportController>()
-                      //           .formattedSalesReportList[index]
-                      //           .remarks
-                      //           .toString()
-                      //      : newlist
-                      //     //Get.find<ProductsController>().productList.toSet().intersection(Get.find<SalesReportController>().formattedSalesReportList.toSet()).toList().first.name
-                      //     //   Get.find<ProductsController>()
-                      //     //   .productList
-                      //     //   .where((element) => 3== 3).first.name
-                      //     //  Get.find<ProductsController>().localSalesList.toString()
-                      //
-                      //   //  })
-                      //   //   Get.find<ProductBrandController>().productList.removeWhere((element) => Get.find<SalesReportController>()
-                      //   // .formattedSalesReportList.
-                      //  )
-                      // //   Text(
-                      // //       Get.find<ProductBrandController>().productList
-                      // //           .where((element) =>
-                      // //       element.id ==
-                      // //           Get.find<SalesReportController>()
-                      // //               .formattedSalesReportList[index].productId).toList().first.name.isEmpty ? "Refresh":  Get.find<ProductBrandController>().productList
-                      // //           .where((element) =>
-                      // //       element.id ==
-                      // //           Get.find<SalesReportController>()
-                      // //               .formattedSalesReportList[index].productId).toList().first.name
-                      // //    )
-                      // );
-                    })
-                    : Center(
-                  child: Text("No Data!!"),
+                          //   title:
+                          //   Text(
+                          //    //  newlist == null ? "Please Click The Show Button Above" :  newlist.toString()
+                          //    item[index].productId == 0 ?
+                          //       // newlist
+                          //       //       .isEmpty ?
+                          //       Get.find<SalesReportController>()
+                          //           .formattedSalesReportList[index]
+                          //           .remarks
+                          //           .toString()
+                          //      : newlist
+                          //     //Get.find<ProductsController>().productList.toSet().intersection(Get.find<SalesReportController>().formattedSalesReportList.toSet()).toList().first.name
+                          //     //   Get.find<ProductsController>()
+                          //     //   .productList
+                          //     //   .where((element) => 3== 3).first.name
+                          //     //  Get.find<ProductsController>().localSalesList.toString()
+                          //
+                          //   //  })
+                          //   //   Get.find<ProductBrandController>().productList.removeWhere((element) => Get.find<SalesReportController>()
+                          //   // .formattedSalesReportList.
+                          //  )
+                          // //   Text(
+                          // //       Get.find<ProductBrandController>().productList
+                          // //           .where((element) =>
+                          // //       element.id ==
+                          // //           Get.find<SalesReportController>()
+                          // //               .formattedSalesReportList[index].productId).toList().first.name.isEmpty ? "Refresh":  Get.find<ProductBrandController>().productList
+                          // //           .where((element) =>
+                          // //       element.id ==
+                          // //           Get.find<SalesReportController>()
+                          // //               .formattedSalesReportList[index].productId).toList().first.name
+                          // //    )
+                          // );
+                        })
+                        : Center(
+                      child: Text("No Data!!"),
+                    );
+                  }
                 ),
               ),
             ],

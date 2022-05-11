@@ -270,7 +270,6 @@ class Remarks extends State<Remark>{
                       ],
                     ),
                   ),
-
                 SizedBox(
                   width: 65,
                 ),
@@ -409,7 +408,7 @@ class Remarks extends State<Remark>{
                           remark: _type,
                        latitude: location.latitude.toString(),
                        longitude: location.longitude.toString(),
-                       // remark_image: base64Image,
+                         remark_image: base64Image,
                       );
                       print( location.latitude.toString());
                       print(location.longitude.toString());
