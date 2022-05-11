@@ -20,6 +20,7 @@ class OutletPost{
   String longitude;
   String salesOfficer;
  // String image;
+  String image;
   String visitFrequency;
   String townId;
   String routeId;
@@ -39,7 +40,7 @@ class OutletPost{
         this.contact,
         this.latitude,
         this.longitude,this.distributorId,
-
+        this.image,
    //     this.image,
 
         this.visitFrequency,
@@ -60,6 +61,7 @@ class OutletPost{
    // image = json['image'];
     visitFrequency = json['visit_frequency'];
     townId = json['town_id'];
+    image = json['image'];
     routeId = json['route_id'];
     channelId = json['channel_id'];
     categoryId = json['category_id'];
@@ -82,7 +84,7 @@ class OutletPost{
     data['contact'] = this.contact;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
-
+    data['image'] = this.image;
 
     //data['image'] = this.image;
 

@@ -115,9 +115,9 @@ class _DashBoard extends State<DashBoard>{
     );
   }
 
-  void start(){
-    countdown = Timer.periodic(Duration(seconds: 1), (_)=> setcount());
-  }
+  // void start(){
+  //   countdown = Timer.periodic(Duration(seconds: 1), (_)=> setcount());
+  // }
 
   void setcount(){
     final reduceSceond = 1;
@@ -133,7 +133,7 @@ class _DashBoard extends State<DashBoard>{
 
   @override
   void initState() {
-    start();
+    //start();
     // Get.find<ProductsController>();
     //  Get.find<AddressController>();
     //  Get.find<BankController>();

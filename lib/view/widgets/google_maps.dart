@@ -144,14 +144,14 @@ class _GoogleMaps extends State<GoogelMaps>{
     //getmarkers();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    setMarkers();
-  //  _markers;
-   // getmarkers();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   setMarkers();
+  // //  _markers;
+  //  // getmarkers();
+  // }
  // Maps() {
  //   Get.find<OutletsController>().outletList.forEach((element) {marker.add(
  //       MapMarker(id: element.id.toString(), position: LatLng(double.parse(element.latitude), double.parse(element.longitude)), icon: as)

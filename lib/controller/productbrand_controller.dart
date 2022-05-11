@@ -113,12 +113,10 @@ class ProductBrandController extends GetxController {
   ProductBrandController() {
     getBrandList();
   }
-
   // getSelectedAreaId(String area) {
   //   var newList =
   //   productList.where((element) => element.localLevelEn == selectedArea);
-  //   selectedAreaId = newList.first.id.toString();
-  //   update();
+  //   selectedAreaId = newList.f
   // }
   setSelectedBrand(String brand) {
     selectedBrand = brand;

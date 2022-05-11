@@ -662,17 +662,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                            route = suggestion.route_id.toString() == null ? 2 : suggestion.route_id.toString();
                            visit_frequency = suggestion.visitfrequency.toString();
                            distributer_id = suggestion.distributorId;
-                            // _zoneCntrl.text = suggestion.zone;
-                            // _townCntrl.text = suggestion.town;
-                            // _channelCntrl.text = suggestion.channel;
-                            // _categoryCntrl.text = suggestion.category;
-                            // _routeCntrl.text = suggestion.route;
-                            // _visitfrequencyCntrl.text = suggestion.visitfrequency;
-                           //suggestion  = Constants.selectid;
-                           // final outlet = suggestion;
-                           // Constants.id = suggestion;
-                            //outlet.name = this._nameCntrl.tsext;
-                            //ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text("Selected ${outlet.name.toString()}"),));
                           },
                           itemBuilder: (context, suggestion){
                            // final outlet = suggestion;åßß
@@ -705,9 +694,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 labelText: "Phone",
                                 prefixIcon: Icon(Icons.phone)),
                             controller: _phoneCntrl,
-                           // onTap: (){
-                           //    Constants.selectid.ownerName;
-                           //    },
                           ),
                         ),
                        // _buildProvinceDropdown(),
@@ -913,7 +899,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         //   ),
                         // ),
                         Container(
-
                           height: 100,
                           child: _imageFile == null
                               ? Center(
@@ -964,8 +949,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                         ),
                                       );
                                     });
+
                                 print(Get.find<OutletsController>().outletList.first.town_id);
-                                print( "");
+
                                 var outlet = OutletPost(
                                   id: id == null ? DateTime.now().millisecondsSinceEpoch : id,
                                   outletId:  DateTime.now().millisecondsSinceEpoch.toString() ,
@@ -994,6 +980,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 //Constants.selectedRoute.id.toString(),
                              //   Get.find<Routecontroller>().selectedroute,
                                visitFrequency: visit_frequency == null ? "Weekly": visit_frequency,
+                               image: base64Image,
                                // town: Get.find<TownController>().selectedtown,
                            //  zone:  zone,
                              // zone:  Constants.selectedzone.id.toString(),
@@ -1004,10 +991,12 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                   longitude: position.longitude.toString(),
                                  // image: base64Image,
                                 );
+
                                 if (conn) {
                                   var response = await registerOutletPost(outlet);
-                                  await DatabaseHelper.instance
-                                      .insertOutlet(outlet);
+                                  print(outlet);
+                                  // await DatabaseHelper.instance
+                                  //     .insertOutlet(outlet);
                                   Get.back();
 
                                   Utilities.showInToast(response.message,
