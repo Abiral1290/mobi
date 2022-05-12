@@ -887,6 +887,8 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
       //    Get.to(DetailsProduct());
       //role.add(selectedProductList);
       //     Get.back();
+
+          Get.find<ProductBrandController>().quantity.add(_textEditingController.text);
       Get.back();
       // Utilities.showInToast(response.message,
       //     toastType: response.success
@@ -3297,12 +3299,9 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                               fontSize: 15,
                                                               fontWeight: FontWeight.bold),
                                                         ),
-
                                                       ],
                                                     )
-
                                                 ),
-
                                                 // Padding(
                                                 //   padding: const EdgeInsets.only(top: 1),
                                                 //   child:
@@ -3327,11 +3326,9 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                 //       fontSize: 10,
                                                 //       fontWeight: FontWeight.bold),
                                                 // ),
-
                                               ],
                                             )
                                         ),
-
                                         // MaterialButton(
                                         //   onPressed: () {
                                         //     Get.to(() =>
@@ -3348,7 +3345,6 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                         //   padding: EdgeInsets.all(10.0),
                                         //   child: Text("Sell Product"),
                                         // ),
-
                                       ],
                                     ),
                                   ),

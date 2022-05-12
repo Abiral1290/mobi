@@ -155,11 +155,8 @@ class Outlet  {
         this.category_id,
         this.channel_id,
         this.selected,
-
       this.visitfrequency,
-
       });
-
 
   Outlet.fromJson(Map<String, dynamic> json) {
     id =  json['id'] ;
@@ -220,8 +217,6 @@ class UserApi{
 
 
   List<String> outss;
-
-
   // static Future<List<Outlet>> getOutletSuggestions(String query) async {
   //   final url = Uri.parse(ApiUrls.outlets  + Constants.selectedDistributor.id.toString());
   //   final response = await http.get(url);
@@ -242,7 +237,6 @@ class UserApi{
   //     throw Exception();
   //   }
   // }
-
   static Future<List<Outlet>> getUserSuggestionsa(String query) async {
     //
     var headers = {
@@ -296,8 +290,6 @@ class UserApi{
 
   static Future<List<Outlet>> getlist(String query)async{
     final outl = Constants.selectedOutlets.name;
-
-
   }
   static Future<List<Outlet>> getUserSuggestionsroute() async {
     final url = Uri.parse(ApiUrls.outlets  + Constants.selectedRoute.id.toString());

@@ -3541,9 +3541,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                         "id": outletid,
                        // "batch_id": batchId,
                         "remarks":  Get.find<OutletsController>().selectedDrowpdown,
-
                       });
-
                       if (selectedProductList.isEmpty) {
                         Utilities.showInToast("Please add a product",
                             toastType: ToastType.ERROR);
@@ -4026,16 +4024,12 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                       padding: EdgeInsets.all(10.0),
                       child: Text("Sell Product"),
                     ),
-
                   ],
                 ),
               ),
             );
       });
-
-
     }
-
 
       showAlertDialog( BuildContext context) {
 
