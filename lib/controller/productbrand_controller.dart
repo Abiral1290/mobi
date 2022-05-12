@@ -95,6 +95,7 @@ class ProductBrandController extends GetxController {
   List<String> name= [];
   List<String> unit = [];
   List<int> value = [];
+  List<String> quantity = [];
   List<String> catalog = [];
   List<SalesReport> salesReportList = [];
 
@@ -106,7 +107,7 @@ class ProductBrandController extends GetxController {
   String selectedProvince = "";
   String selectedname = "";
   String selectedArea = "";
-  String selectedAreaId = "";
+  List<String> selectedAreaId = [];
   // var districtList = {};
   // var areaList = {};
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
@@ -193,7 +194,7 @@ class ProductBrandController extends GetxController {
   }
   getSelectedId(String id){
     var newlists = productList.where((element) => element.name == name.first);
-    selectedAreaId = newlists.first.id.toString();
+    selectedAreaId.add(newlists.first.id.toString())  ;
     unit.add(newlists.toString());
      update();
   }
@@ -251,7 +252,7 @@ class ProductBrandController extends GetxController {
       name.add(names.toString()) ;
     });
     var newlists = productList.where((element) => element.name == name.first);
-    selectedAreaId = newlists.first.id.toString();
+    selectedAreaId.add(newlists.first.id.toString());
     // var new_value = productList.where((element) => element.value == value.first);
     // selectedValue = new_value.first.value;
    // setSelectedName(name.first);

@@ -395,11 +395,8 @@ class _View_routeState extends State<View_route> {
   bool serviceEnabled;
 
   String checkInId = "";
-
   Timer countdown;
-
   Duration myDuration = Duration(days: 5);
-
   //List<Routees> list = [];
   @override
   Widget build(BuildContext context) {
@@ -409,7 +406,6 @@ class _View_routeState extends State<View_route> {
       Workmanager().initialize(
         callbackDispatcher,
       );
-
       Workmanager().registerPeriodicTask(
         "1",
         fetchBackground,
