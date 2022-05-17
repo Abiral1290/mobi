@@ -79,6 +79,7 @@ import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/preference_controller.dart';
 import 'package:mobitrack_dv_flutter/model/address.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
+import 'package:mobitrack_dv_flutter/model/punched.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import "package:collection/collection.dart";
 
@@ -89,6 +90,7 @@ class ProductBrandController extends GetxController {
   List<Product> productList = [];
   List<String> brandList = [];
   List<String> search =[];
+  List<Punched> punched_product = [];
   // List<String> districtList = [];
   // List<String> areaList = [];
   List<Product> names = [];
@@ -98,6 +100,7 @@ class ProductBrandController extends GetxController {
   List<String> quantity = [];
   List<String> catalog = [];
   List<SalesReport> salesReportList = [];
+  int calculate = 0;
 
   String selectedBrand = "";
   String selectedName = "";
@@ -108,6 +111,8 @@ class ProductBrandController extends GetxController {
   String selectedname = "";
   String selectedArea = "";
   List<String> selectedAreaId = [];
+  List<String> selectedunit = [];
+  List<String> selectedunits = [];
   // var districtList = {};
   // var areaList = {};
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
@@ -182,6 +187,8 @@ class ProductBrandController extends GetxController {
   //     }
   //   });
   // }
+
+
   getProvinceList() {
     var newprovinceList =
     productList.groupListsBy((element) => element.brandname);
@@ -192,12 +199,12 @@ class ProductBrandController extends GetxController {
    // getNameList(brandList.first);
     update();
   }
-  getSelectedId(String id){
-    var newlists = productList.where((element) => element.name == name.first);
-    selectedAreaId.add(newlists.first.id.toString())  ;
-    unit.add(newlists.toString());
-     update();
-  }
+  // getSelectedId(String id){
+  //   var newlists = productList.where((element) => element.name == name.first);
+  //   selectedAreaId.add(newlists.first.id.toString())  ;
+  //   unit.add(newlists.toString());
+  //    update();
+  // }
   // getSelected(){
   //   // var newlists = productList.where((element) => element.name == name.first);
   //   // selectedAreaId = newlists.first.id.toString();
@@ -239,7 +246,15 @@ class ProductBrandController extends GetxController {
       update();
     }
   }
+  getparsename(String brand){
+    var newlist= productList.where((element) => element.name == brand);
+    selectedunits.add(newlist.first.id.toString());
 
+    var newlists = productList.where((element) => element.name == brand);
+    selectedUnit = newlists.first.value.toString();
+    selectedunit.add(newlist.first.value.toString());
+
+  }
   getNameList(String selectedBrand) {
    // districtList = [];
     name =[];
@@ -252,7 +267,12 @@ class ProductBrandController extends GetxController {
       name.add(names.toString()) ;
     });
     var newlists = productList.where((element) => element.name == name.first);
-    selectedAreaId.add(newlists.first.id.toString());
+    selectedArea = newlists.single.id.toString();
+    selectedAreaId.add(newlists.single.id.toString());
+
+    // var newlist = productList.where((element) => element.name == name.first);
+    // selectedUnit = newlists.first.value.toString();
+    // selectedunit.add(newlist.first.value.toString());
     // var new_value = productList.where((element) => element.value == value.first);
     // selectedValue = new_value.first.value;
    // setSelectedName(name.first);
@@ -324,6 +344,9 @@ class ProductBrandController extends GetxController {
         }
       });
     } else {}
+  }
+  calc(){
+    Get.find<ProductBrandController>().punched_product.forEach((element) {Get.find<ProductBrandController>().calculate += element.Cost;});
   }
   getBrandList() async {
     var conn = await Utilities.isInternetWorking();

@@ -3407,9 +3407,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
+import 'package:mobitrack_dv_flutter/model/outlet_delete_request.dart';
 import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
@@ -3547,7 +3549,6 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                             toastType: ToastType.ERROR);
                         return;
                       }
-
                       sales.orders = "dd";
                       // sales.distributorId = "12";
                   //    sales.remark =jsonEncode(selectedProductList);
@@ -4031,7 +4032,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
       });
     }
 
-      showAlertDialog( BuildContext context) {
+      showAlertDialog( BuildContext context,int outletid) {
 
         // set up the buttons
         Widget cancelButton = TextButton(
@@ -4042,8 +4043,51 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
         );
         Widget continueButton = TextButton(
           child: Text("Continue"),
-          onPressed:  () {
-            Get.back();
+          onPressed:  () async {
+            var conn = await Utilities.isInternetWorking();
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text('Please Wait'),
+                    content: Column(
+                      children: [
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(conn
+                              ? 'Registering new Sales Outlet'
+                              : 'Saving offline'),
+                        ),
+                        CupertinoActivityIndicator(
+                          radius: 17,
+                        )
+                      ],
+                    ),
+                  );
+                });
+            var delete = DeleteRequest(
+              outletId: outletid.toString(),
+              userId: Get.find<AuthController>().user.id.toString(),
+              remark: "0",
+            );
+            if(conn){
+              var response = await DeleteOutletPost(delete);
+
+              Utilities.showInToast(response.message,
+                  toastType: response.success
+                      ? ToastType.SUCCESS
+                      : ToastType.ERROR);
+              Get.back();
+              Get.back();
+            }else{
+              Get.back();
+            //  outlet.synced = false;
+
+              Utilities.showInToast('Storing Offline',
+                  toastType: ToastType.INFO);
+            }
           },
         );
 
@@ -4758,7 +4802,9 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                               children: [
                                 // A SlidableAction can have an icon and/or a label.
                                 SlidableAction(
-                                  onPressed:showAlertDialog,
+                                  onPressed:(text){
+                                    showAlertDialog(context,item.id);
+                                  },
                                   backgroundColor: Colors.black,
                                   foregroundColor: Colors.white,
                                   icon: Icons.delete,

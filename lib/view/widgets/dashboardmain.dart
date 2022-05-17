@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mobitrack_dv_flutter/controller/dashboard_Controller.dart';
 import 'package:mobitrack_dv_flutter/controller/routes_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
@@ -20,6 +21,8 @@ class DashBoardMain extends StatefulWidget{
   }
 }
 class _DashBoardMain extends State<DashBoardMain>{
+
+  var dash = Get.lazyPut(()=>DashBoard_Controller());
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -99,10 +102,10 @@ class _DashBoardMain extends State<DashBoardMain>{
                                   lineWidth: 18.0,
                                   animation: true,
                                   animationDuration: 1200,
-                                  percent: 0.8,
+                                  percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.target.toString())/100,
                                   circularStrokeCap: CircularStrokeCap.butt,
-                                  center: const Text(
-                                    " 0%",
+                                  center:  Text(
+                                    Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20.0),
@@ -115,10 +118,10 @@ class _DashBoardMain extends State<DashBoardMain>{
                               ),
                               Expanded(
                                 child: ListView(
-                                  children: const [
+                                  children:  [
                                     ListTile(
                                       title: Text(
-                                        ' 0',
+                                        Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16.0),
@@ -133,7 +136,7 @@ class _DashBoardMain extends State<DashBoardMain>{
                                     ),
                                     ListTile(
                                       title: Text(
-                                        ' 0',
+                                        Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16.0),
@@ -205,7 +208,7 @@ class _DashBoardMain extends State<DashBoardMain>{
                               lineWidth: 18.0,
                               animation: true,
                               animationDuration: 1200,
-                              percent: 0.3,
+                              percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.target.toString()),
                               circularStrokeCap: CircularStrokeCap.butt,
                               center: const Text(
                                 " 0%",
@@ -221,10 +224,10 @@ class _DashBoardMain extends State<DashBoardMain>{
                           ),
                           Expanded(
                             child: ListView(
-                              children: const [
+                              children:   [
                                 ListTile(
                                   title: Text(
-                                    '0',
+                                    Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16.0),
@@ -239,7 +242,7 @@ class _DashBoardMain extends State<DashBoardMain>{
                                 ),
                                 ListTile(
                                   title: Text(
-                                    '0',
+                                    Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16.0),
@@ -295,7 +298,7 @@ class _DashBoardMain extends State<DashBoardMain>{
                       mycard(
                         text: "Total orders",
                       ),
-                      mycard(text: "0"),
+                      mycard(text: Get.find<DashBoard_Controller>().dashboard.first.orderRecevied.toString()),
                     ],
                   ),
                   Column(

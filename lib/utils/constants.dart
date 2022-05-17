@@ -17,6 +17,7 @@ class Constants {
   static Routees selectedRoute;
   static String selectmyRoute;
   static String selectedbrand;
+  static String salesoficer_id;
   static int increase_unsucessfulcall =0;
   static int storage;
   static Outlet selectedbrand_name;

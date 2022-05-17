@@ -366,6 +366,7 @@ import 'package:mobitrack_dv_flutter/view/widgets/dashboardmain.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/route.dart';
 import 'package:workmanager/workmanager.dart';
 
+import '../controller/auth_controller.dart';
 import '../controller/location_controller.dart';
 import '../controller/outlets_controller.dart';
 import '../controller/preference_controller.dart';
@@ -394,6 +395,8 @@ class _View_routeState extends State<View_route> {
 
   bool serviceEnabled;
 
+
+  var user = Get.find<AuthController>().user;
   String checkInId = "";
   Timer countdown;
   Duration myDuration = Duration(days: 5);
@@ -503,6 +506,7 @@ class _View_routeState extends State<View_route> {
                 print(Constants.selectedRoute.id);
                 print(routeList[index].id);
                 selectedRoute = routeList[index];
+                Constants.salesoficer_id= user.id.toString();
                 _selectedIndex.value = index;
                 Get.find<OutletsController>().fetchOutlets();
                 print(Constants.selectedDistributor);
