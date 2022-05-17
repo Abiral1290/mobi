@@ -626,6 +626,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
 
  Outlet outss;
    var selectedProductList = [].obs;
+   int _selected = 0;
 
   var brand = Get.lazyPut(()=>ProductBrandController());
 
@@ -1005,23 +1006,27 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
           leading: IconButton(onPressed: (){Get.to(() => DashBoard());}, icon: Icon(Icons.arrow_back,color: Colors.black,)),
           title: Text(widget.outlet.name,style: TextStyle(color: Colors.black),),
           actions: [
-            ElevatedButton(onPressed: (){Get.to(()=> DetailsProduct());}, child: Text("Press"))
+            ElevatedButton(onPressed: (){
+              print(Get.find<ProductBrandController>().selectedAreaId);
+              print(Get.find<ProductBrandController>().selectedArea);
+          //    Get.to(()=> DetailsProduct());
+              }, child: Text("Press"))
           ],
         ),
         floatingActionButton:  FloatingActionButton.extended(
           backgroundColor: Colors.black,
           onPressed: () async {
-            if (role == null) {
+            if (Get.find<ProductBrandController>().punched_product.isEmpty) {
             //  print( Constants.selectedbrand );
               Get.to(() => Remark(outlet: widget.outlet,));
               print(widget.outlet.name);
             //  Constants.increase++;
             //  Constants.selectedbrand = outlet.id.toString();
               // Utilities.showInToast("Please add a product",
-              //     toastType: ToastType.ERROR);
-              return;
+              ////     toastType: ToastType.ERROR);
+
             }else{
-              Get.to(()=> PunchedProduct(punched:   Get.find<ProductBrandController>().unit ,));
+              Get.to(()=> PunchedProduct(outlet: widget.outlet,));
               //   sales.orders = jsonEncode(selectedProductList);
               // // sales.distributorId = "11";
               //   sales.soldAt = DateTime.now().toString();
@@ -3939,6 +3944,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                             shrinkWrap: true,
                             itemCount: Get.find<ProductBrandController>().brandList.length,
                             itemBuilder: (context,index){
+                              my_product =  Get.find<ProductBrandController>().brandList[index];
                               var item = Get.find<ProductBrandController>().brandList[index];
                               //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
                               return    Card(
@@ -3958,8 +3964,11 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                   // outlet[index].selected ? Colors.grey
                                   elevation: 7.0,
                                   child: ExpansionTile(
+                                      initiallyExpanded: index == _selected,
                                     onExpansionChanged: (text){setState(() {
                                       Get.find<ProductBrandController>().getNameList(item);
+                                      _selected = index;
+
                                     });
                                     },
                                     title: Text(item),
@@ -3988,15 +3997,219 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                               var item = Get.find<ProductBrandController>().name[index];
                                               return InkWell(
                                                 onTap: (){
-                                                  showAlertDialog();
+                                               //   showAlertDialog();
+                                                  Widget cancelButton = TextButton(
+                                                    child: Text("Cancel"),
+                                                    onPressed:  () {
+                                                      Get.back();
+                                                    },
+                                                  );
+                                                  Widget continueButton = TextButton(
+                                                      child: Text("Continue"),
+                                                      onPressed:  () async {
+                                                        //  if (selectedProductList == null  ) {
+                                                        // selectedProductList.add({
+                                                        //   "product_id": Get.find<ProductBrandController>().selectedAreaId,
+                                                        //   "batch_id": "",
+                                                        //   "quantity": _textEditingController?.text,
+                                                        //   "discount": discountPercent
+                                                        // });
+                                                        // //     Get.to(BrandWiseProduct(sales: selectedProductList , outlet: outlet,));
+                                                        // print(Get.find<ProductBrandController>().selectedAreaId);
+                                                        // print(position.latitude);
+                                                        // print(position.longitude);
+                                                        // var conn = await Utilities.isInternetWorking();
+                                                        // if (conn) {
+                                                        // print(widget.outlet.id);
+                                                        // showDialog(
+                                                        // barrierDismissible: true,context: context,
+                                                        // builder: (context) {
+                                                        // return CupertinoAlertDialog(
+                                                        // title: Text('Please Wait'),
+                                                        // content: Column(
+                                                        // children: [
+                                                        // Divider(),
+                                                        // Padding(
+                                                        // padding: const EdgeInsets.all(8.0),
+                                                        // child: Text('Adding new Product'
+                                                        // ),
+                                                        // ),
+                                                        // CupertinoActivityIndicator(
+                                                        // radius: 17,
+                                                        // )
+                                                        // ],
+                                                        // ),
+                                                        // );
+                                                        // });
+                                                        // var location = Get.find<LocationController>();
+                                                        // var saless = Sales(
+                                                        //   route: Constants.selectedRoute.toString(),
+                                                        //   orders: jsonEncode(selectedProductList),
+                                                        //   remark:"",
+                                                        //   //   "[{ \"product_id\" :\"2\", \"batch_id\": \"3\", \"quantity\" : \"30\", \"discount\": \"10\"}]",
+                                                        //   soldAt:
+                                                        //   DateTime.now().toString(),
+                                                        //   outletId: widget.outlet.id.toString(),
+                                                        //   latitude:  location.userPosition.latitude.toString(),
+                                                        //   longitude:   location.userPosition.longitude.toString(),
+                                                        //   //remark_image: "",
+                                                        // );
+                                                        // print(widget.outlet.id.toString());
+                                                        // print(location.userPosition.latitude.toString());
+                                                        // print(location.userPosition.longitude.toString());
+                                                        // print(widget.outlet.id);
+                                                        // // var register = Outlet(
+                                                        // //   outid:  outlet.id,
+                                                        // //   route_id: Constants.selectedRoute.toString(),
+                                                        // //   nme:  outlet.name,
+                                                        // //   contact: outlet.contact,
+                                                        // //   latitude: outlet.latitude,
+                                                        // //   longitude: outlet.longitude
+                                                        // // );
+                                                        //
+                                                        // var response = await sellProductApi(saless);
+                                                        // Constants.value_increase++;
+                                                        // // Get.find<PreferenceController>().saveProduct(Get.find<ProductBrandController>().selectedAreaId);
+                                                        // //  await DatabaseHelper.instance
+                                                        // //      .insertSales(sales);
+                                                        // //  Get.find<ProductBrandController>().value.add(saless);
+                                                        // print(Constants.value_increase++);
+                                                        //  Constants.increase ++;
+                                                        //  selected = true ? Constants.increase +1 : selected =false;
+                                                        //Get.find<ProductsController>().storeSalesOffline(saless);
+                                                        //    Get.to(DetailsProduct());
+                                                        //role.add(selectedProductList);
+                                                        //     Get.back();
+
+                                                        Get.find<ProductBrandController>().getparsename(item);
+                                                        Get.find<ProductBrandController>().quantity.add(_textEditingController.text);
+                                                        print(Get.find<ProductBrandController>().punched_product.length);
+                                                        int total = int.parse(_textEditingController.text) * int.parse(Get.find<ProductBrandController>().selectedUnit);
+                                                        print( Get.find<ProductBrandController>().selectedUnit);
+                                                        Get.find<ProductBrandController>().punched_product.add(Punched(Name: item,
+                                                            quantity: int.parse(_textEditingController.text),Cost: total));
+
+                                                        _textEditingController.clear();
+                                                     //  _textEditingController.clear();
+                                                        Get.back();
+                                                        // Utilities.showInToast(response.message,
+                                                        //     toastType: response.success
+                                                        //         ? ToastType.SUCCESS
+                                                        //         : ToastType.ERROR);
+                                                        //  Get.find<ProductsController>().sellProducts(sales);
+                                                        //}
+                                                        // else {
+                                                        //   //  Get.find<ProductsController>().storeSalesOffline(saless);
+                                                        // }
+                                                        //   Get.find<ProductsController>().addProductInList(productId);
+                                                        // } else {
+                                                        //   if(selectedProductList != null || addedQuantity != null){
+                                                        //     Utilities.showInToast("Please add quantity");
+                                                        //   }
+                                                        // Get.back();
+                                                      }
+                                                  );
+                                                  // set up the AlertDialog
+                                                  AlertDialog alert = AlertDialog(
+                                                    title: Text(my_product),
+                                                    content: Row(
+                                                      children: [
+                                                        // TextField(
+                                                        //
+                                                        // ),
+                                                        Expanded(
+                                                          child: TextFormField(
+                                                            controller: _textEditingController,
+                                                            keyboardType: TextInputType.number,
+                                                            //    controller: userInput,
+                                                            style: TextStyle(
+                                                              fontSize: 24,
+                                                              color: Colors.blue,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                value = _textEditingController?.text;
+                                                               // _textEditingController.clear();
+                                                                //      userInput.text = value.toString();
+                                                              });
+                                                            },
+                                                            // decoration: InputDecoration(
+                                                            //   focusColor: Colors.white,
+                                                            //   //add prefix icon
+                                                            //   prefixIcon: Icon(
+                                                            //     Icons.person_outline_rounded,
+                                                            //     color: Colors.grey,
+                                                            //   ),
+                                                            //
+                                                            //   errorText: "Error",
+                                                            //
+                                                            //   border: OutlineInputBorder(
+                                                            //     borderRadius: BorderRadius.circular(10.0),
+                                                            //   ),
+                                                            //
+                                                            //   focusedBorder: OutlineInputBorder(
+                                                            //     borderSide:
+                                                            //     const BorderSide(color: Colors.blue, width: 1.0),
+                                                            //     borderRadius: BorderRadius.circular(10.0),
+                                                            //   ),
+                                                            //   fillColor: Colors.grey,
+                                                            //
+                                                            //   hintText: "Email/Mobile",
+                                                            //
+                                                            //   //make hint text
+                                                            //   hintStyle: TextStyle(
+                                                            //     color: Colors.grey,
+                                                            //     fontSize: 16,
+                                                            //     fontFamily: "verdana_regular",
+                                                            //     fontWeight: FontWeight.w400,
+                                                            //   ),
+                                                            //
+                                                            //   //create lable
+                                                            //   labelText: 'Email/Mobile',
+                                                            //   //lable style
+                                                            //   labelStyle: TextStyle(
+                                                            //     color: Colors.grey,
+                                                            //     fontSize: 16,
+                                                            //     fontFamily: "verdana_regular",
+                                                            //     fontWeight: FontWeight.w400,
+                                                            //   ),
+                                                            // ),
+                                                          ),
+                                                        ),
+                                                        Text(" Cost :${Get.find<ProductBrandController>().selectedValue.toString()}"
+                                                          // "${_textEditingController?.value == null ? "0": _textEditingController?.value}"
+                                                          //     " ${Get.find<ProductBrandController>().selectedValue * int.parse(_textEditingController?.text) == null?
+                                                          // "0" :Get.find<ProductBrandControllertroller>().selectedValue * int.parse(_textEditingController?.text)}"
+                                                        ),
+                                                        // TextButton(onPressed:  add,
+                                                        //     child: Text("-",style: TextStyle(fontWeight: FontWeight.bold),)),
+                                                        // Text("${counter}"),
+                                                        // TextButton(onPressed:  sub,
+                                                        //     child: Text("+",style: TextStyle(fontWeight: FontWeight.bold),)),
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      cancelButton,
+                                                      continueButton,
+                                                    ],
+                                                  );
+                                                  // show the dialog
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return alert;
+                                                    },
+                                                  );
                                                   Get.find<ProductBrandController>().unit.add(item);
                                                   print( Get.find<ProductBrandController>().unit.first);
                                                   //   role.add(item);
                                                   //   print(role);
                                                   //     var r =[item];
                                                   // role = r;
+
                                                 },
-                                                //     (){
+                                                //     (){.
                                                 //   setState(() {
                                                 //     showAlertDialog();
                                                 //   });

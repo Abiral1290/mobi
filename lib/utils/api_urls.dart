@@ -16,11 +16,13 @@ class ApiUrls {
   static final String outlets = _endPoint + 'route_wise_outlet?route_id=';
   static final String getoutlet = _endPoint + 'getalloutlets';
   static final String route = _endPoint + 'routelog';
+  static final String deleteRequest = _endPoint + 'outlet_delete_request';
   //202.52.240.148:8095/dv_tradz≈çzzzzzzzΩing/api/outlets? distributor_id=1
   static final String products = _endPoint + 'products';
   static final String sales = _endPoint + 'sales';
   static final String routes = _endPoint + 'routelist';
   static final String appversion = _endPoint + 'app_versions';
+  static final String dashboard = _endPoint + "user_report/";
 
   static final String banks = _endPoint + 'banks';
   static final String address = _endPoint + 'get-locations';
