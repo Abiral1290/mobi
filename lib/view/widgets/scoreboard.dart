@@ -683,6 +683,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:mobitrack_dv_flutter/controller/dashboard_Controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/routes_controller.dart';
 import 'package:mobitrack_dv_flutter/model/dashboard.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
@@ -690,20 +691,107 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../controller/auth_controller.dart';
+import '../../controller/location_controller.dart';
+import '../../controller/preference_controller.dart';
 import '../../controller/sales_report_controller.dart';
+import '../../model/check_in_out.dart';
+import '../../model/routes.dart';
 import '../../utils/constants.dart';
 import '../../utils/pdf_api.dart';
+import '../../utils/utilities.dart';
 import '../report/sales_report_pdf_generator.dart';
 import '../view_distributor.dart';
 
 
 
-class ScoreBoard extends StatelessWidget {
+class ScoreBoard extends StatefulWidget {
+
+  @override
+  State<ScoreBoard> createState() => _ScoreBoardState();
+}
+
+class _ScoreBoardState extends State<ScoreBoard> {
   var product =  Get.lazyPut<ProductsController>(() => ProductsController());
+
   var saleproduct = Get.lazyPut(()=>SalesReportController());
+
   var dashboard = Get.lazyPut(()=>DashBoard_Controller());
+
+  var selectedRoute = Routes();
+
+  var user = Get.find<AuthController>().user;
+
+  String checkInId = "";
+
   @override
   Widget build(BuildContext context) {
+
+    press() async{
+      var location = Get.find<LocationController>();
+      //  workManagerInitialization();
+      var conn = await Utilities.isInternetWorking();
+      if (conn) {
+        // Test if location services are enabled.
+        // serviceEnabled =
+        // await Geolocator.isLocationServiceEnabled();
+        // if (!serviceEnabled) {
+        //   return Utilities.showInToast(
+        //       'Location services are disabled.',
+        //       toastType: ToastType.ERROR);
+        // }
+        // check for permission
+        // permission = await Geolocator.checkPermission();
+        // if (permission == LocationPermission.denied ||
+        //     permission ==
+        //         LocationPermission.deniedForever) {
+        //   Utilities.showInToast(
+        //       "Location permission is denied, Please enable permission for future use",
+        //       toastType: ToastType.ERROR);
+        //   // request permission
+        //   permission = await Geolocator.requestPermission();
+        //   if (permission == LocationPermission.denied ||
+        //       permission ==
+        //           LocationPermission.deniedForever) {
+        // Permissions are denied,
+        //     return Utilities.showInToast(
+        //         "Location permission is denied, Please enable permission for future use",
+        //         toastType: ToastType.ERROR);
+        //   }
+        // }
+
+        await Get.find<LocationController>()
+            .getCurrentPosition();
+        if (location.userPosition != null) {
+          var resp = await checkInAPI(
+              location.userPosition.latitude.toString(),
+              location.userPosition.longitude.toString());
+          if (resp.success) {
+            //  location.startLocationService();
+            Get.find<PreferenceController>()
+                .setCheckInValue(true,
+                checkInId: resp.response.toString());
+            Constants.checkInOut = resp.response.toString();
+            checkInId = resp.response.toString();
+            print(location.userPosition.latitude.toString());
+            print(location.userPosition.longitude.toString());
+          //  Get.to(() => DashBoard());
+
+          } else {
+            Utilities.showInToast(resp.message,
+                toastType: ToastType.ERROR);
+          }
+        } else {
+          Utilities.showInToast(
+              "Could not get your location",
+              toastType: ToastType.ERROR);
+        }
+      } else {
+        Utilities.showInToast(
+            'Please connect to the internet to check in!',
+            toastType: ToastType.ERROR);
+      }
+    }
     return   Scaffold(
         body:   Constants.selectmyRoute == null?
         Container(
@@ -725,8 +813,28 @@ class ScoreBoard extends StatelessWidget {
                             backgroundColor: MaterialStateProperty.all(Colors.black),
                           ),
                           onPressed: (){
+                            setState(() {
+                              Constants.selectedRoute =  Get.find<Routecontroller>().routeList.first;
+                              press();
+                            });
+                            print(Constants.selectedRoute.id);
+                            print( Get.find<Routecontroller>().routeList.first.id);
+                            selectedRoute = Get.find<Routecontroller>().routeList.first;
+                            Constants.salesoficer_id= user.id.toString();
+                           // _selectedIndex.value = index;
+                            Get.find<OutletsController>().fetchOutlets();
+                            print(Constants.selectedDistributor);
+                            Constants.selectmyRoute = Get.find<Routecontroller>().routeList.first.routename  ;
+                         //   setState(() {
 
-                            Get.to(()=> View_route());
+                         //   });
+                            // Get.find<PreferenceController>()
+                            //     .setDistributor(jsonEncode(Constants.selectedDistributor));
+                            Utilities.showInToast(
+                                "Route : ${selectedRoute.routename}");
+
+                            Get.back() ;
+                           // Get.to(()=> View_route());
 
                           },child: Text("Route")),
                     ],
@@ -774,7 +882,6 @@ class ScoreBoard extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-
                                     Container(
                                       alignment: AlignmentDirectional.center,
                                       child:   Text(
@@ -797,17 +904,14 @@ class ScoreBoard extends StatelessWidget {
                           elevation: 10,
                           child: Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  alignment: AlignmentDirectional.topStart,
-                                  child: const Text(
-                                    'Calls',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15.0,
-                                        color: Color.fromARGB(255, 80, 79, 79)),
-                                  ),
+                              Container(
+                                alignment: AlignmentDirectional.topStart,
+                                child: const Text(
+                                  'Calls',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                      color: Color.fromARGB(255, 80, 79, 79)),
                                 ),
                               ),
                               Container(
@@ -817,32 +921,32 @@ class ScoreBoard extends StatelessWidget {
                             ],
                           )),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                          elevation: 10,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  alignment: AlignmentDirectional.topStart,
-                                  child: const Text(
-                                    'ACTIVITY',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15.0,
-                                        color: Color.fromARGB(255, 80, 79, 79)),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 90,
-                                child: activity(),
-                              ),
-                            ],
-                          )),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Card(
+                    //       elevation: 10,
+                    //       child: Column(
+                    //         children: [
+                    //           Padding(
+                    //             padding: const EdgeInsets.all(8.0),
+                    //             child: Container(
+                    //               alignment: AlignmentDirectional.topStart,
+                    //               child: const Text(
+                    //                 'ACTIVITY',
+                    //                 style: TextStyle(
+                    //                     fontWeight: FontWeight.w600,
+                    //                     fontSize: 15.0,
+                    //                     color: Color.fromARGB(255, 80, 79, 79)),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           SizedBox(
+                    //             height: 90,
+                    //             child: activity(),
+                    //           ),
+                    //         ],
+                    //       )),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
@@ -876,11 +980,11 @@ class ScoreBoard extends StatelessWidget {
                                               lineWidth: 18.0,
                                               animation: true,
                                               animationDuration: 1200,
-                                              percent: 0.3,
+                                              percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()),
                                               circularStrokeCap:
                                               CircularStrokeCap.butt,
                                               center:  Text(
-                                                (Get.find<OutletsController>().outletList.length / Constants.value_increase).toString(),
+                                                (Get.find<DashBoard_Controller>().dashboard.first.achivement).toString(),
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 20.0),
@@ -893,10 +997,10 @@ class ScoreBoard extends StatelessWidget {
                                           ),
                                           Expanded(
                                             child: ListView(
-                                              children: const [
+                                              children:   [
                                                 ListTile(
                                                   title: Text(
-                                                    ' 0',
+                                                    Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.w500,
                                                         fontSize: 16.0),
@@ -911,7 +1015,7 @@ class ScoreBoard extends StatelessWidget {
                                                 ),
                                                 ListTile(
                                                   title: Text(
-                                                    ' 0',
+                                                    Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.w500,
                                                         fontSize: 16.0),
@@ -930,9 +1034,9 @@ class ScoreBoard extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                      child: letters(),
-                                    )
+                                    // Container(
+                                    //   child: letters(),
+                                    // )
                                   ],
                                 )),
                           ],
@@ -964,10 +1068,10 @@ class ScoreBoard extends StatelessWidget {
                                       lineWidth: 18.0,
                                       animation: true,
                                       animationDuration: 1200,
-                                      percent: Constants.value_increase /2,
+                                      percent: double.parse( Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()),
                                       circularStrokeCap: CircularStrokeCap.butt,
                                       center:   Text(
-                                        (Constants.value_increase ~/2).toString(),
+                                          Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0),
@@ -983,7 +1087,7 @@ class ScoreBoard extends StatelessWidget {
                                       children:   [
                                         ListTile(
                                           title: Text(
-                                            Get.find<OutletsController>().outletList.length.toString(),
+                                            Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 16.0),
@@ -998,7 +1102,7 @@ class ScoreBoard extends StatelessWidget {
                                         ),
                                         ListTile(
                                           title: Text(
-                                            '0',
+                                            Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 16.0),
@@ -1014,49 +1118,7 @@ class ScoreBoard extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  MaterialButton(
-                                    onPressed: () async {
-                                      print(Get.find<SalesReportController>().formattedSalesReportList.length);
-                                      print(Constants.selectedRoute.routename);
-                                      final pdfFile = await PdfParagraphApi.generate(
-                                          Get.find<SalesReportController>().formattedSalesReportList ,
-                                          distributor: Constants.selectedRoute);
-                                      Get.bottomSheet(
-                                        Container(
-                                          padding: EdgeInsets.all(10.0),
-                                          child: ButtonBar(
-                                            alignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Get.back();
-                                                  PdfApi.openFile(pdfFile);
-                                                },
-                                                child: Text("Open"),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () async {
-                                                  Get.back();
-                                                  await Share.shareFiles(
-                                                    [pdfFile.path],
-                                                    text: "Sales Report",
-                                                  );
-                                                },
-                                                child: Text("Share"),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        backgroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20.0),
-                                        ),
-                                      );
-                                    },
-                                    child: Icon(Icons.picture_as_pdf),
-                                    color: Colors.red[900],
-                                    elevation: 10.0,
-                                  )
+
                                 ],
                               ),
                             ),
@@ -1083,165 +1145,126 @@ class ScoreBoard extends StatelessWidget {
       ],
     );
   }
-
-  Widget letters() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      mycard(text: "0"),
-                      mycard(
-                        text: "Total orders",
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      mycard(text: "0"),
-                      mycard(text: "Total invoiced"),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      mycard(text: "0"),
-                      mycard(text: "Total returns"),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 Widget calls({String text,VoidCallback ontap}) {
   return Column(
     children: [
       Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(text),
+        padding: const EdgeInsets.only(top: 15),
+        child: Text(text,style: TextStyle(fontSize: 10),),
       ),
     ],
   );
 }
 
-Widget activity() {
-  return Column(
-    children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    calls(text: Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall.toString()),
-
-                    calls(
-                      text: "Unsucessful Call",
-                    ),
-                  ],
-                ),
-                // Container(
-                //   height: 80,
-                //   width: 50,
-                //   child: Row(
-                //     crossAxisAlignment:
-                //     CrossAxisAlignment.start,
-                //     children: [
-                //       Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: CircularPercentIndicator(
-                //           radius: 50.0,
-                //           lineWidth: 8.0,
-                //           animation: true,
-                //           animationDuration: 1200,
-                //           percent: 0.8,
-                //           circularStrokeCap:
-                //           CircularStrokeCap.butt,
-                //           center: const Text(
-                //             "0%",
-                //             style: TextStyle(
-                //                 fontWeight: FontWeight.bold,
-                //                 fontSize: 20.0),
-                //           ),
-                //           backgroundColor: const Color.fromARGB(
-                //               255, 217, 221, 227),
-                //           progressColor:
-                //           Color.fromARGB(255, 15, 104, 131),
-                //         ),
-                //       ),
-                //       Expanded(
-                //         child: ListView(
-                //           children: const [
-                //             ListTile(
-                //               title: Text(
-                //                 ' 0',
-                //                 style: TextStyle(
-                //                     fontWeight: FontWeight.w500,
-                //                     fontSize: 16.0),
-                //               ),
-                //               subtitle: Text(
-                //                 'Target',
-                //                 style: TextStyle(
-                //                     fontWeight: FontWeight.bold,
-                //                     fontSize: 12.0,
-                //                     color: Colors.grey),
-                //               ),
-                //             ),
-                //             ListTile(
-                //               title: Text(
-                //                 ' 0',
-                //                 style: TextStyle(
-                //                     fontWeight: FontWeight.w500,
-                //                     fontSize: 16.0),
-                //               ),
-                //               subtitle: Text(
-                //                 'Acheivement',
-                //                 style: TextStyle(
-                //                     fontWeight: FontWeight.bold,
-                //                     fontSize: 12.0,
-                //                     color: Colors.grey),
-                //               ),
-                //             )
-                //           ],
-                //         ),
-                //       )
-                //     ],
-                //   ),
-                // ),
-                Column(
-                  children: [
-                    calls(text:  (Constants.value_increase ~/2).toString()),
-                    calls(text: "Call Made"),
-                  ],
-                ),
-                // Column(
-                //   children: [
-                //     calls(text: "0"),
-                //     calls(text: "Time Spent"),
-                //   ],
-                // ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
-}
+// Widget activity() {
+//   return Column(
+//     children: [
+//       Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: Column(
+//           children: [
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Column(
+//                   children: [
+//                     calls(text: Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall.toString()),
+//
+//                     calls(
+//                       text: "Unsucessful Call",
+//                     ),
+//                   ],
+//                 ),
+//                 // Container(
+//                 //   height: 80,
+//                 //   width: 50,
+//                 //   child: Row(
+//                 //     crossAxisAlignment:
+//                 //     CrossAxisAlignment.start,
+//                 //     children: [
+//                 //       Padding(
+//                 //         padding: const EdgeInsets.all(8.0),
+//                 //         child: CircularPercentIndicator(
+//                 //           radius: 50.0,
+//                 //           lineWidth: 8.0,
+//                 //           animation: true,
+//                 //           animationDuration: 1200,
+//                 //           percent: 0.8,
+//                 //           circularStrokeCap:
+//                 //           CircularStrokeCap.butt,
+//                 //           center: const Text(
+//                 //             "0%",
+//                 //             style: TextStyle(
+//                 //                 fontWeight: FontWeight.bold,
+//                 //                 fontSize: 20.0),
+//                 //           ),
+//                 //           backgroundColor: const Color.fromARGB(
+//                 //               255, 217, 221, 227),
+//                 //           progressColor:
+//                 //           Color.fromARGB(255, 15, 104, 131),
+//                 //         ),
+//                 //       ),
+//                 //       Expanded(
+//                 //         child: ListView(
+//                 //           children: const [
+//                 //             ListTile(
+//                 //               title: Text(
+//                 //                 ' 0',
+//                 //                 style: TextStyle(
+//                 //                     fontWeight: FontWeight.w500,
+//                 //                     fontSize: 16.0),
+//                 //               ),
+//                 //               subtitle: Text(
+//                 //                 'Target',
+//                 //                 style: TextStyle(
+//                 //                     fontWeight: FontWeight.bold,
+//                 //                     fontSize: 12.0,
+//                 //                     color: Colors.grey),
+//                 //               ),
+//                 //             ),
+//                 //             ListTile(
+//                 //               title: Text(
+//                 //                 ' 0',
+//                 //                 style: TextStyle(
+//                 //                     fontWeight: FontWeight.w500,
+//                 //                     fontSize: 16.0),
+//                 //               ),
+//                 //               subtitle: Text(
+//                 //                 'Acheivement',
+//                 //                 style: TextStyle(
+//                 //                     fontWeight: FontWeight.bold,
+//                 //                     fontSize: 12.0,
+//                 //                     color: Colors.grey),
+//                 //               ),
+//                 //             )
+//                 //           ],
+//                 //         ),
+//                 //       )
+//                 //     ],
+//                 //   ),
+//                 // ),
+//                 Column(
+//                   children: [
+//                     calls(text:  (Constants.value_increase ~/2).toString()),
+//                     calls(text: "Call Made"),
+//                   ],
+//                 ),
+//                 // Column(
+//                 //   children: [
+//                 //     calls(text: "0"),
+//                 //     calls(text: "Time Spent"),
+//                 //   ],
+//                 // ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     ],
+//   );
+// }
 
 Widget activites({String text}) {
   return Column(
@@ -1277,6 +1300,15 @@ Widget call() {
                     calls(text:   Get.find<DashBoard_Controller>().dashboard.first.productivityCall.toString(),
                     ),
                     calls(text: "Sucessfull Calls",ontap: (){
+                      Get.to(SalesReportPage());
+                    }),
+                  ],
+                ),
+                Column(
+                  children: [
+                    calls(text:   Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall.toString(),
+                    ),
+                    calls(text: "Unsucessfull Calls",ontap: (){
                       Get.to(SalesReportPage());
                     }),
                   ],

@@ -608,6 +608,7 @@ import 'package:mobitrack_dv_flutter/view/products/punchedproduct.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 import 'package:mobitrack_dv_flutter/view/products/slide.dart';
 import 'package:mobitrack_dv_flutter/view/view_town.dart';
+import 'package:mobitrack_dv_flutter/view/widgets/map_marker.dart';
 
 import '../outlets/remarks.dart';
 
@@ -633,7 +634,10 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
   var provinceLists = Get.find<ProductBrandController>().productList.obs;
 
   bool isProvinceSelected = false;
+   int _activeMeterIndex;
    var isSelected = false;
+   List<String> searchResult = [];
+   String text = '';
    String my_product;
   Position position;
   TextEditingController _textEditingController =TextEditingController();
@@ -642,7 +646,6 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
   List<String> role =[];
 
   int counter = 0;
-
  //  @override
   InputDecoration decoration(String label) {
     return InputDecoration(
@@ -670,6 +673,23 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
          counter--;
        print(counter);
      });
+   }
+   searchDistributor(String text) {
+     searchResult = Get.find<ProductBrandController>().name;
+     if (Get.find<ProductBrandController>().name.isNotEmpty) {
+       final searc = Get.find<ProductBrandController>().name
+           .where((element){
+         final title = element.toLowerCase();
+         final sea = text.toLowerCase();
+         return title.contains(sea);
+       }
+       ).toList();
+       setState(() {
+         //this.searchResult = Get.find<ProductBrandController>().name;
+         this.text = text;
+         this.searchResult = searc;
+       });
+     }
    }
   @override
   Widget build(BuildContext context) {
@@ -888,7 +908,6 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
       //    Get.to(DetailsProduct());
       //role.add(selectedProductList);
       //     Get.back();
-
           Get.find<ProductBrandController>().quantity.add(_textEditingController.text);
       Get.back();
       // Utilities.showInToast(response.message,
@@ -1006,11 +1025,12 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
           leading: IconButton(onPressed: (){Get.to(() => DashBoard());}, icon: Icon(Icons.arrow_back,color: Colors.black,)),
           title: Text(widget.outlet.name,style: TextStyle(color: Colors.black),),
           actions: [
-            ElevatedButton(onPressed: (){
-              print(Get.find<ProductBrandController>().selectedAreaId);
-              print(Get.find<ProductBrandController>().selectedArea);
-          //    Get.to(()=> DetailsProduct());
-              }, child: Text("Press"))
+          //   ElevatedButton(onPressed: (){
+          //     Get.to(()=> TestExpandableView());
+          //     print(Get.find<ProductBrandController>().selectedAreaId);
+          //     print(Get.find<ProductBrandController>().selectedArea);
+          // //    Get.to(()=> DetailsProduct());
+          //     }, child: Text("Press"))
           ],
         ),
         floatingActionButton:  FloatingActionButton.extended(
@@ -1024,7 +1044,6 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
             //  Constants.selectedbrand = outlet.id.toString();
               // Utilities.showInToast("Please add a product",
               ////     toastType: ToastType.ERROR);
-
             }else{
               Get.to(()=> PunchedProduct(outlet: widget.outlet,));
               //   sales.orders = jsonEncode(selectedProductList);
@@ -1089,7 +1108,6 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
               // print(Constants.selectedRoute.id.toString());
             }
           //  Get.find<ProductsController>().removeAllProductFromList();
-
             // Get.back();
           },
           label: Row(
@@ -2821,1109 +2839,1108 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                   //       }),
                   //   title:  Text("Page_1").toString(),
                   // ),
-                  RefreshIndicator(
-                    onRefresh:  () async{
-            await Future.delayed(Duration(seconds: 2));
-            Get.find<ProductBrandController>().getProvinceList() ;
-            },
-                    child: GetBuilder<ProductBrandController>(
-                      builder: (BrandController) {
-                        return Get.find<ProductBrandController>().productList.isEmpty
-                            ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CupertinoActivityIndicator(),
-                            ],
-                          ),
-                        )
-                             :
-                        //     ElevatedButton(onPressed: (){
-                        //       print(Get.find<ProductBrandController>().productList.length);
-                        // }, child: Text("press"));
-                        ListView.builder(
-                          itemCount: Get.find<ProductBrandController>().brandList.length,
-                            itemBuilder: (context,index){
-                            var item = Get.find<ProductBrandController>().brandList[index];
-                       //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
-                            return    Card(
-                             color: item != null ? Colors.white : Colors.white54,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              //   shape: BeveledRectangleBorder(
-                              //   borderRadius: BorderRadius.circular(5.0),
-                              // ),
-                              // shape: StadiumBorder(
-                              //     side: BorderSide(
-                              //       color: Colors.black,
-                              //       width: 1.5,
-                              //       borderRadius: BorderRadius.circular(10.0),
-                              //     ),),
-                              // outlet[index].selected ? Colors.grey
-                              elevation: 7.0,
-                              child: ListTile(
-                                selected: isSelected,
-                                onLongPress: selection,
-                                title: InkWell(
-                                  onTap: (){
-
-                                    // OutletInfoPages(
-                                    //   outlet : Get
-                                    //         .find<OutletsController>()
-                                    //         .outletList[index],
-                                    // ));
-                                 //  Get.to(SellProductPage(outlet:outlet  ));
-                                    Get.to(DetailsProduct(
-                                      outlet: widget.outlet,product: Get.find<ProductBrandController>().getNameList(item)
-                                   ));
-                                   // print(outlet.name);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:  MainAxisAlignment.end,
-                                          children: [
-                                            // SizedBox(
-                                            //   width: Get.size.width * 0.3,
-                                            // ),
-                                            // CircleAvatar(
-                                            //     radius: (20),
-                                            //     backgroundColor:  outlet[index].synced
-                                            //         ? Colors.blueGrey
-                                            //         : Colors.grey,
-                                            //     child:  IconButton(onPressed:(){
-                                            //      // showQuantityBottomSheet(outlet[index].id.toString());
-                                            //        Get.bottomSheet(
-                                            //         Container(
-                                            //             child: Padding(
-                                            //               padding: const EdgeInsets.all(10.0),
-                                            //               child: Column(
-                                            //                 mainAxisSize: MainAxisSize.min,
-                                            //                 children: [
-                                            //
-                                            //                   Padding(
-                                            //                     padding: const EdgeInsets.all(10.0),
-                                            //                     child: GetBuilder<OutletsController>(
-                                            //                       builder: (builder) {
-                                            //                         return Get.find<OutletsController>().item.length == null
-                                            //                             ? SizedBox()
-                                            //                             : InputDecorator(
-                                            //                           decoration: decoration("Select Remark"),
-                                            //                           child: ButtonTheme(
-                                            //                             alignedDropdown: true,
-                                            //                             child: DropdownButton<String>(
-                                            //                               // iconEnabledCo
-                                            //                               // iconDisabledColor: Colors.red,
-                                            //                               isDense: true,
-                                            //                               isExpanded: true,
-                                            //                               hint: Text(
-                                            //                                   Get.find<OutletsController>().selectedDrowpdown),
-                                            //                               items:
-                                            //                               Get.find<OutletsController>().item.map((e) {
-                                            //                                 return DropdownMenuItem<String>(
-                                            //                                     value: e, child: Text(e));
-                                            //                               }).toList(),
-                                            //                               onChanged: (String district) {
-                                            //                                 // setState(() {
-                                            //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                                            //                                 //  Get.find<OutletsController>().setitem(district );
-                                            //                                 // });
-                                            //
-                                            //                                 // district = selectedDrowpdown;
-                                            //                                 print(Get.find<OutletsController>().selectedDrowpdown);
-                                            //                                 print(district);
-                                            //                                 //   print(Get.find<OutletsController>().setitem(district ));
-                                            //                                 //   district = Constants.item;
-                                            //                                 //      print(selectedDrowpdown);
-                                            //                                 //   district = Constants.selectedzone.zone;
-                                            //                                 // Get.find<AddressController>().getAreaList(district);
-                                            //                               },
-                                            //                             ),
-                                            //                           ),
-                                            //                         );
-                                            //                       },
-                                            //                     ),
-                                            //                   ),
-                                            //                   // ElevatedButton(
-                                            //                   //   onPressed: () async {
-                                            //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
-                                            //                   //       // selectedProductList.add({
-                                            //                   //       //
-                                            //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
-                                            //                   //       //
-                                            //                   //       // });
-                                            //                   //       //
-                                            //                   //       // if (selectedProductList.isEmpty) {
-                                            //                   //       //   Utilities.showInToast("Please add a product",
-                                            //                   //       //       toastType: ToastType.ERROR);
-                                            //                   //       //   return;
-                                            //                   //       // }
-                                            //                   //
-                                            //                   //       var sales = Sales(
-                                            //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
-                                            //                   //         remark: jsonEncode(selectedProductList),
-                                            //                   //         soldAt:  DateTime.now().toString(),
-                                            //                   //         outletId: "12",
-                                            //                   //            outletLatitude : "444444",
-                                            //                   //        outletLongitude : "4343243423"
-                                            //                   //       );
-                                            //                   //       // sales.orders = "dd";
-                                            //                   //       // // sales.distributorId = "12";
-                                            //                   //       // sales.remark =jsonEncode(selectedProductList);
-                                            //                   //       // sales.soldAt = DateTime.now().toString();
-                                            //                   //       // sales.outletId = Get
-                                            //                   //       //     .find<OutletsController>()
-                                            //                   //       //     .outletList[index].id.toString();
-                                            //                   //       // sales.outletLatitude = "444444";
-                                            //                   //       // sales.outletLongitude = "4343243423";
-                                            //                   //
-                                            //                   //       //  var conn = await Utilities.isInternetWorking();
-                                            //                   //
-                                            //                   //
-                                            //                   //
-                                            //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
-                                            //                   //       //else {
-                                            //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
-                                            //                   //       // }
-                                            //                   //       //
-                                            //                   //       // Get.find<ProductsController>().removeAllProductFromList();
-                                            //                   //   //    Get.find<ProductsController>().sellProducts(sales);
-                                            //                   //           var conn = await Utilities.isInternetWorking();
-                                            //                   //       if (conn) {
-                                            //                   //         var response = await sellProductApi(sales);
-                                            //                   //         print(sales);
-                                            //                   //         // Get.back();
-                                            //                   //         Utilities.showInToast(response.message,
-                                            //                   //             toastType: response.success
-                                            //                   //                 ? ToastType.SUCCESS
-                                            //                   //                 : ToastType.ERROR);
-                                            //                   //
-                                            //                   //         //   if (response.success) {
-                                            //                   //         //     outlet.synced = true;
-                                            //                   //         //     Get.back();
-                                            //                   //         //   }
-                                            //                   //         // } else {
-                                            //                   //         //   Get.back();
-                                            //                   //         //   outlet.synced = false;
-                                            //                   //         //
-                                            //                   //         //   Utilities.showInToast('Storing Offline',
-                                            //                   //         //       toastType: ToastType.INFO);
-                                            //                   //         // }
-                                            //                   //         // await DatabaseHelper.instance
-                                            //                   //         //     .insertOutlet(outlet);
-                                            //                   //         // Get.find<ProductsController>().addremark(sales);
-                                            //                   //         Get.back();
-                                            //                   //       } else {
-                                            //                   //         Utilities.showInToast('Please complete the form',
-                                            //                   //             toastType: ToastType.ERROR);
-                                            //                   //       }
-                                            //                   //     } else {
-                                            //                   //       Utilities.showInToast("Please add quantity");
-                                            //                   //     }
-                                            //                   //     Get.back(
-                                            //                   //
-                                            //                   //     );
-                                            //                   //   },
-                                            //                   //   child: Text("Add"),
-                                            //                   // )
-                                            //                 ],
-                                            //               ),
-                                            //             )),
-                                            //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                                            //         backgroundColor: Colors.white,
-                                            //         enableDrag: true,
-                                            //       );
-                                            //       // Get.bottomSheet(
-                                            //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
-                                            //       //   //   itemBuilder: (context, index){
-                                            //       //   //     return
-                                            //       //   Container(
-                                            //       //       child: Padding(
-                                            //       //         padding: const EdgeInsets.all(10.0),
-                                            //       //         child: Column(
-                                            //       //           mainAxisSize: MainAxisSize.min,
-                                            //       //           children: [
-                                            //       //             Padding(
-                                            //       //                 padding: const EdgeInsets.all(12.0),
-                                            //       //                 child:
-                                            //       //                 // DropdownButton(
-                                            //       //                 //
-                                            //       //                 //   // Initial Value
-                                            //       //                 //     value: selectedDrowpdown,
-                                            //       //                 //
-                                            //       //                 //     // Down Arrow Icon
-                                            //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
-                                            //       //                 //
-                                            //       //                 //     // Array list of items
-                                            //       //                 //     items: item.map((String items) {
-                                            //       //                 //       return DropdownMenuItem(
-                                            //       //                 //         value: items,
-                                            //       //                 //         child: Text(items),
-                                            //       //                 //       );
-                                            //       //                 //     }).toList(),
-                                            //       //                 // After selecting the desired option,it will
-                                            //       //                 // change button value to selected value
-                                            //       //                 // onChanged: (String newValue) {
-                                            //       //                 //   setState(() {
-                                            //       //                 //     selectedDrowpdown = newValue;
-                                            //       //                 //   });
-                                            //       //                 //                 DropdownButton(
-                                            //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
-                                            //       //                 //   value:selectedDrowpdown,
-                                            //       //                 //   onChanged: (newValue) {
-                                            //       //                 //     selectedDrowpdown = newValue;
-                                            //       //                 //   setState(() {
-                                            //       //                 //   selectedDrowpdown = newValue;
-                                            //       //                 // //  print(newValue);
-                                            //       //                 //   //print(selectedDrowpdown);
-                                            //       //                 //   });
-                                            //       //                 //   },
-                                            //       //                 //   items: item.map((location) {
-                                            //       //                 //   return DropdownMenuItem(
-                                            //       //                 //   child: new Text(location),
-                                            //       //                 //   value: location,
-                                            //       //                 //   );
-                                            //       //                 //   }).toList(),
-                                            //       //                 //   ),
-                                            //       //                 Padding(
-                                            //       //                   padding: const EdgeInsets.all(10.0),
-                                            //       //                   child: GetBuilder<OutletsController>(
-                                            //       //                     builder: (builder) {
-                                            //       //                       return Get.find<OutletsController>().item.length == null
-                                            //       //                           ? SizedBox()
-                                            //       //                           : InputDecorator(
-                                            //       //                         decoration: decoration("Select Remark"),
-                                            //       //                         child: ButtonTheme(
-                                            //       //                           alignedDropdown: true,
-                                            //       //                           child: DropdownButton<String>(
-                                            //       //                             // iconEnabledCo
-                                            //       //                             // iconDisabledColor: Colors.red,
-                                            //       //                             isDense: true,
-                                            //       //                             isExpanded: true,
-                                            //       //                             hint: Text(
-                                            //       //                                 Get.find<OutletsController>().selectedDrowpdown),
-                                            //       //                             items:
-                                            //       //                             Get.find<OutletsController>().item.map((e) {
-                                            //       //                               return DropdownMenuItem<String>(
-                                            //       //                                   value: e, child: Text(e));
-                                            //       //                             }).toList(),
-                                            //       //                             onChanged: (String district) {
-                                            //       //                               // setState(() {
-                                            //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                                            //       //                                 //  Get.find<OutletsController>().setitem(district );
-                                            //       //                              // });
-                                            //       //
-                                            //       //                               // district = selectedDrowpdown;
-                                            //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
-                                            //       //                               print(district);
-                                            //       //                               //   print(Get.find<OutletsController>().setitem(district ));
-                                            //       //                               //   district = Constants.item;
-                                            //       //                               //      print(selectedDrowpdown);
-                                            //       //                               //   district = Constants.selectedzone.zone;
-                                            //       //                               // Get.find<AddressController>().getAreaList(district);
-                                            //       //                             },
-                                            //       //                           ),
-                                            //       //                         ),
-                                            //       //                       );
-                                            //       //                     },
-                                            //       //                   ),
-                                            //       //                 )
-                                            //       //               // DropdownButton<String>(
-                                            //       //               //   hint: Text("Remark"),
-                                            //       //               //   value:  selectedDrowpdown,
-                                            //       //               //   items:
-                                            //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
-                                            //       //               //   // [
-                                            //       //               //   //   for (var data in Get.find<OutletsController>().item)
-                                            //       //               //   //     DropdownMenuItem(
-                                            //       //               //   //       child: new Text(
-                                            //       //               //   //         data,
-                                            //       //               //   //       ),
-                                            //       //               //   //       value: data,
-                                            //       //               //   //     )
-                                            //       //               //   // ],
-                                            //       //               //
-                                            //       //               //   // Get.find<OutletsController>().item.map((e) {
-                                            //       //               //   //   return DropdownMenuItem<String>(
-                                            //       //               //   //           value: e,
-                                            //       //               //   //           child: Text(e),
-                                            //       //               //   //         );
-                                            //       //               //   // }),
-                                            //       //               //     item.map((  value) {
-                                            //       //               //     return DropdownMenuItem<String>(
-                                            //       //               //       value: value,
-                                            //       //               //       child: Text(value),
-                                            //       //               //     );
-                                            //       //               //   }).toList(),
-                                            //       //               //   onChanged: (newvalue) {
-                                            //       //               //     setState(() {
-                                            //       //               //      selectedDrowpdown = newvalue ;
-                                            //       //               //     });
-                                            //       //               //
-                                            //       //               // //   Get.find<OutletsController>().setitem(newvalue);
-                                            //       //               //
-                                            //       //               //
-                                            //       //               //    //_selectedvalue = newvalue;
-                                            //       //               //   })
-                                            //       //             ),
-                                            //       //
-                                            //       //             SizedBox(height: Get.size.height * 0.01),
-                                            //       //             // Container(
-                                            //       //             //   child: _imageFile == null
-                                            //       //             //       ? Center(
-                                            //       //             //     child: Text("No Image Selected"),
-                                            //       //             //   )
-                                            //       //             //       : Image.file(File(_imageFile.path)),
-                                            //       //             // ),
-                                            //       //             ElevatedButton(
-                                            //       //               onPressed: () async {
-                                            //       //                 // pickImage();
-                                            //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
-                                            //       //                   var conn = await Utilities.isInternetWorking();
-                                            //       //                   showDialog(
-                                            //       //                       barrierDismissible: false,
-                                            //       //                       context: context,
-                                            //       //                       builder: (context) {
-                                            //       //                         return CupertinoAlertDialog(
-                                            //       //                           title: Text('Please Wait'),
-                                            //       //                           content: Column(
-                                            //       //                             children: [
-                                            //       //                               Divider(),
-                                            //       //                               Padding(
-                                            //       //                                 padding: const EdgeInsets.all(8.0),
-                                            //       //                                 child: Text(conn
-                                            //       //                                     ? 'Registering new Sales Outlet'
-                                            //       //                                     : 'Saving offline'),
-                                            //       //                               ),
-                                            //       //                               CupertinoActivityIndicator(
-                                            //       //                                 radius: 17,
-                                            //       //                               )
-                                            //       //                             ],
-                                            //       //                           ),
-                                            //       //                         );
-                                            //       //                       });
-                                            //       //                   // var sales = Sales(
-                                            //       //                   //     outletId:  outlet[index].id.toString(),
-                                            //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
-                                            //       //                   // );
-                                            //       //                   // selectedoutlet.add({
-                                            //       //                   //   //"outlet_id": outletId,
-                                            //       //                   //
-                                            //       //                   //   "remark": selectedDrowpdown,
-                                            //       //                   //
-                                            //       //                   // });
-                                            //       //                   if (conn) {
-                                            //       //                     var response = await sellProductApi(sales);
-                                            //       //                     print(sales);
-                                            //       //                     // Get.back();
-                                            //       //                     Utilities.showInToast(response.message,
-                                            //       //                         toastType: response.success
-                                            //       //                             ? ToastType.SUCCESS
-                                            //       //                             : ToastType.ERROR);
-                                            //       //
-                                            //       //                     //   if (response.success) {
-                                            //       //                     //     outlet.synced = true;
-                                            //       //                     //     Get.back();
-                                            //       //                     //   }
-                                            //       //                     // } else {
-                                            //       //                     //   Get.back();
-                                            //       //                     //   outlet.synced = false;
-                                            //       //                     //
-                                            //       //                     //   Utilities.showInToast('Storing Offline',
-                                            //       //                     //       toastType: ToastType.INFO);
-                                            //       //                     // }
-                                            //       //                     // await DatabaseHelper.instance
-                                            //       //                     //     .insertOutlet(outlet);
-                                            //       //                     // Get.find<ProductsController>().addremark(sales);
-                                            //       //                     Get.back();
-                                            //       //                   } else {
-                                            //       //                     Utilities.showInToast('Please complete the form',
-                                            //       //                         toastType: ToastType.ERROR);
-                                            //       //                   }
-                                            //       //                   // if (selectedDrowpdown != null) {
-                                            //       //                   //   // selectedoutlet.add({
-                                            //       //                   //   //   //"outlet_id": outletId,
-                                            //       //                   //   //
-                                            //       //                   //   //   "remark": selectedDrowpdown,
-                                            //       //                   //   //
-                                            //       //                   //   // });
-                                            //       //                   //   sales.remark = jsonEncode(selectedoutlet);
-                                            //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
-                                            //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
-                                            //       //                   //   Utilities.showInToast("Remark Noted");
-                                            //       //                   //   print(selectedDrowpdown);
-                                            //       //                   // } else {
-                                            //       //                   //   Utilities.showInToast("Please add Remark");
-                                            //       //                   // }
-                                            //       //                   Get.back();}
-                                            //       //               },
-                                            //       //               child: Text("Add"),
-                                            //       //             ),
-                                            //       //           //  outlet.id..toString().isEmpty
-                                            //       //           //       ? ElevatedButton(
-                                            //       //           //     onPressed: () {
-                                            //       //           //       showQuantityBottomSheet(null, products.id.toString());
-                                            //       //           //     },
-                                            //       //           //     child: Text("Sell"),
-                                            //       //           //   )
-                                            //       //           //       : ExpansionTile(
-                                            //       //           //     title: Text("Batches"),
-                                            //       //           //     children: products.batches.map((batch) {
-                                            //       //           //       return buildBatchTile(batch, products);
-                                            //       //           //     }).toList(),
-                                            //       //           //   ),
-                                            //       //           ],
-                                            //       //         ),)),
-                                            //       //
-                                            //       //
-                                            //       //
-                                            //       //
-                                            //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                                            //       //   backgroundColor: Colors.white,
-                                            //       //   enableDrag: true,
-                                            //       // );
-                                            //     } , icon: Icon(Icons.add))
-                                            // )
-                                          ],
-                                        ),
-                                        Container(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Padding(  padding: const EdgeInsets.all(10.0),
-                                                    child:   Row(
-                                                      children: [
-                                                        Text(
-                                                          item,
-                                                          style: TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight: FontWeight.bold),
-                                                        ),
-                                                      ],
-                                                    )
-                                                ),
-                                                // Padding(
-                                                //   padding: const EdgeInsets.only(top: 1),
-                                                //   child:
-                                                // Text(
-                                                //   outlet[index].name,
-                                                //   style: TextStyle(
-                                                //       fontSize: 18,
-                                                //       fontWeight: FontWeight.bold),
-                                                // ),
-                                                // //    ),
-                                                // Container(
-                                                //   child:   Text(
-                                                //     "Number of Outlet: ${outlet.length.toString()}",
-                                                //     style: TextStyle(
-                                                //         fontSize: 10,
-                                                //         fontWeight: FontWeight.bold),
-                                                //   ),
-                                                // ),
-                                                // Text(
-                                                //   outlet[index].name,
-                                                //   style: TextStyle(
-                                                //       fontSize: 10,
-                                                //       fontWeight: FontWeight.bold),
-                                                // ),
-                                              ],
-                                            )
-                                        ),
-                                        // MaterialButton(
-                                        //   onPressed: () {
-                                        //     Get.to(() =>
-                                        //         SellProductPage(
-                                        //           outlet: Get
-                                        //               .find<OutletsController>()
-                                        //               .outletList[index],
-                                        //         ));
-                                        //
-                                        //   },
-                                        //   color: Colors.green[900],
-                                        //   minWidth: Get.size.width,
-                                        //   textColor: Colors.white,
-                                        //   padding: EdgeInsets.all(10.0),
-                                        //   child: Text("Sell Product"),
-                                        // ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                            //   ListTile(
-                            //   onTap: (){
-                            //     Get.find<ProductBrandController>().setSelectedBrand(item);
-                            //
-                            //     Get.to(DetailsProduct(
-                            //       product: Get.find<ProductBrandController>().getNameList(item)),
-                            // // GetBuilder<ProductBrandController>(
-                            //   builder: (BrandController) {
-                            //     return Get.find<ProductBrandController>().productList.isEmpty
-                            //         ? Center(
-                            //       child: Column(
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         children: [
-                            //           CupertinoActivityIndicator(),
-                            //         ],
-                            //       ),
-                            //     )
-                            //          :
-                            //     //     ElevatedButton(onPressed: (){
-                            //     //       print(Get.find<ProductBrandController>().productList.length);
-                            //     // }, child: Text("press"));
-                            //     ListView.builder(
-                            //       itemCount: Get.find<ProductBrandController>().brandList.length,
-                            //         itemBuilder: (context,index){
-                            //         var item = Get.find<ProductBrandController>().brandList[index];
-                            //    //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
-                            //         return    Card(
-                            //          color: item != null ? Colors.white : Colors.white54,
-                            //           shape: RoundedRectangleBorder(
-                            //             borderRadius: BorderRadius.circular(12.0),
-                            //           ),
-                            //           //   shape: BeveledRectangleBorder(
-                            //           //   borderRadius: BorderRadius.circular(5.0),
-                            //           // ),
-                            //           // shape: StadiumBorder(
-                            //           //     side: BorderSide(
-                            //           //       color: Colors.black,
-                            //           //       width: 1.5,
-                            //           //       borderRadius: BorderRadius.circular(10.0),
-                            //           //     ),),
-                            //           // outlet[index].selected ? Colors.grey
-                            //           elevation: 7.0,
-                            //           child: ListTile(
-                            //             selected: isSelected,
-                            //             onLongPress: selection,
-                            //             title: InkWell(
-                            //               onTap: (){
-                            //
-                            //                 // OutletInfoPages(
-                            //                 //   outlet : Get
-                            //                 //         .find<OutletsController>()
-                            //                 //         .outletList[index],
-                            //                 // ));
-                            //              //  Get.to(SellProductPage(outlet:outlet  ));
-                            //                 Get.to(DetailsProduct(
-                            //                   outlet: outlet,product: Get.find<ProductBrandController>().getNameList(item)
-                            //                ));
-                            //                // print(outlet.name);
-                            //               },
-                            //               child: Padding(
-                            //                 padding: const EdgeInsets.all(10.0),
-                            //                 child: Column(
-                            //                   crossAxisAlignment: CrossAxisAlignment.start,
-                            //                   mainAxisSize: MainAxisSize.min,
-                            //                   children: [
-                            //                     Row(
-                            //                       mainAxisAlignment:  MainAxisAlignment.end,
-                            //                       children: [
-                            //                         // SizedBox(
-                            //                         //   width: Get.size.width * 0.3,
-                            //                         // ),
-                            //                         // CircleAvatar(
-                            //                         //     radius: (20),
-                            //                         //     backgroundColor:  outlet[index].synced
-                            //                         //         ? Colors.blueGrey
-                            //                         //         : Colors.grey,
-                            //                         //     child:  IconButton(onPressed:(){
-                            //                         //      // showQuantityBottomSheet(outlet[index].id.toString());
-                            //                         //        Get.bottomSheet(
-                            //                         //         Container(
-                            //                         //             child: Padding(
-                            //                         //               padding: const EdgeInsets.all(10.0),
-                            //                         //               child: Column(
-                            //                         //                 mainAxisSize: MainAxisSize.min,
-                            //                         //                 children: [
-                            //                         //
-                            //                         //                   Padding(
-                            //                         //                     padding: const EdgeInsets.all(10.0),
-                            //                         //                     child: GetBuilder<OutletsController>(
-                            //                         //                       builder: (builder) {
-                            //                         //                         return Get.find<OutletsController>().item.length == null
-                            //                         //                             ? SizedBox()
-                            //                         //                             : InputDecorator(
-                            //                         //                           decoration: decoration("Select Remark"),
-                            //                         //                           child: ButtonTheme(
-                            //                         //                             alignedDropdown: true,
-                            //                         //                             child: DropdownButton<String>(
-                            //                         //                               // iconEnabledCo
-                            //                         //                               // iconDisabledColor: Colors.red,
-                            //                         //                               isDense: true,
-                            //                         //                               isExpanded: true,
-                            //                         //                               hint: Text(
-                            //                         //                                   Get.find<OutletsController>().selectedDrowpdown),
-                            //                         //                               items:
-                            //                         //                               Get.find<OutletsController>().item.map((e) {
-                            //                         //                                 return DropdownMenuItem<String>(
-                            //                         //                                     value: e, child: Text(e));
-                            //                         //                               }).toList(),
-                            //                         //                               onChanged: (String district) {
-                            //                         //                                 // setState(() {
-                            //                         //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                            //                         //                                 //  Get.find<OutletsController>().setitem(district );
-                            //                         //                                 // });
-                            //                         //
-                            //                         //                                 // district = selectedDrowpdown;
-                            //                         //                                 print(Get.find<OutletsController>().selectedDrowpdown);
-                            //                         //                                 print(district);
-                            //                         //                                 //   print(Get.find<OutletsController>().setitem(district ));
-                            //                         //                                 //   district = Constants.item;
-                            //                         //                                 //      print(selectedDrowpdown);
-                            //                         //                                 //   district = Constants.selectedzone.zone;
-                            //                         //                                 // Get.find<AddressController>().getAreaList(district);
-                            //                         //                               },
-                            //                         //                             ),
-                            //                         //                           ),
-                            //                         //                         );
-                            //                         //                       },
-                            //                         //                     ),
-                            //                         //                   ),
-                            //                         //                   // ElevatedButton(
-                            //                         //                   //   onPressed: () async {
-                            //                         //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
-                            //                         //                   //       // selectedProductList.add({
-                            //                         //                   //       //
-                            //                         //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
-                            //                         //                   //       //
-                            //                         //                   //       // });
-                            //                         //                   //       //
-                            //                         //                   //       // if (selectedProductList.isEmpty) {
-                            //                         //                   //       //   Utilities.showInToast("Please add a product",
-                            //                         //                   //       //       toastType: ToastType.ERROR);
-                            //                         //                   //       //   return;
-                            //                         //                   //       // }
-                            //                         //                   //
-                            //                         //                   //       var sales = Sales(
-                            //                         //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
-                            //                         //                   //         remark: jsonEncode(selectedProductList),
-                            //                         //                   //         soldAt:  DateTime.now().toString(),
-                            //                         //                   //         outletId: "12",
-                            //                         //                   //            outletLatitude : "444444",
-                            //                         //                   //        outletLongitude : "4343243423"
-                            //                         //                   //       );
-                            //                         //                   //       // sales.orders = "dd";
-                            //                         //                   //       // // sales.distributorId = "12";
-                            //                         //                   //       // sales.remark =jsonEncode(selectedProductList);
-                            //                         //                   //       // sales.soldAt = DateTime.now().toString();
-                            //                         //                   //       // sales.outletId = Get
-                            //                         //                   //       //     .find<OutletsController>()
-                            //                         //                   //       //     .outletList[index].id.toString();
-                            //                         //                   //       // sales.outletLatitude = "444444";
-                            //                         //                   //       // sales.outletLongitude = "4343243423";
-                            //                         //                   //
-                            //                         //                   //       //  var conn = await Utilities.isInternetWorking();
-                            //                         //                   //
-                            //                         //                   //
-                            //                         //                   //
-                            //                         //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
-                            //                         //                   //       //else {
-                            //                         //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
-                            //                         //                   //       // }
-                            //                         //                   //       //
-                            //                         //                   //       // Get.find<ProductsController>().removeAllProductFromList();
-                            //                         //                   //   //    Get.find<ProductsController>().sellProducts(sales);
-                            //                         //                   //           var conn = await Utilities.isInternetWorking();
-                            //                         //                   //       if (conn) {
-                            //                         //                   //         var response = await sellProductApi(sales);
-                            //                         //                   //         print(sales);
-                            //                         //                   //         // Get.back();
-                            //                         //                   //         Utilities.showInToast(response.message,
-                            //                         //                   //             toastType: response.success
-                            //                         //                   //                 ? ToastType.SUCCESS
-                            //                         //                   //                 : ToastType.ERROR);
-                            //                         //                   //
-                            //                         //                   //         //   if (response.success) {
-                            //                         //                   //         //     outlet.synced = true;
-                            //                         //                   //         //     Get.back();
-                            //                         //                   //         //   }
-                            //                         //                   //         // } else {
-                            //                         //                   //         //   Get.back();
-                            //                         //                   //         //   outlet.synced = false;
-                            //                         //                   //         //
-                            //                         //                   //         //   Utilities.showInToast('Storing Offline',
-                            //                         //                   //         //       toastType: ToastType.INFO);
-                            //                         //                   //         // }
-                            //                         //                   //         // await DatabaseHelper.instance
-                            //                         //                   //         //     .insertOutlet(outlet);
-                            //                         //                   //         // Get.find<ProductsController>().addremark(sales);
-                            //                         //                   //         Get.back();
-                            //                         //                   //       } else {
-                            //                         //                   //         Utilities.showInToast('Please complete the form',
-                            //                         //                   //             toastType: ToastType.ERROR);
-                            //                         //                   //       }
-                            //                         //                   //     } else {
-                            //                         //                   //       Utilities.showInToast("Please add quantity");
-                            //                         //                   //     }
-                            //                         //                   //     Get.back(
-                            //                         //                   //
-                            //                         //                   //     );
-                            //                         //                   //   },
-                            //                         //                   //   child: Text("Add"),
-                            //                         //                   // )
-                            //                         //                 ],
-                            //                         //               ),
-                            //                         //             )),
-                            //                         //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                            //                         //         backgroundColor: Colors.white,
-                            //                         //         enableDrag: true,
-                            //                         //       );
-                            //                         //       // Get.bottomSheet(
-                            //                         //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
-                            //                         //       //   //   itemBuilder: (context, index){
-                            //                         //       //   //     return
-                            //                         //       //   Container(
-                            //                         //       //       child: Padding(
-                            //                         //       //         padding: const EdgeInsets.all(10.0),
-                            //                         //       //         child: Column(
-                            //                         //       //           mainAxisSize: MainAxisSize.min,
-                            //                         //       //           children: [
-                            //                         //       //             Padding(
-                            //                         //       //                 padding: const EdgeInsets.all(12.0),
-                            //                         //       //                 child:
-                            //                         //       //                 // DropdownButton(
-                            //                         //       //                 //
-                            //                         //       //                 //   // Initial Value
-                            //                         //       //                 //     value: selectedDrowpdown,
-                            //                         //       //                 //
-                            //                         //       //                 //     // Down Arrow Icon
-                            //                         //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
-                            //                         //       //                 //
-                            //                         //       //                 //     // Array list of items
-                            //                         //       //                 //     items: item.map((String items) {
-                            //                         //       //                 //       return DropdownMenuItem(
-                            //                         //       //                 //         value: items,
-                            //                         //       //                 //         child: Text(items),
-                            //                         //       //                 //       );
-                            //                         //       //                 //     }).toList(),
-                            //                         //       //                 // After selecting the desired option,it will
-                            //                         //       //                 // change button value to selected value
-                            //                         //       //                 // onChanged: (String newValue) {
-                            //                         //       //                 //   setState(() {
-                            //                         //       //                 //     selectedDrowpdown = newValue;
-                            //                         //       //                 //   });
-                            //                         //       //                 //                 DropdownButton(
-                            //                         //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
-                            //                         //       //                 //   value:selectedDrowpdown,
-                            //                         //       //                 //   onChanged: (newValue) {
-                            //                         //       //                 //     selectedDrowpdown = newValue;
-                            //                         //       //                 //   setState(() {
-                            //                         //       //                 //   selectedDrowpdown = newValue;
-                            //                         //       //                 // //  print(newValue);
-                            //                         //       //                 //   //print(selectedDrowpdown);
-                            //                         //       //                 //   });
-                            //                         //       //                 //   },
-                            //                         //       //                 //   items: item.map((location) {
-                            //                         //       //                 //   return DropdownMenuItem(
-                            //                         //       //                 //   child: new Text(location),
-                            //                         //       //                 //   value: location,
-                            //                         //       //                 //   );
-                            //                         //       //                 //   }).toList(),
-                            //                         //       //                 //   ),
-                            //                         //       //                 Padding(
-                            //                         //       //                   padding: const EdgeInsets.all(10.0),
-                            //                         //       //                   child: GetBuilder<OutletsController>(
-                            //                         //       //                     builder: (builder) {
-                            //                         //       //                       return Get.find<OutletsController>().item.length == null
-                            //                         //       //                           ? SizedBox()
-                            //                         //       //                           : InputDecorator(
-                            //                         //       //                         decoration: decoration("Select Remark"),
-                            //                         //       //                         child: ButtonTheme(
-                            //                         //       //                           alignedDropdown: true,
-                            //                         //       //                           child: DropdownButton<String>(
-                            //                         //       //                             // iconEnabledCo
-                            //                         //       //                             // iconDisabledColor: Colors.red,
-                            //                         //       //                             isDense: true,
-                            //                         //       //                             isExpanded: true,
-                            //                         //       //                             hint: Text(
-                            //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown),
-                            //                         //       //                             items:
-                            //                         //       //                             Get.find<OutletsController>().item.map((e) {
-                            //                         //       //                               return DropdownMenuItem<String>(
-                            //                         //       //                                   value: e, child: Text(e));
-                            //                         //       //                             }).toList(),
-                            //                         //       //                             onChanged: (String district) {
-                            //                         //       //                               // setState(() {
-                            //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                            //                         //       //                                 //  Get.find<OutletsController>().setitem(district );
-                            //                         //       //                              // });
-                            //                         //       //
-                            //                         //       //                               // district = selectedDrowpdown;
-                            //                         //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
-                            //                         //       //                               print(district);
-                            //                         //       //                               //   print(Get.find<OutletsController>().setitem(district ));
-                            //                         //       //                               //   district = Constants.item;
-                            //                         //       //                               //      print(selectedDrowpdown);
-                            //                         //       //                               //   district = Constants.selectedzone.zone;
-                            //                         //       //                               // Get.find<AddressController>().getAreaList(district);
-                            //                         //       //                             },
-                            //                         //       //                           ),
-                            //                         //       //                         ),
-                            //                         //       //                       );
-                            //                         //       //                     },
-                            //                         //       //                   ),
-                            //                         //       //                 )
-                            //                         //       //               // DropdownButton<String>(
-                            //                         //       //               //   hint: Text("Remark"),
-                            //                         //       //               //   value:  selectedDrowpdown,
-                            //                         //       //               //   items:
-                            //                         //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
-                            //                         //       //               //   // [
-                            //                         //       //               //   //   for (var data in Get.find<OutletsController>().item)
-                            //                         //       //               //   //     DropdownMenuItem(
-                            //                         //       //               //   //       child: new Text(
-                            //                         //       //               //   //         data,
-                            //                         //       //               //   //       ),
-                            //                         //       //               //   //       value: data,
-                            //                         //       //               //   //     )
-                            //                         //       //               //   // ],
-                            //                         //       //               //
-                            //                         //       //               //   // Get.find<OutletsController>().item.map((e) {
-                            //                         //       //               //   //   return DropdownMenuItem<String>(
-                            //                         //       //               //   //           value: e,
-                            //                         //       //               //   //           child: Text(e),
-                            //                         //       //               //   //         );
-                            //                         //       //               //   // }),
-                            //                         //       //               //     item.map((  value) {
-                            //                         //       //               //     return DropdownMenuItem<String>(
-                            //                         //       //               //       value: value,
-                            //                         //       //               //       child: Text(value),
-                            //                         //       //               //     );
-                            //                         //       //               //   }).toList(),
-                            //                         //       //               //   onChanged: (newvalue) {
-                            //                         //       //               //     setState(() {
-                            //                         //       //               //      selectedDrowpdown = newvalue ;
-                            //                         //       //               //     });
-                            //                         //       //               //
-                            //                         //       //               // //   Get.find<OutletsController>().setitem(newvalue);
-                            //                         //       //               //
-                            //                         //       //               //
-                            //                         //       //               //    //_selectedvalue = newvalue;
-                            //                         //       //               //   })
-                            //                         //       //             ),
-                            //                         //       //
-                            //                         //       //             SizedBox(height: Get.size.height * 0.01),
-                            //                         //       //             // Container(
-                            //                         //       //             //   child: _imageFile == null
-                            //                         //       //             //       ? Center(
-                            //                         //       //             //     child: Text("No Image Selected"),
-                            //                         //       //             //   )
-                            //                         //       //             //       : Image.file(File(_imageFile.path)),
-                            //                         //       //             // ),
-                            //                         //       //             ElevatedButton(
-                            //                         //       //               onPressed: () async {
-                            //                         //       //                 // pickImage();
-                            //                         //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
-                            //                         //       //                   var conn = await Utilities.isInternetWorking();
-                            //                         //       //                   showDialog(
-                            //                         //       //                       barrierDismissible: false,
-                            //                         //       //                       context: context,
-                            //                         //       //                       builder: (context) {
-                            //                         //       //                         return CupertinoAlertDialog(
-                            //                         //       //                           title: Text('Please Wait'),
-                            //                         //       //                           content: Column(
-                            //                         //       //                             children: [
-                            //                         //       //                               Divider(),
-                            //                         //       //                               Padding(
-                            //                         //       //                                 padding: const EdgeInsets.all(8.0),
-                            //                         //       //                                 child: Text(conn
-                            //                         //       //                                     ? 'Registering new Sales Outlet'
-                            //                         //       //                                     : 'Saving offline'),
-                            //                         //       //                               ),
-                            //                         //       //                               CupertinoActivityIndicator(
-                            //                         //       //                                 radius: 17,
-                            //                         //       //                               )
-                            //                         //       //                             ],
-                            //                         //       //                           ),
-                            //                         //       //                         );
-                            //                         //       //                       });
-                            //                         //       //                   // var sales = Sales(
-                            //                         //       //                   //     outletId:  outlet[index].id.toString(),
-                            //                         //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
-                            //                         //       //                   // );
-                            //                         //       //                   // selectedoutlet.add({
-                            //                         //       //                   //   //"outlet_id": outletId,
-                            //                         //       //                   //
-                            //                         //       //                   //   "remark": selectedDrowpdown,
-                            //                         //       //                   //
-                            //                         //       //                   // });
-                            //                         //       //                   if (conn) {
-                            //                         //       //                     var response = await sellProductApi(sales);
-                            //                         //       //                     print(sales);
-                            //                         //       //                     // Get.back();
-                            //                         //       //                     Utilities.showInToast(response.message,
-                            //                         //       //                         toastType: response.success
-                            //                         //       //                             ? ToastType.SUCCESS
-                            //                         //       //                             : ToastType.ERROR);
-                            //                         //       //
-                            //                         //       //                     //   if (response.success) {
-                            //                         //       //                     //     outlet.synced = true;
-                            //                         //       //                     //     Get.back();
-                            //                         //       //                     //   }
-                            //                         //       //                     // } else {
-                            //                         //       //                     //   Get.back();
-                            //                         //       //                     //   outlet.synced = false;
-                            //                         //       //                     //
-                            //                         //       //                     //   Utilities.showInToast('Storing Offline',
-                            //                         //       //                     //       toastType: ToastType.INFO);
-                            //                         //       //                     // }
-                            //                         //       //                     // await DatabaseHelper.instance
-                            //                         //       //                     //     .insertOutlet(outlet);
-                            //                         //       //                     // Get.find<ProductsController>().addremark(sales);
-                            //                         //       //                     Get.back();
-                            //                         //       //                   } else {
-                            //                         //       //                     Utilities.showInToast('Please complete the form',
-                            //                         //       //                         toastType: ToastType.ERROR);
-                            //                         //       //                   }
-                            //                         //       //                   // if (selectedDrowpdown != null) {
-                            //                         //       //                   //   // selectedoutlet.add({
-                            //                         //       //                   //   //   //"outlet_id": outletId,
-                            //                         //       //                   //   //
-                            //                         //       //                   //   //   "remark": selectedDrowpdown,
-                            //                         //       //                   //   //
-                            //                         //       //                   //   // });
-                            //                         //       //                   //   sales.remark = jsonEncode(selectedoutlet);
-                            //                         //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
-                            //                         //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
-                            //                         //       //                   //   Utilities.showInToast("Remark Noted");
-                            //                         //       //                   //   print(selectedDrowpdown);
-                            //                         //       //                   // } else {
-                            //                         //       //                   //   Utilities.showInToast("Please add Remark");
-                            //                         //       //                   // }
-                            //                         //       //                   Get.back();}
-                            //                         //       //               },
-                            //                         //       //               child: Text("Add"),
-                            //                         //       //             ),
-                            //                         //       //           //  outlet.id..toString().isEmpty
-                            //                         //       //           //       ? ElevatedButton(
-                            //                         //       //           //     onPressed: () {
-                            //                         //       //           //       showQuantityBottomSheet(null, products.id.toString());
-                            //                         //       //           //     },
-                            //                         //       //           //     child: Text("Sell"),
-                            //                         //       //           //   )
-                            //                         //       //           //       : ExpansionTile(
-                            //                         //       //           //     title: Text("Batches"),
-                            //                         //       //           //     children: products.batches.map((batch) {
-                            //                         //       //           //       return buildBatchTile(batch, products);
-                            //                         //       //           //     }).toList(),
-                            //                         //       //           //   ),
-                            //                         //       //           ],
-                            //                         //       //         ),)),
-                            //                         //       //
-                            //                         //       //
-                            //                         //       //
-                            //                         //       //
-                            //                         //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                            //                         //       //   backgroundColor: Colors.white,
-                            //                         //       //   enableDrag: true,
-                            //                         //       // );
-                            //                         //     } , icon: Icon(Icons.add))
-                            //                         // )
-                            //                       ],
-                            //                     ),
-                            //                     Container(
-                            //                         child: Column(
-                            //                           mainAxisAlignment: MainAxisAlignment.start,
-                            //                           children: [
-                            //                             Padding(  padding: const EdgeInsets.all(10.0),
-                            //                                 child:   Row(
-                            //                                   children: [
-                            //                                     Text(
-                            //                                       item,
-                            //                                       style: TextStyle(
-                            //                                           fontSize: 15,
-                            //                                           fontWeight: FontWeight.bold),
-                            //                                     ),
-                            //
-                            //                                   ],
-                            //                                 )
-                            //
-                            //                             ),
-                            //
-                            //                             // Padding(
-                            //                             //   padding: const EdgeInsets.only(top: 1),
-                            //                             //   child:
-                            //                             // Text(
-                            //                             //   outlet[index].name,
-                            //                             //   style: TextStyle(
-                            //                             //       fontSize: 18,
-                            //                             //       fontWeight: FontWeight.bold),
-                            //                             // ),
-                            //                             // //    ),
-                            //                             // Container(
-                            //                             //   child:   Text(
-                            //                             //     "Number of Outlet: ${outlet.length.toString()}",
-                            //                             //     style: TextStyle(
-                            //                             //         fontSize: 10,
-                            //                             //         fontWeight: FontWeight.bold),
-                            //                             //   ),
-                            //                             // ),
-                            //                             // Text(
-                            //                             //   outlet[index].name,
-                            //                             //   style: TextStyle(
-                            //                             //       fontSize: 10,
-                            //                             //       fontWeight: FontWeight.bold),
-                            //                             // ),
-                            //
-                            //                           ],
-                            //                         )
-                            //                     ),
-                            //
-                            //                     // MaterialButton(
-                            //                     //   onPressed: () {
-                            //                     //     Get.to(() =>
-                            //                     //         SellProductPage(
-                            //                     //           outlet: Get
-                            //                     //               .find<OutletsController>()
-                            //                     //               .outletList[index],
-                            //                     //         ));
-                            //                     //
-                            //                     //   },
-                            //                     //   color: Colors.green[900],
-                            //                     //   minWidth: Get.size.width,
-                            //                     //   textColor: Colors.white,
-                            //                     //   padding: EdgeInsets.all(10.0),
-                            //                     //   child: Text("Sell Product"),
-                            //                     // ),
-                            //
-                            //                   ],
-                            //                 ),
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         );
-                            //         //   ListTile(
-                            //         //   onTap: (){
-                            //         //     Get.find<ProductBrandController>().setSelectedBrand(item);
-                            //         //
-                            //         //     Get.to(DetailsProduct(
-                            //         //       product: Get.find<ProductBrandController>().getNameList(item)),
-                            //         //
-                            //         //     );
-                            //         //   },
-                            //         //   title: Text(item),
-                            //         // );
-                            //         });
-                            //   },
-                            // ),
-                            //     );
-                            //   },
-                            //   title: Text(item),
-                            // );
-                            });
-                      },
-                    ),
-                  ),
+            //       RefreshIndicator(
+            //         onRefresh:  () async{
+            // await Future.delayed(Duration(seconds: 2));
+            // Get.find<ProductBrandController>().getProvinceList() ;
+            // },
+            //         child: GetBuilder<ProductBrandController>(
+            //           builder: (BrandController) {
+            //             return Get.find<ProductBrandController>().productList.isEmpty
+            //                 ? Center(
+            //               child: Column(
+            //                 mainAxisAlignment: MainAxisAlignment.center,
+            //                 children: [
+            //                   CupertinoActivityIndicator(),
+            //                 ],
+            //               ),
+            //             )
+            //                  :
+            //             //     ElevatedButton(onPressed: (){
+            //             //       print(Get.find<ProductBrandController>().productList.length);
+            //             // }, child: Text("press"));
+            //             ListView.builder(
+            //               itemCount: Get.find<ProductBrandController>().brandList.length,
+            //                 itemBuilder: (context,index){
+            //                 var item = Get.find<ProductBrandController>().brandList[index];
+            //            //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
+            //                 return    Card(
+            //                  color: item != null ? Colors.white : Colors.white54,
+            //                   shape: RoundedRectangleBorder(
+            //                     borderRadius: BorderRadius.circular(12.0),
+            //                   ),
+            //                   //   shape: BeveledRectangleBorder(
+            //                   //   borderRadius: BorderRadius.circular(5.0),
+            //                   // ),
+            //                   // shape: StadiumBorder(
+            //                   //     side: BorderSide(
+            //                   //       color: Colors.black,
+            //                   //       width: 1.5,
+            //                   //       borderRadius: BorderRadius.circular(10.0),
+            //                   //     ),),
+            //                   // outlet[index].selected ? Colors.grey
+            //                   elevation: 7.0,
+            //                   child: ListTile(
+            //                     selected: isSelected,
+            //                     onLongPress: selection,
+            //                     title: InkWell(
+            //                       onTap: (){
+            //                         // OutletInfoPages(
+            //                         //   outlet : Get
+            //                         //         .find<OutletsController>()
+            //                         //         .outletList[index],
+            //                         // ));
+            //                      //  Get.to(SellProductPage(outlet:outlet  ));
+            //                         Get.to(DetailsProduct(
+            //                           outlet: widget.outlet,product: Get.find<ProductBrandController>().getNameList(item)
+            //                        ));
+            //                        // print(outlet.name);
+            //                       },
+            //                       child: Padding(
+            //                         padding: const EdgeInsets.all(10.0),
+            //                         child: Column(
+            //                           crossAxisAlignment: CrossAxisAlignment.start,
+            //                           mainAxisSize: MainAxisSize.min,
+            //                           children: [
+            //                             Row(
+            //                               mainAxisAlignment:  MainAxisAlignment.end,
+            //                               children: [
+            //                                 // SizedBox(
+            //                                 //   width: Get.size.width * 0.3,
+            //                                 // ),
+            //                                 // CircleAvatar(
+            //                                 //     radius: (20),
+            //                                 //     backgroundColor:  outlet[index].synced
+            //                                 //         ? Colors.blueGrey
+            //                                 //         : Colors.grey,
+            //                                 //     child:  IconButton(onPressed:(){
+            //                                 //      // showQuantityBottomSheet(outlet[index].id.toString());
+            //                                 //        Get.bottomSheet(
+            //                                 //         Container(
+            //                                 //             child: Padding(
+            //                                 //               padding: const EdgeInsets.all(10.0),
+            //                                 //               child: Column(
+            //                                 //                 mainAxisSize: MainAxisSize.min,
+            //                                 //                 children: [
+            //                                 //
+            //                                 //                   Padding(
+            //                                 //                     padding: const EdgeInsets.all(10.0),
+            //                                 //                     child: GetBuilder<OutletsController>(
+            //                                 //                       builder: (builder) {
+            //                                 //                         return Get.find<OutletsController>().item.length == null
+            //                                 //                             ? SizedBox()
+            //                                 //                             : InputDecorator(
+            //                                 //                           decoration: decoration("Select Remark"),
+            //                                 //                           child: ButtonTheme(
+            //                                 //                             alignedDropdown: true,
+            //                                 //                             child: DropdownButton<String>(
+            //                                 //                               // iconEnabledCo
+            //                                 //                               // iconDisabledColor: Colors.red,
+            //                                 //                               isDense: true,
+            //                                 //                               isExpanded: true,
+            //                                 //                               hint: Text(
+            //                                 //                                   Get.find<OutletsController>().selectedDrowpdown),
+            //                                 //                               items:
+            //                                 //                               Get.find<OutletsController>().item.map((e) {
+            //                                 //                                 return DropdownMenuItem<String>(
+            //                                 //                                     value: e, child: Text(e));
+            //                                 //                               }).toList(),
+            //                                 //                               onChanged: (String district) {
+            //                                 //                                 // setState(() {
+            //                                 //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+            //                                 //                                 //  Get.find<OutletsController>().setitem(district );
+            //                                 //                                 // });
+            //                                 //
+            //                                 //                                 // district = selectedDrowpdown;
+            //                                 //                                 print(Get.find<OutletsController>().selectedDrowpdown);
+            //                                 //                                 print(district);
+            //                                 //                                 //   print(Get.find<OutletsController>().setitem(district ));
+            //                                 //                                 //   district = Constants.item;
+            //                                 //                                 //      print(selectedDrowpdown);
+            //                                 //                                 //   district = Constants.selectedzone.zone;
+            //                                 //                                 // Get.find<AddressController>().getAreaList(district);
+            //                                 //                               },
+            //                                 //                             ),
+            //                                 //                           ),
+            //                                 //                         );
+            //                                 //                       },
+            //                                 //                     ),
+            //                                 //                   ),
+            //                                 //                   // ElevatedButton(
+            //                                 //                   //   onPressed: () async {
+            //                                 //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
+            //                                 //                   //       // selectedProductList.add({
+            //                                 //                   //       //
+            //                                 //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
+            //                                 //                   //       //
+            //                                 //                   //       // });
+            //                                 //                   //       //
+            //                                 //                   //       // if (selectedProductList.isEmpty) {
+            //                                 //                   //       //   Utilities.showInToast("Please add a product",
+            //                                 //                   //       //       toastType: ToastType.ERROR);
+            //                                 //                   //       //   return;
+            //                                 //                   //       // }
+            //                                 //                   //
+            //                                 //                   //       var sales = Sales(
+            //                                 //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
+            //                                 //                   //         remark: jsonEncode(selectedProductList),
+            //                                 //                   //         soldAt:  DateTime.now().toString(),
+            //                                 //                   //         outletId: "12",
+            //                                 //                   //            outletLatitude : "444444",
+            //                                 //                   //        outletLongitude : "4343243423"
+            //                                 //                   //       );
+            //                                 //                   //       // sales.orders = "dd";
+            //                                 //                   //       // // sales.distributorId = "12";
+            //                                 //                   //       // sales.remark =jsonEncode(selectedProductList);
+            //                                 //                   //       // sales.soldAt = DateTime.now().toString();
+            //                                 //                   //       // sales.outletId = Get
+            //                                 //                   //       //     .find<OutletsController>()
+            //                                 //                   //       //     .outletList[index].id.toString();
+            //                                 //                   //       // sales.outletLatitude = "444444";
+            //                                 //                   //       // sales.outletLongitude = "4343243423";
+            //                                 //                   //
+            //                                 //                   //       //  var conn = await Utilities.isInternetWorking();
+            //                                 //                   //
+            //                                 //                   //
+            //                                 //                   //
+            //                                 //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
+            //                                 //                   //       //else {
+            //                                 //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
+            //                                 //                   //       // }
+            //                                 //                   //       //
+            //                                 //                   //       // Get.find<ProductsController>().removeAllProductFromList();
+            //                                 //                   //   //    Get.find<ProductsController>().sellProducts(sales);
+            //                                 //                   //           var conn = await Utilities.isInternetWorking();
+            //                                 //                   //       if (conn) {
+            //                                 //                   //         var response = await sellProductApi(sales);
+            //                                 //                   //         print(sales);
+            //                                 //                   //         // Get.back();
+            //                                 //                   //         Utilities.showInToast(response.message,
+            //                                 //                   //             toastType: response.success
+            //                                 //                   //                 ? ToastType.SUCCESS
+            //                                 //                   //                 : ToastType.ERROR);
+            //                                 //                   //
+            //                                 //                   //         //   if (response.success) {
+            //                                 //                   //         //     outlet.synced = true;
+            //                                 //                   //         //     Get.back();
+            //                                 //                   //         //   }
+            //                                 //                   //         // } else {
+            //                                 //                   //         //   Get.back();
+            //                                 //                   //         //   outlet.synced = false;
+            //                                 //                   //         //
+            //                                 //                   //         //   Utilities.showInToast('Storing Offline',
+            //                                 //                   //         //       toastType: ToastType.INFO);
+            //                                 //                   //         // }
+            //                                 //                   //         // await DatabaseHelper.instance
+            //                                 //                   //         //     .insertOutlet(outlet);
+            //                                 //                   //         // Get.find<ProductsController>().addremark(sales);
+            //                                 //                   //         Get.back();
+            //                                 //                   //       } else {
+            //                                 //                   //         Utilities.showInToast('Please complete the form',
+            //                                 //                   //             toastType: ToastType.ERROR);
+            //                                 //                   //       }
+            //                                 //                   //     } else {
+            //                                 //                   //       Utilities.showInToast("Please add quantity");
+            //                                 //                   //     }
+            //                                 //                   //     Get.back(
+            //                                 //                   //
+            //                                 //                   //     );
+            //                                 //                   //   },
+            //                                 //                   //   child: Text("Add"),
+            //                                 //                   // )
+            //                                 //                 ],
+            //                                 //               ),
+            //                                 //             )),
+            //                                 //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+            //                                 //         backgroundColor: Colors.white,
+            //                                 //         enableDrag: true,
+            //                                 //       );
+            //                                 //       // Get.bottomSheet(
+            //                                 //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
+            //                                 //       //   //   itemBuilder: (context, index){
+            //                                 //       //   //     return
+            //                                 //       //   Container(
+            //                                 //       //       child: Padding(
+            //                                 //       //         padding: const EdgeInsets.all(10.0),
+            //                                 //       //         child: Column(
+            //                                 //       //           mainAxisSize: MainAxisSize.min,
+            //                                 //       //           children: [
+            //                                 //       //             Padding(
+            //                                 //       //                 padding: const EdgeInsets.all(12.0),
+            //                                 //       //                 child:
+            //                                 //       //                 // DropdownButton(
+            //                                 //       //                 //
+            //                                 //       //                 //   // Initial Value
+            //                                 //       //                 //     value: selectedDrowpdown,
+            //                                 //       //                 //
+            //                                 //       //                 //     // Down Arrow Icon
+            //                                 //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
+            //                                 //       //                 //
+            //                                 //       //                 //     // Array list of items
+            //                                 //       //                 //     items: item.map((String items) {
+            //                                 //       //                 //       return DropdownMenuItem(
+            //                                 //       //                 //         value: items,
+            //                                 //       //                 //         child: Text(items),
+            //                                 //       //                 //       );
+            //                                 //       //                 //     }).toList(),
+            //                                 //       //                 // After selecting the desired option,it will
+            //                                 //       //                 // change button value to selected value
+            //                                 //       //                 // onChanged: (String newValue) {
+            //                                 //       //                 //   setState(() {
+            //                                 //       //                 //     selectedDrowpdown = newValue;
+            //                                 //       //                 //   });
+            //                                 //       //                 //                 DropdownButton(
+            //                                 //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
+            //                                 //       //                 //   value:selectedDrowpdown,
+            //                                 //       //                 //   onChanged: (newValue) {
+            //                                 //       //                 //     selectedDrowpdown = newValue;
+            //                                 //       //                 //   setState(() {
+            //                                 //       //                 //   selectedDrowpdown = newValue;
+            //                                 //       //                 // //  print(newValue);
+            //                                 //       //                 //   //print(selectedDrowpdown);
+            //                                 //       //                 //   });
+            //                                 //       //                 //   },
+            //                                 //       //                 //   items: item.map((location) {
+            //                                 //       //                 //   return DropdownMenuItem(
+            //                                 //       //                 //   child: new Text(location),
+            //                                 //       //                 //   value: location,
+            //                                 //       //                 //   );
+            //                                 //       //                 //   }).toList(),
+            //                                 //       //                 //   ),
+            //                                 //       //                 Padding(
+            //                                 //       //                   padding: const EdgeInsets.all(10.0),
+            //                                 //       //                   child: GetBuilder<OutletsController>(
+            //                                 //       //                     builder: (builder) {
+            //                                 //       //                       return Get.find<OutletsController>().item.length == null
+            //                                 //       //                           ? SizedBox()
+            //                                 //       //                           : InputDecorator(
+            //                                 //       //                         decoration: decoration("Select Remark"),
+            //                                 //       //                         child: ButtonTheme(
+            //                                 //       //                           alignedDropdown: true,
+            //                                 //       //                           child: DropdownButton<String>(
+            //                                 //       //                             // iconEnabledCo
+            //                                 //       //                             // iconDisabledColor: Colors.red,
+            //                                 //       //                             isDense: true,
+            //                                 //       //                             isExpanded: true,
+            //                                 //       //                             hint: Text(
+            //                                 //       //                                 Get.find<OutletsController>().selectedDrowpdown),
+            //                                 //       //                             items:
+            //                                 //       //                             Get.find<OutletsController>().item.map((e) {
+            //                                 //       //                               return DropdownMenuItem<String>(
+            //                                 //       //                                   value: e, child: Text(e));
+            //                                 //       //                             }).toList(),
+            //                                 //       //                             onChanged: (String district) {
+            //                                 //       //                               // setState(() {
+            //                                 //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+            //                                 //       //                                 //  Get.find<OutletsController>().setitem(district );
+            //                                 //       //                              // });
+            //                                 //       //
+            //                                 //       //                               // district = selectedDrowpdown;
+            //                                 //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
+            //                                 //       //                               print(district);
+            //                                 //       //                               //   print(Get.find<OutletsController>().setitem(district ));
+            //                                 //       //                               //   district = Constants.item;
+            //                                 //       //                               //      print(selectedDrowpdown);
+            //                                 //       //                               //   district = Constants.selectedzone.zone;
+            //                                 //       //                               // Get.find<AddressController>().getAreaList(district);
+            //                                 //       //                             },
+            //                                 //       //                           ),
+            //                                 //       //                         ),
+            //                                 //       //                       );
+            //                                 //       //                     },
+            //                                 //       //                   ),
+            //                                 //       //                 )
+            //                                 //       //               // DropdownButton<String>(
+            //                                 //       //               //   hint: Text("Remark"),
+            //                                 //       //               //   value:  selectedDrowpdown,
+            //                                 //       //               //   items:
+            //                                 //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
+            //                                 //       //               //   // [
+            //                                 //       //               //   //   for (var data in Get.find<OutletsController>().item)
+            //                                 //       //               //   //     DropdownMenuItem(
+            //                                 //       //               //   //       child: new Text(
+            //                                 //       //               //   //         data,
+            //                                 //       //               //   //       ),
+            //                                 //       //               //   //       value: data,
+            //                                 //       //               //   //     )
+            //                                 //       //               //   // ],
+            //                                 //       //               //
+            //                                 //       //               //   // Get.find<OutletsController>().item.map((e) {
+            //                                 //       //               //   //   return DropdownMenuItem<String>(
+            //                                 //       //               //   //           value: e,
+            //                                 //       //               //   //           child: Text(e),
+            //                                 //       //               //   //         );
+            //                                 //       //               //   // }),
+            //                                 //       //               //     item.map((  value) {
+            //                                 //       //               //     return DropdownMenuItem<String>(
+            //                                 //       //               //       value: value,
+            //                                 //       //               //       child: Text(value),
+            //                                 //       //               //     );
+            //                                 //       //               //   }).toList(),
+            //                                 //       //               //   onChanged: (newvalue) {
+            //                                 //       //               //     setState(() {
+            //                                 //       //               //      selectedDrowpdown = newvalue ;
+            //                                 //       //               //     });
+            //                                 //       //               //
+            //                                 //       //               // //   Get.find<OutletsController>().setitem(newvalue);
+            //                                 //       //               //
+            //                                 //       //               //
+            //                                 //       //               //    //_selectedvalue = newvalue;
+            //                                 //       //               //   })
+            //                                 //       //             ),
+            //                                 //       //
+            //                                 //       //             SizedBox(height: Get.size.height * 0.01),
+            //                                 //       //             // Container(
+            //                                 //       //             //   child: _imageFile == null
+            //                                 //       //             //       ? Center(
+            //                                 //       //             //     child: Text("No Image Selected"),
+            //                                 //       //             //   )
+            //                                 //       //             //       : Image.file(File(_imageFile.path)),
+            //                                 //       //             // ),
+            //                                 //       //             ElevatedButton(
+            //                                 //       //               onPressed: () async {
+            //                                 //       //                 // pickImage();
+            //                                 //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
+            //                                 //       //                   var conn = await Utilities.isInternetWorking();
+            //                                 //       //                   showDialog(
+            //                                 //       //                       barrierDismissible: false,
+            //                                 //       //                       context: context,
+            //                                 //       //                       builder: (context) {
+            //                                 //       //                         return CupertinoAlertDialog(
+            //                                 //       //                           title: Text('Please Wait'),
+            //                                 //       //                           content: Column(
+            //                                 //       //                             children: [
+            //                                 //       //                               Divider(),
+            //                                 //       //                               Padding(
+            //                                 //       //                                 padding: const EdgeInsets.all(8.0),
+            //                                 //       //                                 child: Text(conn
+            //                                 //       //                                     ? 'Registering new Sales Outlet'
+            //                                 //       //                                     : 'Saving offline'),
+            //                                 //       //                               ),
+            //                                 //       //                               CupertinoActivityIndicator(
+            //                                 //       //                                 radius: 17,
+            //                                 //       //                               )
+            //                                 //       //                             ],
+            //                                 //       //                           ),
+            //                                 //       //                         );
+            //                                 //       //                       });
+            //                                 //       //                   // var sales = Sales(
+            //                                 //       //                   //     outletId:  outlet[index].id.toString(),
+            //                                 //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
+            //                                 //       //                   // );
+            //                                 //       //                   // selectedoutlet.add({
+            //                                 //       //                   //   //"outlet_id": outletId,
+            //                                 //       //                   //
+            //                                 //       //                   //   "remark": selectedDrowpdown,
+            //                                 //       //                   //
+            //                                 //       //                   // });
+            //                                 //       //                   if (conn) {
+            //                                 //       //                     var response = await sellProductApi(sales);
+            //                                 //       //                     print(sales);
+            //                                 //       //                     // Get.back();
+            //                                 //       //                     Utilities.showInToast(response.message,
+            //                                 //       //                         toastType: response.success
+            //                                 //       //                             ? ToastType.SUCCESS
+            //                                 //       //                             : ToastType.ERROR);
+            //                                 //       //
+            //                                 //       //                     //   if (response.success) {
+            //                                 //       //                     //     outlet.synced = true;
+            //                                 //       //                     //     Get.back();
+            //                                 //       //                     //   }
+            //                                 //       //                     // } else {
+            //                                 //       //                     //   Get.back();
+            //                                 //       //                     //   outlet.synced = false;
+            //                                 //       //                     //
+            //                                 //       //                     //   Utilities.showInToast('Storing Offline',
+            //                                 //       //                     //       toastType: ToastType.INFO);
+            //                                 //       //                     // }
+            //                                 //       //                     // await DatabaseHelper.instance
+            //                                 //       //                     //     .insertOutlet(outlet);
+            //                                 //       //                     // Get.find<ProductsController>().addremark(sales);
+            //                                 //       //                     Get.back();
+            //                                 //       //                   } else {
+            //                                 //       //                     Utilities.showInToast('Please complete the form',
+            //                                 //       //                         toastType: ToastType.ERROR);
+            //                                 //       //                   }
+            //                                 //       //                   // if (selectedDrowpdown != null) {
+            //                                 //       //                   //   // selectedoutlet.add({
+            //                                 //       //                   //   //   //"outlet_id": outletId,
+            //                                 //       //                   //   //
+            //                                 //       //                   //   //   "remark": selectedDrowpdown,
+            //                                 //       //                   //   //
+            //                                 //       //                   //   // });
+            //                                 //       //                   //   sales.remark = jsonEncode(selectedoutlet);
+            //                                 //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
+            //                                 //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
+            //                                 //       //                   //   Utilities.showInToast("Remark Noted");
+            //                                 //       //                   //   print(selectedDrowpdown);
+            //                                 //       //                   // } else {
+            //                                 //       //                   //   Utilities.showInToast("Please add Remark");
+            //                                 //       //                   // }
+            //                                 //       //                   Get.back();}
+            //                                 //       //               },
+            //                                 //       //               child: Text("Add"),
+            //                                 //       //             ),
+            //                                 //       //           //  outlet.id..toString().isEmpty
+            //                                 //       //           //       ? ElevatedButton(
+            //                                 //       //           //     onPressed: () {
+            //                                 //       //           //       showQuantityBottomSheet(null, products.id.toString());
+            //                                 //       //           //     },
+            //                                 //       //           //     child: Text("Sell"),
+            //                                 //       //           //   )
+            //                                 //       //           //       : ExpansionTile(
+            //                                 //       //           //     title: Text("Batches"),
+            //                                 //       //           //     children: products.batches.map((batch) {
+            //                                 //       //           //       return buildBatchTile(batch, products);
+            //                                 //       //           //     }).toList(),
+            //                                 //       //           //   ),
+            //                                 //       //           ],
+            //                                 //       //         ),)),
+            //                                 //       //
+            //                                 //       //
+            //                                 //       //
+            //                                 //       //
+            //                                 //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+            //                                 //       //   backgroundColor: Colors.white,
+            //                                 //       //   enableDrag: true,
+            //                                 //       // );
+            //                                 //     } , icon: Icon(Icons.add))
+            //                                 // )
+            //                               ],
+            //                             ),
+            //                             Container(
+            //                                 child: Column(
+            //                                   mainAxisAlignment: MainAxisAlignment.start,
+            //                                   children: [
+            //                                     Padding(  padding: const EdgeInsets.all(10.0),
+            //                                         child:   Row(
+            //                                           children: [
+            //                                             Text(
+            //                                               item,
+            //                                               style: TextStyle(
+            //                                                   fontSize: 15,
+            //                                                   fontWeight: FontWeight.bold),
+            //                                             ),
+            //                                           ],
+            //                                         )
+            //                                     ),
+            //                                     // Padding(
+            //                                     //   padding: const EdgeInsets.only(top: 1),
+            //                                     //   child:
+            //                                     // Text(
+            //                                     //   outlet[index].name,
+            //                                     //   style: TextStyle(
+            //                                     //       fontSize: 18,
+            //                                     //       fontWeight: FontWeight.bold),
+            //                                     // ),
+            //                                     // //    ),
+            //                                     // Container(
+            //                                     //   child:   Text(
+            //                                     //     "Number of Outlet: ${outlet.length.toString()}",
+            //                                     //     style: TextStyle(
+            //                                     //         fontSize: 10,
+            //                                     //         fontWeight: FontWeight.bold),
+            //                                     //   ),
+            //                                     // ),
+            //                                     // Text(
+            //                                     //   outlet[index].name,
+            //                                     //   style: TextStyle(
+            //                                     //       fontSize: 10,
+            //                                     //       fontWeight: FontWeight.bold),
+            //                                     // ),
+            //                                   ],
+            //                                 )
+            //                             ),
+            //                             // MaterialButton(
+            //                             //   onPressed: () {
+            //                             //     Get.to(() =>
+            //                             //         SellProductPage(
+            //                             //           outlet: Get
+            //                             //               .find<OutletsController>()
+            //                             //               .outletList[index],
+            //                             //         ));
+            //                             //
+            //                             //   },
+            //                             //   color: Colors.green[900],
+            //                             //   minWidth: Get.size.width,
+            //                             //   textColor: Colors.white,
+            //                             //   padding: EdgeInsets.all(10.0),
+            //                             //   child: Text("Sell Product"),
+            //                             // ),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 );
+            //                 //   ListTile(
+            //                 //   onTap: (){
+            //                 //     Get.find<ProductBrandController>().setSelectedBrand(item);
+            //                 //
+            //                 //     Get.to(DetailsProduct(
+            //                 //       product: Get.find<ProductBrandController>().getNameList(item)),
+            //                 // // GetBuilder<ProductBrandController>(
+            //                 //   builder: (BrandController) {
+            //                 //     return Get.find<ProductBrandController>().productList.isEmpty
+            //                 //         ? Center(
+            //                 //       child: Column(
+            //                 //         mainAxisAlignment: MainAxisAlignment.center,
+            //                 //         children: [
+            //                 //           CupertinoActivityIndicator(),
+            //                 //         ],
+            //                 //       ),
+            //                 //     )
+            //                 //          :
+            //                 //     //     ElevatedButton(onPressed: (){
+            //                 //     //       print(Get.find<ProductBrandController>().productList.length);
+            //                 //     // }, child: Text("press"));
+            //                 //     ListView.builder(
+            //                 //       itemCount: Get.find<ProductBrandController>().brandList.length,
+            //                 //         itemBuilder: (context,index){
+            //                 //         var item = Get.find<ProductBrandController>().brandList[index];
+            //                 //    //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
+            //                 //         return    Card(
+            //                 //          color: item != null ? Colors.white : Colors.white54,
+            //                 //           shape: RoundedRectangleBorder(
+            //                 //             borderRadius: BorderRadius.circular(12.0),
+            //                 //           ),
+            //                 //           //   shape: BeveledRectangleBorder(
+            //                 //           //   borderRadius: BorderRadius.circular(5.0),
+            //                 //           // ),
+            //                 //           // shape: StadiumBorder(
+            //                 //           //     side: BorderSide(
+            //                 //           //       color: Colors.black,
+            //                 //           //       width: 1.5,
+            //                 //           //       borderRadius: BorderRadius.circular(10.0),
+            //                 //           //     ),),
+            //                 //           // outlet[index].selected ? Colors.grey
+            //                 //           elevation: 7.0,
+            //                 //           child: ListTile(
+            //                 //             selected: isSelected,
+            //                 //             onLongPress: selection,
+            //                 //             title: InkWell(
+            //                 //               onTap: (){
+            //                 //
+            //                 //                 // OutletInfoPages(
+            //                 //                 //   outlet : Get
+            //                 //                 //         .find<OutletsController>()
+            //                 //                 //         .outletList[index],
+            //                 //                 // ));
+            //                 //              //  Get.to(SellProductPage(outlet:outlet  ));
+            //                 //                 Get.to(DetailsProduct(
+            //                 //                   outlet: outlet,product: Get.find<ProductBrandController>().getNameList(item)
+            //                 //                ));
+            //                 //                // print(outlet.name);
+            //                 //               },
+            //                 //               child: Padding(
+            //                 //                 padding: const EdgeInsets.all(10.0),
+            //                 //                 child: Column(
+            //                 //                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                 //                   mainAxisSize: MainAxisSize.min,
+            //                 //                   children: [
+            //                 //                     Row(
+            //                 //                       mainAxisAlignment:  MainAxisAlignment.end,
+            //                 //                       children: [
+            //                 //                         // SizedBox(
+            //                 //                         //   width: Get.size.width * 0.3,
+            //                 //                         // ),
+            //                 //                         // CircleAvatar(
+            //                 //                         //     radius: (20),
+            //                 //                         //     backgroundColor:  outlet[index].synced
+            //                 //                         //         ? Colors.blueGrey
+            //                 //                         //         : Colors.grey,
+            //                 //                         //     child:  IconButton(onPressed:(){
+            //                 //                         //      // showQuantityBottomSheet(outlet[index].id.toString());
+            //                 //                         //        Get.bottomSheet(
+            //                 //                         //         Container(
+            //                 //                         //             child: Padding(
+            //                 //                         //               padding: const EdgeInsets.all(10.0),
+            //                 //                         //               child: Column(
+            //                 //                         //                 mainAxisSize: MainAxisSize.min,
+            //                 //                         //                 children: [
+            //                 //                         //
+            //                 //                         //                   Padding(
+            //                 //                         //                     padding: const EdgeInsets.all(10.0),
+            //                 //                         //                     child: GetBuilder<OutletsController>(
+            //                 //                         //                       builder: (builder) {
+            //                 //                         //                         return Get.find<OutletsController>().item.length == null
+            //                 //                         //                             ? SizedBox()
+            //                 //                         //                             : InputDecorator(
+            //                 //                         //                           decoration: decoration("Select Remark"),
+            //                 //                         //                           child: ButtonTheme(
+            //                 //                         //                             alignedDropdown: true,
+            //                 //                         //                             child: DropdownButton<String>(
+            //                 //                         //                               // iconEnabledCo
+            //                 //                         //                               // iconDisabledColor: Colors.red,
+            //                 //                         //                               isDense: true,
+            //                 //                         //                               isExpanded: true,
+            //                 //                         //                               hint: Text(
+            //                 //                         //                                   Get.find<OutletsController>().selectedDrowpdown),
+            //                 //                         //                               items:
+            //                 //                         //                               Get.find<OutletsController>().item.map((e) {
+            //                 //                         //                                 return DropdownMenuItem<String>(
+            //                 //                         //                                     value: e, child: Text(e));
+            //                 //                         //                               }).toList(),
+            //                 //                         //                               onChanged: (String district) {
+            //                 //                         //                                 // setState(() {
+            //                 //                         //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+            //                 //                         //                                 //  Get.find<OutletsController>().setitem(district );
+            //                 //                         //                                 // });
+            //                 //                         //
+            //                 //                         //                                 // district = selectedDrowpdown;
+            //                 //                         //                                 print(Get.find<OutletsController>().selectedDrowpdown);
+            //                 //                         //                                 print(district);
+            //                 //                         //                                 //   print(Get.find<OutletsController>().setitem(district ));
+            //                 //                         //                                 //   district = Constants.item;
+            //                 //                         //                                 //      print(selectedDrowpdown);
+            //                 //                         //                                 //   district = Constants.selectedzone.zone;
+            //                 //                         //                                 // Get.find<AddressController>().getAreaList(district);
+            //                 //                         //                               },
+            //                 //                         //                             ),
+            //                 //                         //                           ),
+            //                 //                         //                         );
+            //                 //                         //                       },
+            //                 //                         //                     ),
+            //                 //                         //                   ),
+            //                 //                         //                   // ElevatedButton(
+            //                 //                         //                   //   onPressed: () async {
+            //                 //                         //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
+            //                 //                         //                   //       // selectedProductList.add({
+            //                 //                         //                   //       //
+            //                 //                         //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
+            //                 //                         //                   //       //
+            //                 //                         //                   //       // });
+            //                 //                         //                   //       //
+            //                 //                         //                   //       // if (selectedProductList.isEmpty) {
+            //                 //                         //                   //       //   Utilities.showInToast("Please add a product",
+            //                 //                         //                   //       //       toastType: ToastType.ERROR);
+            //                 //                         //                   //       //   return;
+            //                 //                         //                   //       // }
+            //                 //                         //                   //
+            //                 //                         //                   //       var sales = Sales(
+            //                 //                         //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
+            //                 //                         //                   //         remark: jsonEncode(selectedProductList),
+            //                 //                         //                   //         soldAt:  DateTime.now().toString(),
+            //                 //                         //                   //         outletId: "12",
+            //                 //                         //                   //            outletLatitude : "444444",
+            //                 //                         //                   //        outletLongitude : "4343243423"
+            //                 //                         //                   //       );
+            //                 //                         //                   //       // sales.orders = "dd";
+            //                 //                         //                   //       // // sales.distributorId = "12";
+            //                 //                         //                   //       // sales.remark =jsonEncode(selectedProductList);
+            //                 //                         //                   //       // sales.soldAt = DateTime.now().toString();
+            //                 //                         //                   //       // sales.outletId = Get
+            //                 //                         //                   //       //     .find<OutletsController>()
+            //                 //                         //                   //       //     .outletList[index].id.toString();
+            //                 //                         //                   //       // sales.outletLatitude = "444444";
+            //                 //                         //                   //       // sales.outletLongitude = "4343243423";
+            //                 //                         //                   //
+            //                 //                         //                   //       //  var conn = await Utilities.isInternetWorking();
+            //                 //                         //                   //
+            //                 //                         //                   //
+            //                 //                         //                   //
+            //                 //                         //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
+            //                 //                         //                   //       //else {
+            //                 //                         //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
+            //                 //                         //                   //       // }
+            //                 //                         //                   //       //
+            //                 //                         //                   //       // Get.find<ProductsController>().removeAllProductFromList();
+            //                 //                         //                   //   //    Get.find<ProductsController>().sellProducts(sales);
+            //                 //                         //                   //           var conn = await Utilities.isInternetWorking();
+            //                 //                         //                   //       if (conn) {
+            //                 //                         //                   //         var response = await sellProductApi(sales);
+            //                 //                         //                   //         print(sales);
+            //                 //                         //                   //         // Get.back();
+            //                 //                         //                   //         Utilities.showInToast(response.message,
+            //                 //                         //                   //             toastType: response.success
+            //                 //                         //                   //                 ? ToastType.SUCCESS
+            //                 //                         //                   //                 : ToastType.ERROR);
+            //                 //                         //                   //
+            //                 //                         //                   //         //   if (response.success) {
+            //                 //                         //                   //         //     outlet.synced = true;
+            //                 //                         //                   //         //     Get.back();
+            //                 //                         //                   //         //   }
+            //                 //                         //                   //         // } else {
+            //                 //                         //                   //         //   Get.back();
+            //                 //                         //                   //         //   outlet.synced = false;
+            //                 //                         //                   //         //
+            //                 //                         //                   //         //   Utilities.showInToast('Storing Offline',
+            //                 //                         //                   //         //       toastType: ToastType.INFO);
+            //                 //                         //                   //         // }
+            //                 //                         //                   //         // await DatabaseHelper.instance
+            //                 //                         //                   //         //     .insertOutlet(outlet);
+            //                 //                         //                   //         // Get.find<ProductsController>().addremark(sales);
+            //                 //                         //                   //         Get.back();
+            //                 //                         //                   //       } else {
+            //                 //                         //                   //         Utilities.showInToast('Please complete the form',
+            //                 //                         //                   //             toastType: ToastType.ERROR);
+            //                 //                         //                   //       }
+            //                 //                         //                   //     } else {
+            //                 //                         //                   //       Utilities.showInToast("Please add quantity");
+            //                 //                         //                   //     }
+            //                 //                         //                   //     Get.back(
+            //                 //                         //                   //
+            //                 //                         //                   //     );
+            //                 //                         //                   //   },
+            //                 //                         //                   //   child: Text("Add"),
+            //                 //                         //                   // )
+            //                 //                         //                 ],
+            //                 //                         //               ),
+            //                 //                         //             )),
+            //                 //                         //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+            //                 //                         //         backgroundColor: Colors.white,
+            //                 //                         //         enableDrag: true,
+            //                 //                         //       );
+            //                 //                         //       // Get.bottomSheet(
+            //                 //                         //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
+            //                 //                         //       //   //   itemBuilder: (context, index){
+            //                 //                         //       //   //     return
+            //                 //                         //       //   Container(
+            //                 //                         //       //       child: Padding(
+            //                 //                         //       //         padding: const EdgeInsets.all(10.0),
+            //                 //                         //       //         child: Column(
+            //                 //                         //       //           mainAxisSize: MainAxisSize.min,
+            //                 //                         //       //           children: [
+            //                 //                         //       //             Padding(
+            //                 //                         //       //                 padding: const EdgeInsets.all(12.0),
+            //                 //                         //       //                 child:
+            //                 //                         //       //                 // DropdownButton(
+            //                 //                         //       //                 //
+            //                 //                         //       //                 //   // Initial Value
+            //                 //                         //       //                 //     value: selectedDrowpdown,
+            //                 //                         //       //                 //
+            //                 //                         //       //                 //     // Down Arrow Icon
+            //                 //                         //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
+            //                 //                         //       //                 //
+            //                 //                         //       //                 //     // Array list of items
+            //                 //                         //       //                 //     items: item.map((String items) {
+            //                 //                         //       //                 //       return DropdownMenuItem(
+            //                 //                         //       //                 //         value: items,
+            //                 //                         //       //                 //         child: Text(items),
+            //                 //                         //       //                 //       );
+            //                 //                         //       //                 //     }).toList(),
+            //                 //                         //       //                 // After selecting the desired option,it will
+            //                 //                         //       //                 // change button value to selected value
+            //                 //                         //       //                 // onChanged: (String newValue) {
+            //                 //                         //       //                 //   setState(() {
+            //                 //                         //       //                 //     selectedDrowpdown = newValue;
+            //                 //                         //       //                 //   });
+            //                 //                         //       //                 //                 DropdownButton(
+            //                 //                         //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
+            //                 //                         //       //                 //   value:selectedDrowpdown,
+            //                 //                         //       //                 //   onChanged: (newValue) {
+            //                 //                         //       //                 //     selectedDrowpdown = newValue;
+            //                 //                         //       //                 //   setState(() {
+            //                 //                         //       //                 //   selectedDrowpdown = newValue;
+            //                 //                         //       //                 // //  print(newValue);
+            //                 //                         //       //                 //   //print(selectedDrowpdown);
+            //                 //                         //       //                 //   });
+            //                 //                         //       //                 //   },
+            //                 //                         //       //                 //   items: item.map((location) {
+            //                 //                         //       //                 //   return DropdownMenuItem(
+            //                 //                         //       //                 //   child: new Text(location),
+            //                 //                         //       //                 //   value: location,
+            //                 //                         //       //                 //   );
+            //                 //                         //       //                 //   }).toList(),
+            //                 //                         //       //                 //   ),
+            //                 //                         //       //                 Padding(
+            //                 //                         //       //                   padding: const EdgeInsets.all(10.0),
+            //                 //                         //       //                   child: GetBuilder<OutletsController>(
+            //                 //                         //       //                     builder: (builder) {
+            //                 //                         //       //                       return Get.find<OutletsController>().item.length == null
+            //                 //                         //       //                           ? SizedBox()
+            //                 //                         //       //                           : InputDecorator(
+            //                 //                         //       //                         decoration: decoration("Select Remark"),
+            //                 //                         //       //                         child: ButtonTheme(
+            //                 //                         //       //                           alignedDropdown: true,
+            //                 //                         //       //                           child: DropdownButton<String>(
+            //                 //                         //       //                             // iconEnabledCo
+            //                 //                         //       //                             // iconDisabledColor: Colors.red,
+            //                 //                         //       //                             isDense: true,
+            //                 //                         //       //                             isExpanded: true,
+            //                 //                         //       //                             hint: Text(
+            //                 //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown),
+            //                 //                         //       //                             items:
+            //                 //                         //       //                             Get.find<OutletsController>().item.map((e) {
+            //                 //                         //       //                               return DropdownMenuItem<String>(
+            //                 //                         //       //                                   value: e, child: Text(e));
+            //                 //                         //       //                             }).toList(),
+            //                 //                         //       //                             onChanged: (String district) {
+            //                 //                         //       //                               // setState(() {
+            //                 //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+            //                 //                         //       //                                 //  Get.find<OutletsController>().setitem(district );
+            //                 //                         //       //                              // });
+            //                 //                         //       //
+            //                 //                         //       //                               // district = selectedDrowpdown;
+            //                 //                         //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
+            //                 //                         //       //                               print(district);
+            //                 //                         //       //                               //   print(Get.find<OutletsController>().setitem(district ));
+            //                 //                         //       //                               //   district = Constants.item;
+            //                 //                         //       //                               //      print(selectedDrowpdown);
+            //                 //                         //       //                               //   district = Constants.selectedzone.zone;
+            //                 //                         //       //                               // Get.find<AddressController>().getAreaList(district);
+            //                 //                         //       //                             },
+            //                 //                         //       //                           ),
+            //                 //                         //       //                         ),
+            //                 //                         //       //                       );
+            //                 //                         //       //                     },
+            //                 //                         //       //                   ),
+            //                 //                         //       //                 )
+            //                 //                         //       //               // DropdownButton<String>(
+            //                 //                         //       //               //   hint: Text("Remark"),
+            //                 //                         //       //               //   value:  selectedDrowpdown,
+            //                 //                         //       //               //   items:
+            //                 //                         //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
+            //                 //                         //       //               //   // [
+            //                 //                         //       //               //   //   for (var data in Get.find<OutletsController>().item)
+            //                 //                         //       //               //   //     DropdownMenuItem(
+            //                 //                         //       //               //   //       child: new Text(
+            //                 //                         //       //               //   //         data,
+            //                 //                         //       //               //   //       ),
+            //                 //                         //       //               //   //       value: data,
+            //                 //                         //       //               //   //     )
+            //                 //                         //       //               //   // ],
+            //                 //                         //       //               //
+            //                 //                         //       //               //   // Get.find<OutletsController>().item.map((e) {
+            //                 //                         //       //               //   //   return DropdownMenuItem<String>(
+            //                 //                         //       //               //   //           value: e,
+            //                 //                         //       //               //   //           child: Text(e),
+            //                 //                         //       //               //   //         );
+            //                 //                         //       //               //   // }),
+            //                 //                         //       //               //     item.map((  value) {
+            //                 //                         //       //               //     return DropdownMenuItem<String>(
+            //                 //                         //       //               //       value: value,
+            //                 //                         //       //               //       child: Text(value),
+            //                 //                         //       //               //     );
+            //                 //                         //       //               //   }).toList(),
+            //                 //                         //       //               //   onChanged: (newvalue) {
+            //                 //                         //       //               //     setState(() {
+            //                 //                         //       //               //      selectedDrowpdown = newvalue ;
+            //                 //                         //       //               //     });
+            //                 //                         //       //               //
+            //                 //                         //       //               // //   Get.find<OutletsController>().setitem(newvalue);
+            //                 //                         //       //               //
+            //                 //                         //       //               //
+            //                 //                         //       //               //    //_selectedvalue = newvalue;
+            //                 //                         //       //               //   })
+            //                 //                         //       //             ),
+            //                 //                         //       //
+            //                 //                         //       //             SizedBox(height: Get.size.height * 0.01),
+            //                 //                         //       //             // Container(
+            //                 //                         //       //             //   child: _imageFile == null
+            //                 //                         //       //             //       ? Center(
+            //                 //                         //       //             //     child: Text("No Image Selected"),
+            //                 //                         //       //             //   )
+            //                 //                         //       //             //       : Image.file(File(_imageFile.path)),
+            //                 //                         //       //             // ),
+            //                 //                         //       //             ElevatedButton(
+            //                 //                         //       //               onPressed: () async {
+            //                 //                         //       //                 // pickImage();
+            //                 //                         //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
+            //                 //                         //       //                   var conn = await Utilities.isInternetWorking();
+            //                 //                         //       //                   showDialog(
+            //                 //                         //       //                       barrierDismissible: false,
+            //                 //                         //       //                       context: context,
+            //                 //                         //       //                       builder: (context) {
+            //                 //                         //       //                         return CupertinoAlertDialog(
+            //                 //                         //       //                           title: Text('Please Wait'),
+            //                 //                         //       //                           content: Column(
+            //                 //                         //       //                             children: [
+            //                 //                         //       //                               Divider(),
+            //                 //                         //       //                               Padding(
+            //                 //                         //       //                                 padding: const EdgeInsets.all(8.0),
+            //                 //                         //       //                                 child: Text(conn
+            //                 //                         //       //                                     ? 'Registering new Sales Outlet'
+            //                 //                         //       //                                     : 'Saving offline'),
+            //                 //                         //       //                               ),
+            //                 //                         //       //                               CupertinoActivityIndicator(
+            //                 //                         //       //                                 radius: 17,
+            //                 //                         //       //                               )
+            //                 //                         //       //                             ],
+            //                 //                         //       //                           ),
+            //                 //                         //       //                         );
+            //                 //                         //       //                       });
+            //                 //                         //       //                   // var sales = Sales(
+            //                 //                         //       //                   //     outletId:  outlet[index].id.toString(),
+            //                 //                         //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
+            //                 //                         //       //                   // );
+            //                 //                         //       //                   // selectedoutlet.add({
+            //                 //                         //       //                   //   //"outlet_id": outletId,
+            //                 //                         //       //                   //
+            //                 //                         //       //                   //   "remark": selectedDrowpdown,
+            //                 //                         //       //                   //
+            //                 //                         //       //                   // });
+            //                 //                         //       //                   if (conn) {
+            //                 //                         //       //                     var response = await sellProductApi(sales);
+            //                 //                         //       //                     print(sales);
+            //                 //                         //       //                     // Get.back();
+            //                 //                         //       //                     Utilities.showInToast(response.message,
+            //                 //                         //       //                         toastType: response.success
+            //                 //                         //       //                             ? ToastType.SUCCESS
+            //                 //                         //       //                             : ToastType.ERROR);
+            //                 //                         //       //
+            //                 //                         //       //                     //   if (response.success) {
+            //                 //                         //       //                     //     outlet.synced = true;
+            //                 //                         //       //                     //     Get.back();
+            //                 //                         //       //                     //   }
+            //                 //                         //       //                     // } else {
+            //                 //                         //       //                     //   Get.back();
+            //                 //                         //       //                     //   outlet.synced = false;
+            //                 //                         //       //                     //
+            //                 //                         //       //                     //   Utilities.showInToast('Storing Offline',
+            //                 //                         //       //                     //       toastType: ToastType.INFO);
+            //                 //                         //       //                     // }
+            //                 //                         //       //                     // await DatabaseHelper.instance
+            //                 //                         //       //                     //     .insertOutlet(outlet);
+            //                 //                         //       //                     // Get.find<ProductsController>().addremark(sales);
+            //                 //                         //       //                     Get.back();
+            //                 //                         //       //                   } else {
+            //                 //                         //       //                     Utilities.showInToast('Please complete the form',
+            //                 //                         //       //                         toastType: ToastType.ERROR);
+            //                 //                         //       //                   }
+            //                 //                         //       //                   // if (selectedDrowpdown != null) {
+            //                 //                         //       //                   //   // selectedoutlet.add({
+            //                 //                         //       //                   //   //   //"outlet_id": outletId,
+            //                 //                         //       //                   //   //
+            //                 //                         //       //                   //   //   "remark": selectedDrowpdown,
+            //                 //                         //       //                   //   //
+            //                 //                         //       //                   //   // });
+            //                 //                         //       //                   //   sales.remark = jsonEncode(selectedoutlet);
+            //                 //                         //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
+            //                 //                         //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
+            //                 //                         //       //                   //   Utilities.showInToast("Remark Noted");
+            //                 //                         //       //                   //   print(selectedDrowpdown);
+            //                 //                         //       //                   // } else {
+            //                 //                         //       //                   //   Utilities.showInToast("Please add Remark");
+            //                 //                         //       //                   // }
+            //                 //                         //       //                   Get.back();}
+            //                 //                         //       //               },
+            //                 //                         //       //               child: Text("Add"),
+            //                 //                         //       //             ),
+            //                 //                         //       //           //  outlet.id..toString().isEmpty
+            //                 //                         //       //           //       ? ElevatedButton(
+            //                 //                         //       //           //     onPressed: () {
+            //                 //                         //       //           //       showQuantityBottomSheet(null, products.id.toString());
+            //                 //                         //       //           //     },
+            //                 //                         //       //           //     child: Text("Sell"),
+            //                 //                         //       //           //   )
+            //                 //                         //       //           //       : ExpansionTile(
+            //                 //                         //       //           //     title: Text("Batches"),
+            //                 //                         //       //           //     children: products.batches.map((batch) {
+            //                 //                         //       //           //       return buildBatchTile(batch, products);
+            //                 //                         //       //           //     }).toList(),
+            //                 //                         //       //           //   ),
+            //                 //                         //       //           ],
+            //                 //                         //       //         ),)),
+            //                 //                         //       //
+            //                 //                         //       //
+            //                 //                         //       //
+            //                 //                         //       //
+            //                 //                         //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+            //                 //                         //       //   backgroundColor: Colors.white,
+            //                 //                         //       //   enableDrag: true,
+            //                 //                         //       // );
+            //                 //                         //     } , icon: Icon(Icons.add))
+            //                 //                         // )
+            //                 //                       ],
+            //                 //                     ),
+            //                 //                     Container(
+            //                 //                         child: Column(
+            //                 //                           mainAxisAlignment: MainAxisAlignment.start,
+            //                 //                           children: [
+            //                 //                             Padding(  padding: const EdgeInsets.all(10.0),
+            //                 //                                 child:   Row(
+            //                 //                                   children: [
+            //                 //                                     Text(
+            //                 //                                       item,
+            //                 //                                       style: TextStyle(
+            //                 //                                           fontSize: 15,
+            //                 //                                           fontWeight: FontWeight.bold),
+            //                 //                                     ),
+            //                 //
+            //                 //                                   ],
+            //                 //                                 )
+            //                 //
+            //                 //                             ),
+            //                 //
+            //                 //                             // Padding(
+            //                 //                             //   padding: const EdgeInsets.only(top: 1),
+            //                 //                             //   child:
+            //                 //                             // Text(
+            //                 //                             //   outlet[index].name,
+            //                 //                             //   style: TextStyle(
+            //                 //                             //       fontSize: 18,
+            //                 //                             //       fontWeight: FontWeight.bold),
+            //                 //                             // ),
+            //                 //                             // //    ),
+            //                 //                             // Container(
+            //                 //                             //   child:   Text(
+            //                 //                             //     "Number of Outlet: ${outlet.length.toString()}",
+            //                 //                             //     style: TextStyle(
+            //                 //                             //         fontSize: 10,
+            //                 //                             //         fontWeight: FontWeight.bold),
+            //                 //                             //   ),
+            //                 //                             // ),
+            //                 //                             // Text(
+            //                 //                             //   outlet[index].name,
+            //                 //                             //   style: TextStyle(
+            //                 //                             //       fontSize: 10,
+            //                 //                             //       fontWeight: FontWeight.bold),
+            //                 //                             // ),
+            //                 //
+            //                 //                           ],
+            //                 //                         )
+            //                 //                     ),
+            //                 //
+            //                 //                     // MaterialButton(
+            //                 //                     //   onPressed: () {
+            //                 //                     //     Get.to(() =>
+            //                 //                     //         SellProductPage(
+            //                 //                     //           outlet: Get
+            //                 //                     //               .find<OutletsController>()
+            //                 //                     //               .outletList[index],
+            //                 //                     //         ));
+            //                 //                     //
+            //                 //                     //   },
+            //                 //                     //   color: Colors.green[900],
+            //                 //                     //   minWidth: Get.size.width,
+            //                 //                     //   textColor: Colors.white,
+            //                 //                     //   padding: EdgeInsets.all(10.0),
+            //                 //                     //   child: Text("Sell Product"),
+            //                 //                     // ),
+            //                 //
+            //                 //                   ],
+            //                 //                 ),
+            //                 //               ),
+            //                 //             ),
+            //                 //           ),
+            //                 //         );
+            //                 //         //   ListTile(
+            //                 //         //   onTap: (){
+            //                 //         //     Get.find<ProductBrandController>().setSelectedBrand(item);
+            //                 //         //
+            //                 //         //     Get.to(DetailsProduct(
+            //                 //         //       product: Get.find<ProductBrandController>().getNameList(item)),
+            //                 //         //
+            //                 //         //     );
+            //                 //         //   },
+            //                 //         //   title: Text(item),
+            //                 //         // );
+            //                 //         });
+            //                 //   },
+            //                 // ),
+            //                 //     );
+            //                 //   },
+            //                 //   title: Text(item),
+            //                 // );
+            //                 });
+            //           },
+            //         ),
+            //       ),
                   RefreshIndicator(
                     onRefresh:  () async{
                       await Future.delayed(Duration(seconds: 2));
-                      Get.find<ProductBrandController>().getProvinceList() ;
+                      Get.find<ProductBrandController>().getProvinceList();
                     },
                     child: GetBuilder<ProductBrandController>(
                       builder: (BrandController) {
@@ -3937,9 +3954,354 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                           ),
                         )
                             :
-                        //     ElevatedButton(onPressed: (){
-                        //       print(Get.find<ProductBrandController>().productList.length);
-                        // }, child: Text("press"));
+                        ListView.builder(
+                            itemCount:  Get.find<ProductBrandController>().brandList.length,
+                            itemBuilder: (BuildContext context, int i) {
+                            //  my_product =  Get.find<ProductBrandController>().brandList[i];
+                              var item = Get.find<ProductBrandController>().brandList[i];
+                              return Card(
+                                color: item != null ? Colors.white : Colors.white54,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                margin:
+                                const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
+                                child: new ExpansionPanelList(
+                                  expansionCallback: (int index, bool status) {
+                                    setState(() {
+                                      _activeMeterIndex = _activeMeterIndex == i ? null : i;
+                                      Get.find<ProductBrandController>().getNameList(item);
+                                    });
+                                  },
+                                  children: [
+                                    new ExpansionPanel(
+                                      isExpanded: _activeMeterIndex == i,
+                                      headerBuilder: (BuildContext context,
+                                          bool isExpanded) =>
+                                      new Container(
+                                          padding:
+                                          const EdgeInsets.only(left: 15.0),
+                                          alignment: Alignment.centerLeft,
+                                          child: new Text(
+                                              item
+                                          )),
+                                      body: Container(
+                                        //height: 300,
+                                        child: Column(
+                                          children: [
+                                            // TextField(
+                                            //   decoration: InputDecoration(
+                                            //     fillColor: Colors.white,
+                                            //     filled: true,
+                                            //     border: OutlineInputBorder(
+                                            //       borderSide: BorderSide(
+                                            //         color: Colors.red, //this has no effect
+                                            //       ),
+                                            //       borderRadius: BorderRadius.circular(10.0),
+                                            //     ),
+                                            //     hintText: "Search Product...",
+                                            //   ),
+                                            //   onChanged: searchDistributor,
+                                            //   // (text){setState(() {
+                                            //   //   Get.find<ProductBrandController>().searchDist ributor(text);
+                                            //   // });
+                                            //
+                                            //   //onItemChanged(text);
+                                            //   //      },
+                                            //   //       {
+                                            //   //         setState(() {
+                                            //   //
+                                            //   //         });
+                                            //   //
+                                            //   // }
+                                            //   // setState(() {
+                                            //   // });
+                                            // ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: ListView.builder(
+                                                  physics: NeverScrollableScrollPhysics(),
+                                                       shrinkWrap: true,
+                                                  itemCount: Get.find<ProductBrandController>().name.length,
+                                                  itemBuilder: (context, i){
+                                                    var ite = Get.find<ProductBrandController>().name[i];
+                                                    return SingleChildScrollView(
+                                                      child: InkWell(
+                                                        onTap: (){
+                                                          //   showAlertDialog();
+                                                          Widget cancelButton = TextButton(
+                                                            child: Text("Cancel"),
+                                                            onPressed:  () {
+                                                              Get.back();
+                                                            },
+                                                          );
+                                                          Widget continueButton = TextButton(
+                                                              child: Text("Continue"),
+                                                              onPressed:  () async {
+                                                                //  if (selectedProductList == null  ) {
+                                                                // selectedProductList.add({
+                                                                //   "product_id": Get.find<ProductBrandController>().selectedAreaId,
+                                                                //   "batch_id": "",
+                                                                //   "quantity": _textEditingController?.text,
+                                                                //   "discount": discountPercent
+                                                                // });
+                                                                // //     Get.to(BrandWiseProduct(sales: selectedProductList , outlet: outlet,));
+                                                                // print(Get.find<ProductBrandController>().selectedAreaId);
+                                                                // print(position.latitude);
+                                                                // print(position.longitude);
+                                                                // var conn = await Utilities.isInternetWorking();
+                                                                // if (conn) {
+                                                                // print(widget.outlet.id);
+                                                                // showDialog(
+                                                                // barrierDismissible: true,context: context,
+                                                                // builder: (context) {
+                                                                // return CupertinoAlertDialog(
+                                                                // title: Text('Please Wait'),
+                                                                // content: Column(
+                                                                // children: [
+                                                                // Divider(),
+                                                                // Padding(
+                                                                // padding: const EdgeInsets.all(8.0),
+                                                                // child: Text('Adding new Product'
+                                                                // ),
+                                                                // ),
+                                                                // CupertinoActivityIndicator(
+                                                                // radius: 17,
+                                                                // )
+                                                                // ],
+                                                                // ),
+                                                                // );
+                                                                // });
+                                                                // var location = Get.find<LocationController>();
+                                                                // var saless = Sales(
+                                                                //   route: Constants.selectedRoute.toString(),
+                                                                //   orders: jsonEncode(selectedProductList),
+                                                                //   remark:"",
+                                                                //   //   "[{ \"product_id\" :\"2\", \"batch_id\": \"3\", \"quantity\" : \"30\", \"discount\": \"10\"}]",
+                                                                //   soldAt:
+                                                                //   DateTime.now().toString(),
+                                                                //   outletId: widget.outlet.id.toString(),
+                                                                //   latitude:  location.userPosition.latitude.toString(),
+                                                                //   longitude:   location.userPosition.longitude.toString(),
+                                                                //   //remark_image: "",
+                                                                // );
+                                                                // print(widget.outlet.id.toString());
+                                                                // print(location.userPosition.latitude.toString());
+                                                                // print(location.userPosition.longitude.toString());
+                                                                // print(widget.outlet.id);
+                                                                // // var register = Outlet(
+                                                                // //   outid:  outlet.id,
+                                                                // //   route_id: Constants.selectedRoute.toString(),
+                                                                // //   nme:  outlet.name,
+                                                                // //   contact: outlet.contact,
+                                                                // //   latitude: outlet.latitude,
+                                                                // //   longitude: outlet.longitude
+                                                                // // );
+                                                                //
+                                                                // var response = await sellProductApi(saless);
+                                                                // Constants.value_increase++;
+                                                                // // Get.find<PreferenceController>().saveProduct(Get.find<ProductBrandController>().selectedAreaId);
+                                                                // //  await DatabaseHelper.instance
+                                                                // //      .insertSales(sales);
+                                                                // //  Get.find<ProductBrandController>().value.add(saless);
+                                                                // print(Constants.value_increase++);
+                                                                //  Constants.increase ++;
+                                                                //  selected = true ? Constants.increase +1 : selected =false;
+                                                                //Get.find<ProductsController>().storeSalesOffline(saless);
+                                                                //    Get.to(DetailsProduct());
+                                                                //role.add(selectedProductList);
+                                                                //     Get.back();
+                                                                Get.find<ProductBrandController>().getparsename(ite);
+                                                                Get.find<ProductBrandController>().quantity.add(_textEditingController.text);
+                                                                print(Get.find<ProductBrandController>().punched_product.length);
+                                                                int total = int.parse(_textEditingController.text) * int.parse(Get.find<ProductBrandController>().selectedUnit);
+                                                                print( Get.find<ProductBrandController>().selectedUnit);
+                                                                Get.find<ProductBrandController>().punched_product.add(Punched(Name: ite,
+                                                                    quantity: int.parse(_textEditingController.text),Cost: total));
+                                                                _textEditingController.clear();
+                                                                //  _textEditingController.clear();
+                                                                Get.back();
+                                                                // Utilities.showInToast(response.message,
+                                                                //     toastType: response.success
+                                                                //         ? ToastType.SUCCESS
+                                                                //         : ToastType.ERROR);
+                                                                //  Get.find<ProductsController>().sellProducts(sales);
+                                                                //}
+                                                                // else {
+                                                                //   //  Get.find<ProductsController>().storeSalesOffline(saless);
+                                                                // }
+                                                                //   Get.find<ProductsController>().addProductInList(productId);
+                                                                // } else {
+                                                                //   if(selectedProductList != null || addedQuantity != null){
+                                                                //     Utilities.showInToast("Please add quantity");
+                                                                //   }
+                                                                // Get.back();
+                                                              }
+                                                          );
+                                                          // set up the AlertDialog
+                                                          AlertDialog alert = AlertDialog(
+                                                            title: Text(ite),
+                                                            content: Row(
+                                                              children: [
+                                                                // TextField(
+                                                                //
+                                                                // ),
+                                                                Expanded(
+                                                                  child: TextFormField(
+                                                                    controller: _textEditingController,
+                                                                    keyboardType: TextInputType.number,
+                                                                    //    controller: userInput,
+                                                                    style: TextStyle(
+                                                                      fontSize: 24,
+                                                                      color: Colors.blue,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                    onChanged: (value) {
+                                                                      setState(() {
+                                                                        value = _textEditingController?.text;
+                                                                        // _textEditingController.clear();
+                                                                        //      userInput.text = value.toString();
+                                                                      });
+                                                                    },
+                                                                    // decoration: InputDecoration(
+                                                                    //   focusColor: Colors.white,
+                                                                    //   //add prefix icon
+                                                                    //   prefixIcon: Icon(
+                                                                    //     Icons.person_outline_rounded,
+                                                                    //     color: Colors.grey,
+                                                                    //   ),
+                                                                    //
+                                                                    //   errorText: "Error",
+                                                                    //
+                                                                    //   border: OutlineInputBorder(
+                                                                    //     borderRadius: BorderRadius.circular(10.0),
+                                                                    //   ),
+                                                                    //
+                                                                    //   focusedBorder: OutlineInputBorder(
+                                                                    //     borderSide:
+                                                                    //     const BorderSide(color: Colors.blue, width: 1.0),
+                                                                    //     borderRadius: BorderRadius.circular(10.0),
+                                                                    //   ),
+                                                                    //   fillColor: Colors.grey,
+                                                                    //
+                                                                    //   hintText: "Email/Mobile",
+                                                                    //
+                                                                    //   //make hint text
+                                                                    //   hintStyle: TextStyle(
+                                                                    //     color: Colors.grey,
+                                                                    //     fontSize: 16,
+                                                                    //     fontFamily: "verdana_regular",
+                                                                    //     fontWeight: FontWeight.w400,
+                                                                    //   ),
+                                                                    //
+                                                                    //   //create lable
+                                                                    //   labelText: 'Email/Mobile',
+                                                                    //   //lable style
+                                                                    //   labelStyle: TextStyle(
+                                                                    //     color: Colors.grey,
+                                                                    //     fontSize: 16,
+                                                                    //     fontFamily: "verdana_regular",
+                                                                    //     fontWeight: FontWeight.w400,
+                                                                    //   ),
+                                                                    // ),
+                                                                  ),
+                                                                ),
+                                                                Text(" Cost :${Get.find<ProductBrandController>().selectedValue.toString()}"
+                                                                  // "${_textEditingController?.value == null ? "0": _textEditingController?.value}"
+                                                                  //     " ${Get.find<ProductBrandController>().selectedValue * int.parse(_textEditingController?.text) == null?
+                                                                  // "0" :Get.find<ProductBrandControllertroller>().selectedValue * int.parse(_textEditingController?.text)}"
+                                                                ),
+                                                                // TextButton(onPressed:  add,
+                                                                //     child: Text("-",style: TextStyle(fontWeight: FontWeight.bold),)),
+                                                                // Text("${counter}"),
+                                                                // TextButton(onPressed:  sub,
+                                                                //     child: Text("+",style: TextStyle(fontWeight: FontWeight.bold),)),
+                                                              ],
+                                                            ),
+                                                            actions: [
+                                                              cancelButton,
+                                                              continueButton,
+                                                            ],
+                                                          );
+                                                          // show the dialog
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return alert;
+                                                            },
+                                                          );
+                                                          Get.find<ProductBrandController>().unit.add(item);
+                                                          print( Get.find<ProductBrandController>().unit.first);
+                                                          //   role.add(item);
+                                                          //   print(role);
+                                                          //     var r =[item];
+                                                          // role = r;
+
+                                                        },
+                                                        //     (){.
+                                                        //   setState(() {
+                                                        //     showAlertDialog();
+                                                        //   });
+                                                        //
+                                                        // },
+                                                        child: Card(
+                                                          //   color: produce.selected ? Colors.grey : Colors.white,
+                                                          elevation: 7.0,
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(10.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    //     Text(
+                                                                    //       "Name:",
+                                                                    // //      style: titleStyle,
+                                                                    //     ),
+                                                                    Spacer(),
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        ite,
+                                                                        overflow: TextOverflow.visible,
+                                                                        maxLines: null,
+                                                                        //     style: contentStyle,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                // ElevatedButton(
+                                                                //   onPressed:  (){
+                                                                //     setState(() {
+                                                                //       showAlertDialog( );
+                                                                //     });
+                                                                //   },
+                                                                //   style: ButtonStyle(
+                                                                //       backgroundColor: MaterialStateProperty.all(Colors.black)
+                                                                //   ),
+                                                                //   child: Text("Sell"),
+                                                                // )
+                                                                //     : ExpansionTile(
+                                                                //   title: Text("Batches"),
+                                                                //   children: products.batches.map((batch) {
+                                                                //     return buildBatchTile(batch, products);
+                                                                //   }).toList(),
+                                                                // ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+
+                                    )],
+                                ),
+                              );
+                            });
+
                         ListView.builder(
                             shrinkWrap: true,
                             itemCount: Get.find<ProductBrandController>().brandList.length,
@@ -3963,8 +4325,11 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                   //     ),),
                                   // outlet[index].selected ? Colors.grey
                                   elevation: 7.0,
-                                  child: ExpansionTile(
-                                      initiallyExpanded: index == _selected,
+                                  child:
+
+                                      ExpansionTile(
+
+                                    //  initiallyExpanded: index == _selected,
                                     onExpansionChanged: (text){setState(() {
                                       Get.find<ProductBrandController>().getNameList(item);
                                       _selected = index;
@@ -7605,1083 +7970,1094 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                  //        }),
                  //  ),
 
-                  Get.find<ProductBrandController>().productList.isEmpty ? CircularProgressIndicator():
-                  ListView.builder(
-                      itemCount: Get.find<ProductBrandController>().productList.length,
-                      itemBuilder: (context,index){
-                        var items = Get.find<ProductBrandController>().productList[index];
-                        //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
-                        return    Card(
-                          color: items != null ? Colors.white : Colors.white54,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          //   shape: BeveledRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(5.0),
-                          // ),
-                          // shape: StadiumBorder(
-                          //     side: BorderSide(
-                          //       color: Colors.black,
-                          //       width: 1.5,
-                          //       borderRadius: BorderRadius.circular(10.0),
-                          //     ),),
-                          // outlet[index].selected ? Colors.grey
-                          elevation: 7.0,
-                          child:
-                          ListTile(
-                            // selected: isSelected,
-                            // onLongPress: selection,
-                            title: InkWell(
-                              onTap: (){
-                                // OutletInfoPages(
-                                //   outlet : Get
-                                //         .find<OutletsController>()
-                                //         .outletList[index],
-                                // ));
-                                //  Get.to(SellProductPage(outlet:outlet  ));
-                                //    Get.to(DetailsProduct(
-                                //      outlet: outlet,product: Get.find<ProductBrandController>().getNameList(item)
-                                //   ));
-                                // print(outlet.name);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:  MainAxisAlignment.end,
-                                      children: [
-                                        // SizedBox(
-                                        //   width: Get.size.width * 0.3,
-                                        // ),
-                                        // CircleAvatar(
-                                        //     radius: (20),
-                                        //     backgroundColor:  outlet[index].synced
-                                        //         ? Colors.blueGrey
-                                        //         : Colors.grey,
-                                        //     child:  IconButton(onPressed:(){
-                                        //      // showQuantityBottomSheet(outlet[index].id.toString());
-                                        //        Get.bottomSheet(
-                                        //         Container(
-                                        //             child: Padding(
-                                        //               padding: const EdgeInsets.all(10.0),
-                                        //               child: Column(
-                                        //                 mainAxisSize: MainAxisSize.min,
-                                        //                 children: [
-                                        //
-                                        //                   Padding(
-                                        //                     padding: const EdgeInsets.all(10.0),
-                                        //                     child: GetBuilder<OutletsController>(
-                                        //                       builder: (builder) {
-                                        //                         return Get.find<OutletsController>().item.length == null
-                                        //                             ? SizedBox()
-                                        //                             : InputDecorator(
-                                        //                           decoration: decoration("Select Remark"),
-                                        //                           child: ButtonTheme(
-                                        //                             alignedDropdown: true,
-                                        //                             child: DropdownButton<String>(
-                                        //                               // iconEnabledCo
-                                        //                               // iconDisabledColor: Colors.red,
-                                        //                               isDense: true,
-                                        //                               isExpanded: true,
-                                        //                               hint: Text(
-                                        //                                   Get.find<OutletsController>().selectedDrowpdown),
-                                        //                               items:
-                                        //                               Get.find<OutletsController>().item.map((e) {
-                                        //                                 return DropdownMenuItem<String>(
-                                        //                                     value: e, child: Text(e));
-                                        //                               }).toList(),
-                                        //                               onChanged: (String district) {
-                                        //                                 // setState(() {
-                                        //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                                        //                                 //  Get.find<OutletsController>().setitem(district );
-                                        //                                 // });
-                                        //
-                                        //                                 // district = selectedDrowpdown;
-                                        //                                 print(Get.find<OutletsController>().selectedDrowpdown);
-                                        //                                 print(district);
-                                        //                                 //   print(Get.find<OutletsController>().setitem(district ));
-                                        //                                 //   district = Constants.item;
-                                        //                                 //      print(selectedDrowpdown);
-                                        //                                 //   district = Constants.selectedzone.zone;
-                                        //                                 // Get.find<AddressController>().getAreaList(district);
-                                        //                               },
-                                        //                             ),
-                                        //                           ),
-                                        //                         );
-                                        //                       },
-                                        //                     ),
-                                        //                   ),
-                                        //                   // ElevatedButton(
-                                        //                   //   onPressed: () async {
-                                        //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
-                                        //                   //       // selectedProductList.add({
-                                        //                   //       //
-                                        //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
-                                        //                   //       //
-                                        //                   //       // });
-                                        //                   //       //
-                                        //                   //       // if (selectedProductList.isEmpty) {
-                                        //                   //       //   Utilities.showInToast("Please add a product",
-                                        //                   //       //       toastType: ToastType.ERROR);
-                                        //                   //       //   return;
-                                        //                   //       // }
-                                        //                   //
-                                        //                   //       var sales = Sales(
-                                        //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
-                                        //                   //         remark: jsonEncode(selectedProductList),
-                                        //                   //         soldAt:  DateTime.now().toString(),
-                                        //                   //         outletId: "12",
-                                        //                   //            outletLatitude : "444444",
-                                        //                   //        outletLongitude : "4343243423"
-                                        //                   //       );
-                                        //                   //       // sales.orders = "dd";
-                                        //                   //       // // sales.distributorId = "12";
-                                        //                   //       // sales.remark =jsonEncode(selectedProductList);
-                                        //                   //       // sales.soldAt = DateTime.now().toString();
-                                        //                   //       // sales.outletId = Get
-                                        //                   //       //     .find<OutletsController>()
-                                        //                   //       //     .outletList[index].id.toString();
-                                        //                   //       // sales.outletLatitude = "444444";
-                                        //                   //       // sales.outletLongitude = "4343243423";
-                                        //                   //
-                                        //                   //       //  var conn = await Utilities.isInternetWorking();
-                                        //                   //
-                                        //                   //
-                                        //                   //
-                                        //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
-                                        //                   //       //else {
-                                        //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
-                                        //                   //       // }
-                                        //                   //       //
-                                        //                   //       // Get.find<ProductsController>().removeAllProductFromList();
-                                        //                   //   //    Get.find<ProductsController>().sellProducts(sales);
-                                        //                   //           var conn = await Utilities.isInternetWorking();
-                                        //                   //       if (conn) {
-                                        //                   //         var response = await sellProductApi(sales);
-                                        //                   //         print(sales);
-                                        //                   //         // Get.back();
-                                        //                   //         Utilities.showInToast(response.message,
-                                        //                   //             toastType: response.success
-                                        //                   //                 ? ToastType.SUCCESS
-                                        //                   //                 : ToastType.ERROR);
-                                        //                   //
-                                        //                   //         //   if (response.success) {
-                                        //                   //         //     outlet.synced = true;
-                                        //                   //         //     Get.back();
-                                        //                   //         //   }
-                                        //                   //         // } else {
-                                        //                   //         //   Get.back();
-                                        //                   //         //   outlet.synced = false;
-                                        //                   //         //
-                                        //                   //         //   Utilities.showInToast('Storing Offline',
-                                        //                   //         //       toastType: ToastType.INFO);
-                                        //                   //         // }
-                                        //                   //         // await DatabaseHelper.instance
-                                        //                   //         //     .insertOutlet(outlet);
-                                        //                   //         // Get.find<ProductsController>().addremark(sales);
-                                        //                   //         Get.back();
-                                        //                   //       } else {
-                                        //                   //         Utilities.showInToast('Please complete the form',
-                                        //                   //             toastType: ToastType.ERROR);
-                                        //                   //       }
-                                        //                   //     } else {
-                                        //                   //       Utilities.showInToast("Please add quantity");
-                                        //                   //     }
-                                        //                   //     Get.back(
-                                        //                   //
-                                        //                   //     );
-                                        //                   //   },
-                                        //                   //   child: Text("Add"),
-                                        //                   // )
-                                        //                 ],
-                                        //               ),
-                                        //             )),
-                                        //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                                        //         backgroundColor: Colors.white,
-                                        //         enableDrag: true,
-                                        //       );
-                                        //       // Get.bottomSheet(
-                                        //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
-                                        //       //   //   itemBuilder: (context, index){
-                                        //       //   //     return
-                                        //       //   Container(
-                                        //       //       child: Padding(
-                                        //       //         padding: const EdgeInsets.all(10.0),
-                                        //       //         child: Column(
-                                        //       //           mainAxisSize: MainAxisSize.min,
-                                        //       //           children: [
-                                        //       //             Padding(
-                                        //       //                 padding: const EdgeInsets.all(12.0),
-                                        //       //                 child:
-                                        //       //                 // DropdownButton(
-                                        //       //                 //
-                                        //       //                 //   // Initial Value
-                                        //       //                 //     value: selectedDrowpdown,
-                                        //       //                 //
-                                        //       //                 //     // Down Arrow Icon
-                                        //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
-                                        //       //                 //
-                                        //       //                 //     // Array list of items
-                                        //       //                 //     items: item.map((String items) {
-                                        //       //                 //       return DropdownMenuItem(
-                                        //       //                 //         value: items,
-                                        //       //                 //         child: Text(items),
-                                        //       //                 //       );
-                                        //       //                 //     }).toList(),
-                                        //       //                 // After selecting the desired option,it will
-                                        //       //                 // change button value to selected value
-                                        //       //                 // onChanged: (String newValue) {
-                                        //       //                 //   setState(() {
-                                        //       //                 //     selectedDrowpdown = newValue;
-                                        //       //                 //   });
-                                        //       //                 //                 DropdownButton(
-                                        //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
-                                        //       //                 //   value:selectedDrowpdown,
-                                        //       //                 //   onChanged: (newValue) {
-                                        //       //                 //     selectedDrowpdown = newValue;
-                                        //       //                 //   setState(() {
-                                        //       //                 //   selectedDrowpdown = newValue;
-                                        //       //                 // //  print(newValue);
-                                        //       //                 //   //print(selectedDrowpdown);
-                                        //       //                 //   });
-                                        //       //                 //   },
-                                        //       //                 //   items: item.map((location) {
-                                        //       //                 //   return DropdownMenuItem(
-                                        //       //                 //   child: new Text(location),
-                                        //       //                 //   value: location,
-                                        //       //                 //   );
-                                        //       //                 //   }).toList(),
-                                        //       //                 //   ),
-                                        //       //                 Padding(
-                                        //       //                   padding: const EdgeInsets.all(10.0),
-                                        //       //                   child: GetBuilder<OutletsController>(
-                                        //       //                     builder: (builder) {
-                                        //       //                       return Get.find<OutletsController>().item.length == null
-                                        //       //                           ? SizedBox()
-                                        //       //                           : InputDecorator(
-                                        //       //                         decoration: decoration("Select Remark"),
-                                        //       //                         child: ButtonTheme(
-                                        //       //                           alignedDropdown: true,
-                                        //       //                           child: DropdownButton<String>(
-                                        //       //                             // iconEnabledCo
-                                        //       //                             // iconDisabledColor: Colors.red,
-                                        //       //                             isDense: true,
-                                        //       //                             isExpanded: true,
-                                        //       //                             hint: Text(
-                                        //       //                                 Get.find<OutletsController>().selectedDrowpdown),
-                                        //       //                             items:
-                                        //       //                             Get.find<OutletsController>().item.map((e) {
-                                        //       //                               return DropdownMenuItem<String>(
-                                        //       //                                   value: e, child: Text(e));
-                                        //       //                             }).toList(),
-                                        //       //                             onChanged: (String district) {
-                                        //       //                               // setState(() {
-                                        //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                                        //       //                                 //  Get.find<OutletsController>().setitem(district );
-                                        //       //                              // });
-                                        //       //
-                                        //       //                               // district = selectedDrowpdown;
-                                        //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
-                                        //       //                               print(district);
-                                        //       //                               //   print(Get.find<OutletsController>().setitem(district ));
-                                        //       //                               //   district = Constants.item;
-                                        //       //                               //      print(selectedDrowpdown);
-                                        //       //                               //   district = Constants.selectedzone.zone;
-                                        //       //                               // Get.find<AddressController>().getAreaList(district);
-                                        //       //                             },
-                                        //       //                           ),
-                                        //       //                         ),
-                                        //       //                       );
-                                        //       //                     },
-                                        //       //                   ),
-                                        //       //                 )
-                                        //       //               // DropdownButton<String>(
-                                        //       //               //   hint: Text("Remark"),
-                                        //       //               //   value:  selectedDrowpdown,
-                                        //       //               //   items:
-                                        //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
-                                        //       //               //   // [
-                                        //       //               //   //   for (var data in Get.find<OutletsController>().item)
-                                        //       //               //   //     DropdownMenuItem(
-                                        //       //               //   //       child: new Text(
-                                        //       //               //   //         data,
-                                        //       //               //   //       ),
-                                        //       //               //   //       value: data,
-                                        //       //               //   //     )
-                                        //       //               //   // ],
-                                        //       //               //
-                                        //       //               //   // Get.find<OutletsController>().item.map((e) {
-                                        //       //               //   //   return DropdownMenuItem<String>(
-                                        //       //               //   //           value: e,
-                                        //       //               //   //           child: Text(e),
-                                        //       //               //   //         );
-                                        //       //               //   // }),
-                                        //       //               //     item.map((  value) {
-                                        //       //               //     return DropdownMenuItem<String>(
-                                        //       //               //       value: value,
-                                        //       //               //       child: Text(value),
-                                        //       //               //     );
-                                        //       //               //   }).toList(),
-                                        //       //               //   onChanged: (newvalue) {
-                                        //       //               //     setState(() {
-                                        //       //               //      selectedDrowpdown = newvalue ;
-                                        //       //               //     });
-                                        //       //               //
-                                        //       //               // //   Get.find<OutletsController>().setitem(newvalue);
-                                        //       //               //
-                                        //       //               //
-                                        //       //               //    //_selectedvalue = newvalue;
-                                        //       //               //   })
-                                        //       //             ),
-                                        //       //
-                                        //       //             SizedBox(height: Get.size.height * 0.01),
-                                        //       //             // Container(
-                                        //       //             //   child: _imageFile == null
-                                        //       //             //       ? Center(
-                                        //       //             //     child: Text("No Image Selected"),
-                                        //       //             //   )
-                                        //       //             //       : Image.file(File(_imageFile.path)),
-                                        //       //             // ),
-                                        //       //             ElevatedButton(
-                                        //       //               onPressed: () async {
-                                        //       //                 // pickImage();
-                                        //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
-                                        //       //                   var conn = await Utilities.isInternetWorking();
-                                        //       //                   showDialog(
-                                        //       //                       barrierDismissible: false,
-                                        //       //                       context: context,
-                                        //       //                       builder: (context) {
-                                        //       //                         return CupertinoAlertDialog(
-                                        //       //                           title: Text('Please Wait'),
-                                        //       //                           content: Column(
-                                        //       //                             children: [
-                                        //       //                               Divider(),
-                                        //       //                               Padding(
-                                        //       //                                 padding: const EdgeInsets.all(8.0),
-                                        //       //                                 child: Text(conn
-                                        //       //                                     ? 'Registering new Sales Outlet'
-                                        //       //                                     : 'Saving offline'),
-                                        //       //                               ),
-                                        //       //                               CupertinoActivityIndicator(
-                                        //       //                                 radius: 17,
-                                        //       //                               )
-                                        //       //                             ],
-                                        //       //                           ),
-                                        //       //                         );
-                                        //       //                       });
-                                        //       //                   // var sales = Sales(
-                                        //       //                   //     outletId:  outlet[index].id.toString(),
-                                        //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
-                                        //       //                   // );
-                                        //       //                   // selectedoutlet.add({
-                                        //       //                   //   //"outlet_id": outletId,
-                                        //       //                   //
-                                        //       //                   //   "remark": selectedDrowpdown,
-                                        //       //                   //
-                                        //       //                   // });
-                                        //       //                   if (conn) {
-                                        //       //                     var response = await sellProductApi(sales);
-                                        //       //                     print(sales);
-                                        //       //                     // Get.back();
-                                        //       //                     Utilities.showInToast(response.message,
-                                        //       //                         toastType: response.success
-                                        //       //                             ? ToastType.SUCCESS
-                                        //       //                             : ToastType.ERROR);
-                                        //       //
-                                        //       //                     //   if (response.success) {
-                                        //       //                     //     outlet.synced = true;
-                                        //       //                     //     Get.back();
-                                        //       //                     //   }
-                                        //       //                     // } else {
-                                        //       //                     //   Get.back();
-                                        //       //                     //   outlet.synced = false;
-                                        //       //                     //
-                                        //       //                     //   Utilities.showInToast('Storing Offline',
-                                        //       //                     //       toastType: ToastType.INFO);
-                                        //       //                     // }
-                                        //       //                     // await DatabaseHelper.instance
-                                        //       //                     //     .insertOutlet(outlet);
-                                        //       //                     // Get.find<ProductsController>().addremark(sales);
-                                        //       //                     Get.back();
-                                        //       //                   } else {
-                                        //       //                     Utilities.showInToast('Please complete the form',
-                                        //       //                         toastType: ToastType.ERROR);
-                                        //       //                   }
-                                        //       //                   // if (selectedDrowpdown != null) {
-                                        //       //                   //   // selectedoutlet.add({
-                                        //       //                   //   //   //"outlet_id": outletId,
-                                        //       //                   //   //
-                                        //       //                   //   //   "remark": selectedDrowpdown,
-                                        //       //                   //   //
-                                        //       //                   //   // });
-                                        //       //                   //   sales.remark = jsonEncode(selectedoutlet);
-                                        //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
-                                        //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
-                                        //       //                   //   Utilities.showInToast("Remark Noted");
-                                        //       //                   //   print(selectedDrowpdown);
-                                        //       //                   // } else {
-                                        //       //                   //   Utilities.showInToast("Please add Remark");
-                                        //       //                   // }
-                                        //       //                   Get.back();}
-                                        //       //               },
-                                        //       //               child: Text("Add"),
-                                        //       //             ),
-                                        //       //           //  outlet.id..toString().isEmpty
-                                        //       //           //       ? ElevatedButton(
-                                        //       //           //     onPressed: () {
-                                        //       //           //       showQuantityBottomSheet(null, products.id.toString());
-                                        //       //           //     },
-                                        //       //           //     child: Text("Sell"),
-                                        //       //           //   )
-                                        //       //           //       : ExpansionTile(
-                                        //       //           //     title: Text("Batches"),
-                                        //       //           //     children: products.batches.map((batch) {
-                                        //       //           //       return buildBatchTile(batch, products);
-                                        //       //           //     }).toList(),
-                                        //       //           //   ),
-                                        //       //           ],
-                                        //       //         ),)),
-                                        //       //
-                                        //       //
-                                        //       //
-                                        //       //
-                                        //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                                        //       //   backgroundColor: Colors.white,
-                                        //       //   enableDrag: true,
-                                        //       // );
-                                        //     } , icon: Icon(Icons.add))
-                                        // )
-                                      ],
-                                    ),
-                                    Container(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Padding(  padding: const EdgeInsets.all(10.0),
-                                                child:   Row(
-                                                  children: [
-                                                    Text(
-                                                      items.name,
-                                                      style: TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                )
-                                            ),
-                                            // Padding(
-                                            //   padding: const EdgeInsets.only(top: 1),
-                                            //   child:
-                                            // Text(
-                                            //   outlet[index].name,
-                                            //   style: TextStyle(
-                                            //       fontSize: 18,
-                                            //       fontWeight: FontWeight.bold),
-                                            // ),
-                                            // //    ),
-                                            // Container(
-                                            //   child:   Text(
-                                            //     "Number of Outlet: ${outlet.length.toString()}",
-                                            //     style: TextStyle(
-                                            //         fontSize: 10,
-                                            //         fontWeight: FontWeight.bold),
-                                            //   ),
-                                            // ),
-                                            // Text(
-                                            //   outlet[index].name,
-                                            //   style: TextStyle(
-                                            //       fontSize: 10,
-                                            //       fontWeight: FontWeight.bold),
-                                            // ),
-                                          ],
-                                        )
-                                    ),
-                                    // MaterialButton(
-                                    //   onPressed: () {
-                                    //     Get.to(() =>
-                                    //         SellProductPage(
-                                    //           outlet: Get
-                                    //               .find<OutletsController>()
-                                    //               .outletList[index],
-                                    //         ));
-                                    //
-                                    //   },
-                                    //   color: Colors.green[900],
-                                    //   minWidth: Get.size.width,
-                                    //   textColor: Colors.white,
-                                    //   padding: EdgeInsets.all(10.0),
-                                    //   child: Text("Sell Product"),
-                                    // ),
-                                  ],
+                  Get.find<ProductBrandController>().productList.isEmpty ? CupertinoActivityIndicator():
+                  RefreshIndicator(
+                    onRefresh:  () async{
+                      await Future.delayed(Duration(seconds: 2));
+                      Get.find<ProductBrandController>().getProvinceList() ;
+                    },
+
+                    child: GetBuilder<ProductBrandController>(
+                      builder: (context) {
+                        return ListView.builder(
+                            itemCount: Get.find<ProductBrandController>().productList.length,
+                            itemBuilder: (context,index){
+                              var items = Get.find<ProductBrandController>().productList[index];
+                              //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
+                              return    Card(
+                                color: items != null ? Colors.white : Colors.white54,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
-                              ),
-                            ),
-                          ),
-                        );
-                        //   ListTile(
-                        //   onTap: (){
-                        //     Get.find<ProductBrandController>().setSelectedBrand(item);
-                        //
-                        //     Get.to(DetailsProduct(
-                        //       product: Get.find<ProductBrandController>().getNameList(item)),
-                        // // GetBuilder<ProductBrandController>(
-                        //   builder: (BrandController) {
-                        //     return Get.find<ProductBrandController>().productList.isEmpty
-                        //         ? Center(
-                        //       child: Column(
-                        //         mainAxisAlignment: MainAxisAlignment.center,
-                        //         children: [
-                        //           CupertinoActivityIndicator(),
-                        //         ],
-                        //       ),
-                        //     )
-                        //          :
-                        //     //     ElevatedButton(onPressed: (){
-                        //     //       print(Get.find<ProductBrandController>().productList.length);
-                        //     // }, child: Text("press"));
-                        //     ListView.builder(
-                        //       itemCount: Get.find<ProductBrandController>().brandList.length,
-                        //         itemBuilder: (context,index){
-                        //         var item = Get.find<ProductBrandController>().brandList[index];
-                        //    //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
-                        //         return    Card(
-                        //          color: item != null ? Colors.white : Colors.white54,
-                        //           shape: RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(12.0),
-                        //           ),
-                        //           //   shape: BeveledRectangleBorder(
-                        //           //   borderRadius: BorderRadius.circular(5.0),
-                        //           // ),
-                        //           // shape: StadiumBorder(
-                        //           //     side: BorderSide(
-                        //           //       color: Colors.black,
-                        //           //       width: 1.5,
-                        //           //       borderRadius: BorderRadius.circular(10.0),
-                        //           //     ),),
-                        //           // outlet[index].selected ? Colors.grey
-                        //           elevation: 7.0,
-                        //           child: ListTile(
-                        //             selected: isSelected,
-                        //             onLongPress: selection,
-                        //             title: InkWell(
-                        //               onTap: (){
-                        //
-                        //                 // OutletInfoPages(
-                        //                 //   outlet : Get
-                        //                 //         .find<OutletsController>()
-                        //                 //         .outletList[index],
-                        //                 // ));
-                        //              //  Get.to(SellProductPage(outlet:outlet  ));
-                        //                 Get.to(DetailsProduct(
-                        //                   outlet: outlet,product: Get.find<ProductBrandController>().getNameList(item)
-                        //                ));
-                        //                // print(outlet.name);
-                        //               },
-                        //               child: Padding(
-                        //                 padding: const EdgeInsets.all(10.0),
-                        //                 child: Column(
-                        //                   crossAxisAlignment: CrossAxisAlignment.start,
-                        //                   mainAxisSize: MainAxisSize.min,
-                        //                   children: [
-                        //                     Row(
-                        //                       mainAxisAlignment:  MainAxisAlignment.end,
-                        //                       children: [
-                        //                         // SizedBox(
-                        //                         //   width: Get.size.width * 0.3,
-                        //                         // ),
-                        //                         // CircleAvatar(
-                        //                         //     radius: (20),
-                        //                         //     backgroundColor:  outlet[index].synced
-                        //                         //         ? Colors.blueGrey
-                        //                         //         : Colors.grey,
-                        //                         //     child:  IconButton(onPressed:(){
-                        //                         //      // showQuantityBottomSheet(outlet[index].id.toString());
-                        //                         //        Get.bottomSheet(
-                        //                         //         Container(
-                        //                         //             child: Padding(
-                        //                         //               padding: const EdgeInsets.all(10.0),
-                        //                         //               child: Column(
-                        //                         //                 mainAxisSize: MainAxisSize.min,
-                        //                         //                 children: [
-                        //                         //
-                        //                         //                   Padding(
-                        //                         //                     padding: const EdgeInsets.all(10.0),
-                        //                         //                     child: GetBuilder<OutletsController>(
-                        //                         //                       builder: (builder) {
-                        //                         //                         return Get.find<OutletsController>().item.length == null
-                        //                         //                             ? SizedBox()
-                        //                         //                             : InputDecorator(
-                        //                         //                           decoration: decoration("Select Remark"),
-                        //                         //                           child: ButtonTheme(
-                        //                         //                             alignedDropdown: true,
-                        //                         //                             child: DropdownButton<String>(
-                        //                         //                               // iconEnabledCo
-                        //                         //                               // iconDisabledColor: Colors.red,
-                        //                         //                               isDense: true,
-                        //                         //                               isExpanded: true,
-                        //                         //                               hint: Text(
-                        //                         //                                   Get.find<OutletsController>().selectedDrowpdown),
-                        //                         //                               items:
-                        //                         //                               Get.find<OutletsController>().item.map((e) {
-                        //                         //                                 return DropdownMenuItem<String>(
-                        //                         //                                     value: e, child: Text(e));
-                        //                         //                               }).toList(),
-                        //                         //                               onChanged: (String district) {
-                        //                         //                                 // setState(() {
-                        //                         //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                        //                         //                                 //  Get.find<OutletsController>().setitem(district );
-                        //                         //                                 // });
-                        //                         //
-                        //                         //                                 // district = selectedDrowpdown;
-                        //                         //                                 print(Get.find<OutletsController>().selectedDrowpdown);
-                        //                         //                                 print(district);
-                        //                         //                                 //   print(Get.find<OutletsController>().setitem(district ));
-                        //                         //                                 //   district = Constants.item;
-                        //                         //                                 //      print(selectedDrowpdown);
-                        //                         //                                 //   district = Constants.selectedzone.zone;
-                        //                         //                                 // Get.find<AddressController>().getAreaList(district);
-                        //                         //                               },
-                        //                         //                             ),
-                        //                         //                           ),
-                        //                         //                         );
-                        //                         //                       },
-                        //                         //                     ),
-                        //                         //                   ),
-                        //                         //                   // ElevatedButton(
-                        //                         //                   //   onPressed: () async {
-                        //                         //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
-                        //                         //                   //       // selectedProductList.add({
-                        //                         //                   //       //
-                        //                         //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
-                        //                         //                   //       //
-                        //                         //                   //       // });
-                        //                         //                   //       //
-                        //                         //                   //       // if (selectedProductList.isEmpty) {
-                        //                         //                   //       //   Utilities.showInToast("Please add a product",
-                        //                         //                   //       //       toastType: ToastType.ERROR);
-                        //                         //                   //       //   return;
-                        //                         //                   //       // }
-                        //                         //                   //
-                        //                         //                   //       var sales = Sales(
-                        //                         //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
-                        //                         //                   //         remark: jsonEncode(selectedProductList),
-                        //                         //                   //         soldAt:  DateTime.now().toString(),
-                        //                         //                   //         outletId: "12",
-                        //                         //                   //            outletLatitude : "444444",
-                        //                         //                   //        outletLongitude : "4343243423"
-                        //                         //                   //       );
-                        //                         //                   //       // sales.orders = "dd";
-                        //                         //                   //       // // sales.distributorId = "12";
-                        //                         //                   //       // sales.remark =jsonEncode(selectedProductList);
-                        //                         //                   //       // sales.soldAt = DateTime.now().toString();
-                        //                         //                   //       // sales.outletId = Get
-                        //                         //                   //       //     .find<OutletsController>()
-                        //                         //                   //       //     .outletList[index].id.toString();
-                        //                         //                   //       // sales.outletLatitude = "444444";
-                        //                         //                   //       // sales.outletLongitude = "4343243423";
-                        //                         //                   //
-                        //                         //                   //       //  var conn = await Utilities.isInternetWorking();
-                        //                         //                   //
-                        //                         //                   //
-                        //                         //                   //
-                        //                         //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
-                        //                         //                   //       //else {
-                        //                         //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
-                        //                         //                   //       // }
-                        //                         //                   //       //
-                        //                         //                   //       // Get.find<ProductsController>().removeAllProductFromList();
-                        //                         //                   //   //    Get.find<ProductsController>().sellProducts(sales);
-                        //                         //                   //           var conn = await Utilities.isInternetWorking();
-                        //                         //                   //       if (conn) {
-                        //                         //                   //         var response = await sellProductApi(sales);
-                        //                         //                   //         print(sales);
-                        //                         //                   //         // Get.back();
-                        //                         //                   //         Utilities.showInToast(response.message,
-                        //                         //                   //             toastType: response.success
-                        //                         //                   //                 ? ToastType.SUCCESS
-                        //                         //                   //                 : ToastType.ERROR);
-                        //                         //                   //
-                        //                         //                   //         //   if (response.success) {
-                        //                         //                   //         //     outlet.synced = true;
-                        //                         //                   //         //     Get.back();
-                        //                         //                   //         //   }
-                        //                         //                   //         // } else {
-                        //                         //                   //         //   Get.back();
-                        //                         //                   //         //   outlet.synced = false;
-                        //                         //                   //         //
-                        //                         //                   //         //   Utilities.showInToast('Storing Offline',
-                        //                         //                   //         //       toastType: ToastType.INFO);
-                        //                         //                   //         // }
-                        //                         //                   //         // await DatabaseHelper.instance
-                        //                         //                   //         //     .insertOutlet(outlet);
-                        //                         //                   //         // Get.find<ProductsController>().addremark(sales);
-                        //                         //                   //         Get.back();
-                        //                         //                   //       } else {
-                        //                         //                   //         Utilities.showInToast('Please complete the form',
-                        //                         //                   //             toastType: ToastType.ERROR);
-                        //                         //                   //       }
-                        //                         //                   //     } else {
-                        //                         //                   //       Utilities.showInToast("Please add quantity");
-                        //                         //                   //     }
-                        //                         //                   //     Get.back(
-                        //                         //                   //
-                        //                         //                   //     );
-                        //                         //                   //   },
-                        //                         //                   //   child: Text("Add"),
-                        //                         //                   // )
-                        //                         //                 ],
-                        //                         //               ),
-                        //                         //             )),
-                        //                         //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                        //                         //         backgroundColor: Colors.white,
-                        //                         //         enableDrag: true,
-                        //                         //       );
-                        //                         //       // Get.bottomSheet(
-                        //                         //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
-                        //                         //       //   //   itemBuilder: (context, index){
-                        //                         //       //   //     return
-                        //                         //       //   Container(
-                        //                         //       //       child: Padding(
-                        //                         //       //         padding: const EdgeInsets.all(10.0),
-                        //                         //       //         child: Column(
-                        //                         //       //           mainAxisSize: MainAxisSize.min,
-                        //                         //       //           children: [
-                        //                         //       //             Padding(
-                        //                         //       //                 padding: const EdgeInsets.all(12.0),
-                        //                         //       //                 child:
-                        //                         //       //                 // DropdownButton(
-                        //                         //       //                 //
-                        //                         //       //                 //   // Initial Value
-                        //                         //       //                 //     value: selectedDrowpdown,
-                        //                         //       //                 //
-                        //                         //       //                 //     // Down Arrow Icon
-                        //                         //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
-                        //                         //       //                 //
-                        //                         //       //                 //     // Array list of items
-                        //                         //       //                 //     items: item.map((String items) {
-                        //                         //       //                 //       return DropdownMenuItem(
-                        //                         //       //                 //         value: items,
-                        //                         //       //                 //         child: Text(items),
-                        //                         //       //                 //       );
-                        //                         //       //                 //     }).toList(),
-                        //                         //       //                 // After selecting the desired option,it will
-                        //                         //       //                 // change button value to selected value
-                        //                         //       //                 // onChanged: (String newValue) {
-                        //                         //       //                 //   setState(() {
-                        //                         //       //                 //     selectedDrowpdown = newValue;
-                        //                         //       //                 //   });
-                        //                         //       //                 //                 DropdownButton(
-                        //                         //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
-                        //                         //       //                 //   value:selectedDrowpdown,
-                        //                         //       //                 //   onChanged: (newValue) {
-                        //                         //       //                 //     selectedDrowpdown = newValue;
-                        //                         //       //                 //   setState(() {
-                        //                         //       //                 //   selectedDrowpdown = newValue;
-                        //                         //       //                 // //  print(newValue);
-                        //                         //       //                 //   //print(selectedDrowpdown);
-                        //                         //       //                 //   });
-                        //                         //       //                 //   },
-                        //                         //       //                 //   items: item.map((location) {
-                        //                         //       //                 //   return DropdownMenuItem(
-                        //                         //       //                 //   child: new Text(location),
-                        //                         //       //                 //   value: location,
-                        //                         //       //                 //   );
-                        //                         //       //                 //   }).toList(),
-                        //                         //       //                 //   ),
-                        //                         //       //                 Padding(
-                        //                         //       //                   padding: const EdgeInsets.all(10.0),
-                        //                         //       //                   child: GetBuilder<OutletsController>(
-                        //                         //       //                     builder: (builder) {
-                        //                         //       //                       return Get.find<OutletsController>().item.length == null
-                        //                         //       //                           ? SizedBox()
-                        //                         //       //                           : InputDecorator(
-                        //                         //       //                         decoration: decoration("Select Remark"),
-                        //                         //       //                         child: ButtonTheme(
-                        //                         //       //                           alignedDropdown: true,
-                        //                         //       //                           child: DropdownButton<String>(
-                        //                         //       //                             // iconEnabledCo
-                        //                         //       //                             // iconDisabledColor: Colors.red,
-                        //                         //       //                             isDense: true,
-                        //                         //       //                             isExpanded: true,
-                        //                         //       //                             hint: Text(
-                        //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown),
-                        //                         //       //                             items:
-                        //                         //       //                             Get.find<OutletsController>().item.map((e) {
-                        //                         //       //                               return DropdownMenuItem<String>(
-                        //                         //       //                                   value: e, child: Text(e));
-                        //                         //       //                             }).toList(),
-                        //                         //       //                             onChanged: (String district) {
-                        //                         //       //                               // setState(() {
-                        //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
-                        //                         //       //                                 //  Get.find<OutletsController>().setitem(district );
-                        //                         //       //                              // });
-                        //                         //       //
-                        //                         //       //                               // district = selectedDrowpdown;
-                        //                         //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
-                        //                         //       //                               print(district);
-                        //                         //       //                               //   print(Get.find<OutletsController>().setitem(district ));
-                        //                         //       //                               //   district = Constants.item;
-                        //                         //       //                               //      print(selectedDrowpdown);
-                        //                         //       //                               //   district = Constants.selectedzone.zone;
-                        //                         //       //                               // Get.find<AddressController>().getAreaList(district);
-                        //                         //       //                             },
-                        //                         //       //                           ),
-                        //                         //       //                         ),
-                        //                         //       //                       );
-                        //                         //       //                     },
-                        //                         //       //                   ),
-                        //                         //       //                 )
-                        //                         //       //               // DropdownButton<String>(
-                        //                         //       //               //   hint: Text("Remark"),
-                        //                         //       //               //   value:  selectedDrowpdown,
-                        //                         //       //               //   items:
-                        //                         //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
-                        //                         //       //               //   // [
-                        //                         //       //               //   //   for (var data in Get.find<OutletsController>().item)
-                        //                         //       //               //   //     DropdownMenuItem(
-                        //                         //       //               //   //       child: new Text(
-                        //                         //       //               //   //         data,
-                        //                         //       //               //   //       ),
-                        //                         //       //               //   //       value: data,
-                        //                         //       //               //   //     )
-                        //                         //       //               //   // ],
-                        //                         //       //               //
-                        //                         //       //               //   // Get.find<OutletsController>().item.map((e) {
-                        //                         //       //               //   //   return DropdownMenuItem<String>(
-                        //                         //       //               //   //           value: e,
-                        //                         //       //               //   //           child: Text(e),
-                        //                         //       //               //   //         );
-                        //                         //       //               //   // }),
-                        //                         //       //               //     item.map((  value) {
-                        //                         //       //               //     return DropdownMenuItem<String>(
-                        //                         //       //               //       value: value,
-                        //                         //       //               //       child: Text(value),
-                        //                         //       //               //     );
-                        //                         //       //               //   }).toList(),
-                        //                         //       //               //   onChanged: (newvalue) {
-                        //                         //       //               //     setState(() {
-                        //                         //       //               //      selectedDrowpdown = newvalue ;
-                        //                         //       //               //     });
-                        //                         //       //               //
-                        //                         //       //               // //   Get.find<OutletsController>().setitem(newvalue);
-                        //                         //       //               //
-                        //                         //       //               //
-                        //                         //       //               //    //_selectedvalue = newvalue;
-                        //                         //       //               //   })
-                        //                         //       //             ),
-                        //                         //       //
-                        //                         //       //             SizedBox(height: Get.size.height * 0.01),
-                        //                         //       //             // Container(
-                        //                         //       //             //   child: _imageFile == null
-                        //                         //       //             //       ? Center(
-                        //                         //       //             //     child: Text("No Image Selected"),
-                        //                         //       //             //   )
-                        //                         //       //             //       : Image.file(File(_imageFile.path)),
-                        //                         //       //             // ),
-                        //                         //       //             ElevatedButton(
-                        //                         //       //               onPressed: () async {
-                        //                         //       //                 // pickImage();
-                        //                         //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
-                        //                         //       //                   var conn = await Utilities.isInternetWorking();
-                        //                         //       //                   showDialog(
-                        //                         //       //                       barrierDismissible: false,
-                        //                         //       //                       context: context,
-                        //                         //       //                       builder: (context) {
-                        //                         //       //                         return CupertinoAlertDialog(
-                        //                         //       //                           title: Text('Please Wait'),
-                        //                         //       //                           content: Column(
-                        //                         //       //                             children: [
-                        //                         //       //                               Divider(),
-                        //                         //       //                               Padding(
-                        //                         //       //                                 padding: const EdgeInsets.all(8.0),
-                        //                         //       //                                 child: Text(conn
-                        //                         //       //                                     ? 'Registering new Sales Outlet'
-                        //                         //       //                                     : 'Saving offline'),
-                        //                         //       //                               ),
-                        //                         //       //                               CupertinoActivityIndicator(
-                        //                         //       //                                 radius: 17,
-                        //                         //       //                               )
-                        //                         //       //                             ],
-                        //                         //       //                           ),
-                        //                         //       //                         );
-                        //                         //       //                       });
-                        //                         //       //                   // var sales = Sales(
-                        //                         //       //                   //     outletId:  outlet[index].id.toString(),
-                        //                         //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
-                        //                         //       //                   // );
-                        //                         //       //                   // selectedoutlet.add({
-                        //                         //       //                   //   //"outlet_id": outletId,
-                        //                         //       //                   //
-                        //                         //       //                   //   "remark": selectedDrowpdown,
-                        //                         //       //                   //
-                        //                         //       //                   // });
-                        //                         //       //                   if (conn) {
-                        //                         //       //                     var response = await sellProductApi(sales);
-                        //                         //       //                     print(sales);
-                        //                         //       //                     // Get.back();
-                        //                         //       //                     Utilities.showInToast(response.message,
-                        //                         //       //                         toastType: response.success
-                        //                         //       //                             ? ToastType.SUCCESS
-                        //                         //       //                             : ToastType.ERROR);
-                        //                         //       //
-                        //                         //       //                     //   if (response.success) {
-                        //                         //       //                     //     outlet.synced = true;
-                        //                         //       //                     //     Get.back();
-                        //                         //       //                     //   }
-                        //                         //       //                     // } else {
-                        //                         //       //                     //   Get.back();
-                        //                         //       //                     //   outlet.synced = false;
-                        //                         //       //                     //
-                        //                         //       //                     //   Utilities.showInToast('Storing Offline',
-                        //                         //       //                     //       toastType: ToastType.INFO);
-                        //                         //       //                     // }
-                        //                         //       //                     // await DatabaseHelper.instance
-                        //                         //       //                     //     .insertOutlet(outlet);
-                        //                         //       //                     // Get.find<ProductsController>().addremark(sales);
-                        //                         //       //                     Get.back();
-                        //                         //       //                   } else {
-                        //                         //       //                     Utilities.showInToast('Please complete the form',
-                        //                         //       //                         toastType: ToastType.ERROR);
-                        //                         //       //                   }
-                        //                         //       //                   // if (selectedDrowpdown != null) {
-                        //                         //       //                   //   // selectedoutlet.add({
-                        //                         //       //                   //   //   //"outlet_id": outletId,
-                        //                         //       //                   //   //
-                        //                         //       //                   //   //   "remark": selectedDrowpdown,
-                        //                         //       //                   //   //
-                        //                         //       //                   //   // });
-                        //                         //       //                   //   sales.remark = jsonEncode(selectedoutlet);
-                        //                         //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
-                        //                         //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
-                        //                         //       //                   //   Utilities.showInToast("Remark Noted");
-                        //                         //       //                   //   print(selectedDrowpdown);
-                        //                         //       //                   // } else {
-                        //                         //       //                   //   Utilities.showInToast("Please add Remark");
-                        //                         //       //                   // }
-                        //                         //       //                   Get.back();}
-                        //                         //       //               },
-                        //                         //       //               child: Text("Add"),
-                        //                         //       //             ),
-                        //                         //       //           //  outlet.id..toString().isEmpty
-                        //                         //       //           //       ? ElevatedButton(
-                        //                         //       //           //     onPressed: () {
-                        //                         //       //           //       showQuantityBottomSheet(null, products.id.toString());
-                        //                         //       //           //     },
-                        //                         //       //           //     child: Text("Sell"),
-                        //                         //       //           //   )
-                        //                         //       //           //       : ExpansionTile(
-                        //                         //       //           //     title: Text("Batches"),
-                        //                         //       //           //     children: products.batches.map((batch) {
-                        //                         //       //           //       return buildBatchTile(batch, products);
-                        //                         //       //           //     }).toList(),
-                        //                         //       //           //   ),
-                        //                         //       //           ],
-                        //                         //       //         ),)),
-                        //                         //       //
-                        //                         //       //
-                        //                         //       //
-                        //                         //       //
-                        //                         //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                        //                         //       //   backgroundColor: Colors.white,
-                        //                         //       //   enableDrag: true,
-                        //                         //       // );
-                        //                         //     } , icon: Icon(Icons.add))
-                        //                         // )
-                        //                       ],
-                        //                     ),
-                        //                     Container(
-                        //                         child: Column(
-                        //                           mainAxisAlignment: MainAxisAlignment.start,
-                        //                           children: [
-                        //                             Padding(  padding: const EdgeInsets.all(10.0),
-                        //                                 child:   Row(
-                        //                                   children: [
-                        //                                     Text(
-                        //                                       item,
-                        //                                       style: TextStyle(
-                        //                                           fontSize: 15,
-                        //                                           fontWeight: FontWeight.bold),
-                        //                                     ),
-                        //
-                        //                                   ],
-                        //                                 )
-                        //
-                        //                             ),
-                        //
-                        //                             // Padding(
-                        //                             //   padding: const EdgeInsets.only(top: 1),
-                        //                             //   child:
-                        //                             // Text(
-                        //                             //   outlet[index].name,
-                        //                             //   style: TextStyle(
-                        //                             //       fontSize: 18,
-                        //                             //       fontWeight: FontWeight.bold),
-                        //                             // ),
-                        //                             // //    ),
-                        //                             // Container(
-                        //                             //   child:   Text(
-                        //                             //     "Number of Outlet: ${outlet.length.toString()}",
-                        //                             //     style: TextStyle(
-                        //                             //         fontSize: 10,
-                        //                             //         fontWeight: FontWeight.bold),
-                        //                             //   ),
-                        //                             // ),
-                        //                             // Text(
-                        //                             //   outlet[index].name,
-                        //                             //   style: TextStyle(
-                        //                             //       fontSize: 10,
-                        //                             //       fontWeight: FontWeight.bold),
-                        //                             // ),
-                        //
-                        //                           ],
-                        //                         )
-                        //                     ),
-                        //
-                        //                     // MaterialButton(
-                        //                     //   onPressed: () {
-                        //                     //     Get.to(() =>
-                        //                     //         SellProductPage(
-                        //                     //           outlet: Get
-                        //                     //               .find<OutletsController>()
-                        //                     //               .outletList[index],
-                        //                     //         ));
-                        //                     //
-                        //                     //   },
-                        //                     //   color: Colors.green[900],
-                        //                     //   minWidth: Get.size.width,
-                        //                     //   textColor: Colors.white,
-                        //                     //   padding: EdgeInsets.all(10.0),
-                        //                     //   child: Text("Sell Product"),
-                        //                     // ),
-                        //
-                        //                   ],
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         );
-                        //         //   ListTile(
-                        //         //   onTap: (){
-                        //         //     Get.find<ProductBrandController>().setSelectedBrand(item);
-                        //         //
-                        //         //     Get.to(DetailsProduct(
-                        //         //       product: Get.find<ProductBrandController>().getNameList(item)),
-                        //         //
-                        //         //     );
-                        //         //   },
-                        //         //   title: Text(item),
-                        //         // );
-                        //         });
-                        //   },
-                        // ),
-                        //     );
-                        //   },
-                        //   title: Text(item),
-                        // );
-                      }),
+                                //   shape: BeveledRectangleBorder(
+                                //   borderRadius: BorderRadius.circular(5.0),
+                                // ),
+                                // shape: StadiumBorder(
+                                //     side: BorderSide(
+                                //       color: Colors.black,
+                                //       width: 1.5,
+                                //       borderRadius: BorderRadius.circular(10.0),
+                                //     ),),
+                                // outlet[index].selected ? Colors.grey
+                                elevation: 7.0,
+                                child:
+                                ListTile(
+                                  // selected: isSelected,
+                                  // onLongPress: selection,
+                                  title: InkWell(
+                                    onTap: (){
+                                      // OutletInfoPages(
+                                      //   outlet : Get
+                                      //         .find<OutletsController>()
+                                      //         .outletList[index],
+                                      // ));
+                                      //  Get.to(SellProductPage(outlet:outlet  ));
+                                      //    Get.to(DetailsProduct(
+                                      //      outlet: outlet,product: Get.find<ProductBrandController>().getNameList(item)
+                                      //   ));
+                                      // print(outlet.name);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:  MainAxisAlignment.end,
+                                            children: [
+                                              // SizedBox(
+                                              //   width: Get.size.width * 0.3,
+                                              // ),
+                                              // CircleAvatar(
+                                              //     radius: (20),
+                                              //     backgroundColor:  outlet[index].synced
+                                              //         ? Colors.blueGrey
+                                              //         : Colors.grey,
+                                              //     child:  IconButton(onPressed:(){
+                                              //      // showQuantityBottomSheet(outlet[index].id.toString());
+                                              //        Get.bottomSheet(
+                                              //         Container(
+                                              //             child: Padding(
+                                              //               padding: const EdgeInsets.all(10.0),
+                                              //               child: Column(
+                                              //                 mainAxisSize: MainAxisSize.min,
+                                              //                 children: [
+                                              //
+                                              //                   Padding(
+                                              //                     padding: const EdgeInsets.all(10.0),
+                                              //                     child: GetBuilder<OutletsController>(
+                                              //                       builder: (builder) {
+                                              //                         return Get.find<OutletsController>().item.length == null
+                                              //                             ? SizedBox()
+                                              //                             : InputDecorator(
+                                              //                           decoration: decoration("Select Remark"),
+                                              //                           child: ButtonTheme(
+                                              //                             alignedDropdown: true,
+                                              //                             child: DropdownButton<String>(
+                                              //                               // iconEnabledCo
+                                              //                               // iconDisabledColor: Colors.red,
+                                              //                               isDense: true,
+                                              //                               isExpanded: true,
+                                              //                               hint: Text(
+                                              //                                   Get.find<OutletsController>().selectedDrowpdown),
+                                              //                               items:
+                                              //                               Get.find<OutletsController>().item.map((e) {
+                                              //                                 return DropdownMenuItem<String>(
+                                              //                                     value: e, child: Text(e));
+                                              //                               }).toList(),
+                                              //                               onChanged: (String district) {
+                                              //                                 // setState(() {
+                                              //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+                                              //                                 //  Get.find<OutletsController>().setitem(district );
+                                              //                                 // });
+                                              //
+                                              //                                 // district = selectedDrowpdown;
+                                              //                                 print(Get.find<OutletsController>().selectedDrowpdown);
+                                              //                                 print(district);
+                                              //                                 //   print(Get.find<OutletsController>().setitem(district ));
+                                              //                                 //   district = Constants.item;
+                                              //                                 //      print(selectedDrowpdown);
+                                              //                                 //   district = Constants.selectedzone.zone;
+                                              //                                 // Get.find<AddressController>().getAreaList(district);
+                                              //                               },
+                                              //                             ),
+                                              //                           ),
+                                              //                         );
+                                              //                       },
+                                              //                     ),
+                                              //                   ),
+                                              //                   // ElevatedButton(
+                                              //                   //   onPressed: () async {
+                                              //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
+                                              //                   //       // selectedProductList.add({
+                                              //                   //       //
+                                              //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
+                                              //                   //       //
+                                              //                   //       // });
+                                              //                   //       //
+                                              //                   //       // if (selectedProductList.isEmpty) {
+                                              //                   //       //   Utilities.showInToast("Please add a product",
+                                              //                   //       //       toastType: ToastType.ERROR);
+                                              //                   //       //   return;
+                                              //                   //       // }
+                                              //                   //
+                                              //                   //       var sales = Sales(
+                                              //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
+                                              //                   //         remark: jsonEncode(selectedProductList),
+                                              //                   //         soldAt:  DateTime.now().toString(),
+                                              //                   //         outletId: "12",
+                                              //                   //            outletLatitude : "444444",
+                                              //                   //        outletLongitude : "4343243423"
+                                              //                   //       );
+                                              //                   //       // sales.orders = "dd";
+                                              //                   //       // // sales.distributorId = "12";
+                                              //                   //       // sales.remark =jsonEncode(selectedProductList);
+                                              //                   //       // sales.soldAt = DateTime.now().toString();
+                                              //                   //       // sales.outletId = Get
+                                              //                   //       //     .find<OutletsController>()
+                                              //                   //       //     .outletList[index].id.toString();
+                                              //                   //       // sales.outletLatitude = "444444";
+                                              //                   //       // sales.outletLongitude = "4343243423";
+                                              //                   //
+                                              //                   //       //  var conn = await Utilities.isInternetWorking();
+                                              //                   //
+                                              //                   //
+                                              //                   //
+                                              //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
+                                              //                   //       //else {
+                                              //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
+                                              //                   //       // }
+                                              //                   //       //
+                                              //                   //       // Get.find<ProductsController>().removeAllProductFromList();
+                                              //                   //   //    Get.find<ProductsController>().sellProducts(sales);
+                                              //                   //           var conn = await Utilities.isInternetWorking();
+                                              //                   //       if (conn) {
+                                              //                   //         var response = await sellProductApi(sales);
+                                              //                   //         print(sales);
+                                              //                   //         // Get.back();
+                                              //                   //         Utilities.showInToast(response.message,
+                                              //                   //             toastType: response.success
+                                              //                   //                 ? ToastType.SUCCESS
+                                              //                   //                 : ToastType.ERROR);
+                                              //                   //
+                                              //                   //         //   if (response.success) {
+                                              //                   //         //     outlet.synced = true;
+                                              //                   //         //     Get.back();
+                                              //                   //         //   }
+                                              //                   //         // } else {
+                                              //                   //         //   Get.back();
+                                              //                   //         //   outlet.synced = false;
+                                              //                   //         //
+                                              //                   //         //   Utilities.showInToast('Storing Offline',
+                                              //                   //         //       toastType: ToastType.INFO);
+                                              //                   //         // }
+                                              //                   //         // await DatabaseHelper.instance
+                                              //                   //         //     .insertOutlet(outlet);
+                                              //                   //         // Get.find<ProductsController>().addremark(sales);
+                                              //                   //         Get.back();
+                                              //                   //       } else {
+                                              //                   //         Utilities.showInToast('Please complete the form',
+                                              //                   //             toastType: ToastType.ERROR);
+                                              //                   //       }
+                                              //                   //     } else {
+                                              //                   //       Utilities.showInToast("Please add quantity");
+                                              //                   //     }
+                                              //                   //     Get.back(
+                                              //                   //
+                                              //                   //     );
+                                              //                   //   },
+                                              //                   //   child: Text("Add"),
+                                              //                   // )
+                                              //                 ],
+                                              //               ),
+                                              //             )),
+                                              //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                                              //         backgroundColor: Colors.white,
+                                              //         enableDrag: true,
+                                              //       );
+                                              //       // Get.bottomSheet(
+                                              //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
+                                              //       //   //   itemBuilder: (context, index){
+                                              //       //   //     return
+                                              //       //   Container(
+                                              //       //       child: Padding(
+                                              //       //         padding: const EdgeInsets.all(10.0),
+                                              //       //         child: Column(
+                                              //       //           mainAxisSize: MainAxisSize.min,
+                                              //       //           children: [
+                                              //       //             Padding(
+                                              //       //                 padding: const EdgeInsets.all(12.0),
+                                              //       //                 child:
+                                              //       //                 // DropdownButton(
+                                              //       //                 //
+                                              //       //                 //   // Initial Value
+                                              //       //                 //     value: selectedDrowpdown,
+                                              //       //                 //
+                                              //       //                 //     // Down Arrow Icon
+                                              //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
+                                              //       //                 //
+                                              //       //                 //     // Array list of items
+                                              //       //                 //     items: item.map((String items) {
+                                              //       //                 //       return DropdownMenuItem(
+                                              //       //                 //         value: items,
+                                              //       //                 //         child: Text(items),
+                                              //       //                 //       );
+                                              //       //                 //     }).toList(),
+                                              //       //                 // After selecting the desired option,it will
+                                              //       //                 // change button value to selected value
+                                              //       //                 // onChanged: (String newValue) {
+                                              //       //                 //   setState(() {
+                                              //       //                 //     selectedDrowpdown = newValue;
+                                              //       //                 //   });
+                                              //       //                 //                 DropdownButton(
+                                              //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
+                                              //       //                 //   value:selectedDrowpdown,
+                                              //       //                 //   onChanged: (newValue) {
+                                              //       //                 //     selectedDrowpdown = newValue;
+                                              //       //                 //   setState(() {
+                                              //       //                 //   selectedDrowpdown = newValue;
+                                              //       //                 // //  print(newValue);
+                                              //       //                 //   //print(selectedDrowpdown);
+                                              //       //                 //   });
+                                              //       //                 //   },
+                                              //       //                 //   items: item.map((location) {
+                                              //       //                 //   return DropdownMenuItem(
+                                              //       //                 //   child: new Text(location),
+                                              //       //                 //   value: location,
+                                              //       //                 //   );
+                                              //       //                 //   }).toList(),
+                                              //       //                 //   ),
+                                              //       //                 Padding(
+                                              //       //                   padding: const EdgeInsets.all(10.0),
+                                              //       //                   child: GetBuilder<OutletsController>(
+                                              //       //                     builder: (builder) {
+                                              //       //                       return Get.find<OutletsController>().item.length == null
+                                              //       //                           ? SizedBox()
+                                              //       //                           : InputDecorator(
+                                              //       //                         decoration: decoration("Select Remark"),
+                                              //       //                         child: ButtonTheme(
+                                              //       //                           alignedDropdown: true,
+                                              //       //                           child: DropdownButton<String>(
+                                              //       //                             // iconEnabledCo
+                                              //       //                             // iconDisabledColor: Colors.red,
+                                              //       //                             isDense: true,
+                                              //       //                             isExpanded: true,
+                                              //       //                             hint: Text(
+                                              //       //                                 Get.find<OutletsController>().selectedDrowpdown),
+                                              //       //                             items:
+                                              //       //                             Get.find<OutletsController>().item.map((e) {
+                                              //       //                               return DropdownMenuItem<String>(
+                                              //       //                                   value: e, child: Text(e));
+                                              //       //                             }).toList(),
+                                              //       //                             onChanged: (String district) {
+                                              //       //                               // setState(() {
+                                              //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+                                              //       //                                 //  Get.find<OutletsController>().setitem(district );
+                                              //       //                              // });
+                                              //       //
+                                              //       //                               // district = selectedDrowpdown;
+                                              //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
+                                              //       //                               print(district);
+                                              //       //                               //   print(Get.find<OutletsController>().setitem(district ));
+                                              //       //                               //   district = Constants.item;
+                                              //       //                               //      print(selectedDrowpdown);
+                                              //       //                               //   district = Constants.selectedzone.zone;
+                                              //       //                               // Get.find<AddressController>().getAreaList(district);
+                                              //       //                             },
+                                              //       //                           ),
+                                              //       //                         ),
+                                              //       //                       );
+                                              //       //                     },
+                                              //       //                   ),
+                                              //       //                 )
+                                              //       //               // DropdownButton<String>(
+                                              //       //               //   hint: Text("Remark"),
+                                              //       //               //   value:  selectedDrowpdown,
+                                              //       //               //   items:
+                                              //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
+                                              //       //               //   // [
+                                              //       //               //   //   for (var data in Get.find<OutletsController>().item)
+                                              //       //               //   //     DropdownMenuItem(
+                                              //       //               //   //       child: new Text(
+                                              //       //               //   //         data,
+                                              //       //               //   //       ),
+                                              //       //               //   //       value: data,
+                                              //       //               //   //     )
+                                              //       //               //   // ],
+                                              //       //               //
+                                              //       //               //   // Get.find<OutletsController>().item.map((e) {
+                                              //       //               //   //   return DropdownMenuItem<String>(
+                                              //       //               //   //           value: e,
+                                              //       //               //   //           child: Text(e),
+                                              //       //               //   //         );
+                                              //       //               //   // }),
+                                              //       //               //     item.map((  value) {
+                                              //       //               //     return DropdownMenuItem<String>(
+                                              //       //               //       value: value,
+                                              //       //               //       child: Text(value),
+                                              //       //               //     );
+                                              //       //               //   }).toList(),
+                                              //       //               //   onChanged: (newvalue) {
+                                              //       //               //     setState(() {
+                                              //       //               //      selectedDrowpdown = newvalue ;
+                                              //       //               //     });
+                                              //       //               //
+                                              //       //               // //   Get.find<OutletsController>().setitem(newvalue);
+                                              //       //               //
+                                              //       //               //
+                                              //       //               //    //_selectedvalue = newvalue;
+                                              //       //               //   })
+                                              //       //             ),
+                                              //       //
+                                              //       //             SizedBox(height: Get.size.height * 0.01),
+                                              //       //             // Container(
+                                              //       //             //   child: _imageFile == null
+                                              //       //             //       ? Center(
+                                              //       //             //     child: Text("No Image Selected"),
+                                              //       //             //   )
+                                              //       //             //       : Image.file(File(_imageFile.path)),
+                                              //       //             // ),
+                                              //       //             ElevatedButton(
+                                              //       //               onPressed: () async {
+                                              //       //                 // pickImage();
+                                              //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
+                                              //       //                   var conn = await Utilities.isInternetWorking();
+                                              //       //                   showDialog(
+                                              //       //                       barrierDismissible: false,
+                                              //       //                       context: context,
+                                              //       //                       builder: (context) {
+                                              //       //                         return CupertinoAlertDialog(
+                                              //       //                           title: Text('Please Wait'),
+                                              //       //                           content: Column(
+                                              //       //                             children: [
+                                              //       //                               Divider(),
+                                              //       //                               Padding(
+                                              //       //                                 padding: const EdgeInsets.all(8.0),
+                                              //       //                                 child: Text(conn
+                                              //       //                                     ? 'Registering new Sales Outlet'
+                                              //       //                                     : 'Saving offline'),
+                                              //       //                               ),
+                                              //       //                               CupertinoActivityIndicator(
+                                              //       //                                 radius: 17,
+                                              //       //                               )
+                                              //       //                             ],
+                                              //       //                           ),
+                                              //       //                         );
+                                              //       //                       });
+                                              //       //                   // var sales = Sales(
+                                              //       //                   //     outletId:  outlet[index].id.toString(),
+                                              //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
+                                              //       //                   // );
+                                              //       //                   // selectedoutlet.add({
+                                              //       //                   //   //"outlet_id": outletId,
+                                              //       //                   //
+                                              //       //                   //   "remark": selectedDrowpdown,
+                                              //       //                   //
+                                              //       //                   // });
+                                              //       //                   if (conn) {
+                                              //       //                     var response = await sellProductApi(sales);
+                                              //       //                     print(sales);
+                                              //       //                     // Get.back();
+                                              //       //                     Utilities.showInToast(response.message,
+                                              //       //                         toastType: response.success
+                                              //       //                             ? ToastType.SUCCESS
+                                              //       //                             : ToastType.ERROR);
+                                              //       //
+                                              //       //                     //   if (response.success) {
+                                              //       //                     //     outlet.synced = true;
+                                              //       //                     //     Get.back();
+                                              //       //                     //   }
+                                              //       //                     // } else {
+                                              //       //                     //   Get.back();
+                                              //       //                     //   outlet.synced = false;
+                                              //       //                     //
+                                              //       //                     //   Utilities.showInToast('Storing Offline',
+                                              //       //                     //       toastType: ToastType.INFO);
+                                              //       //                     // }
+                                              //       //                     // await DatabaseHelper.instance
+                                              //       //                     //     .insertOutlet(outlet);
+                                              //       //                     // Get.find<ProductsController>().addremark(sales);
+                                              //       //                     Get.back();
+                                              //       //                   } else {
+                                              //       //                     Utilities.showInToast('Please complete the form',
+                                              //       //                         toastType: ToastType.ERROR);
+                                              //       //                   }
+                                              //       //                   // if (selectedDrowpdown != null) {
+                                              //       //                   //   // selectedoutlet.add({
+                                              //       //                   //   //   //"outlet_id": outletId,
+                                              //       //                   //   //
+                                              //       //                   //   //   "remark": selectedDrowpdown,
+                                              //       //                   //   //
+                                              //       //                   //   // });
+                                              //       //                   //   sales.remark = jsonEncode(selectedoutlet);
+                                              //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
+                                              //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
+                                              //       //                   //   Utilities.showInToast("Remark Noted");
+                                              //       //                   //   print(selectedDrowpdown);
+                                              //       //                   // } else {
+                                              //       //                   //   Utilities.showInToast("Please add Remark");
+                                              //       //                   // }
+                                              //       //                   Get.back();}
+                                              //       //               },
+                                              //       //               child: Text("Add"),
+                                              //       //             ),
+                                              //       //           //  outlet.id..toString().isEmpty
+                                              //       //           //       ? ElevatedButton(
+                                              //       //           //     onPressed: () {
+                                              //       //           //       showQuantityBottomSheet(null, products.id.toString());
+                                              //       //           //     },
+                                              //       //           //     child: Text("Sell"),
+                                              //       //           //   )
+                                              //       //           //       : ExpansionTile(
+                                              //       //           //     title: Text("Batches"),
+                                              //       //           //     children: products.batches.map((batch) {
+                                              //       //           //       return buildBatchTile(batch, products);
+                                              //       //           //     }).toList(),
+                                              //       //           //   ),
+                                              //       //           ],
+                                              //       //         ),)),
+                                              //       //
+                                              //       //
+                                              //       //
+                                              //       //
+                                              //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                                              //       //   backgroundColor: Colors.white,
+                                              //       //   enableDrag: true,
+                                              //       // );
+                                              //     } , icon: Icon(Icons.add))
+                                              // )
+                                            ],
+                                          ),
+                                          Container(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Padding(  padding: const EdgeInsets.all(10.0),
+                                                      child:   Row(
+                                                        children: [
+                                                          Text(
+                                                            items.name,
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      )
+                                                  ),
+                                                  // Padding(
+                                                  //   padding: const EdgeInsets.only(top: 1),
+                                                  //   child:
+                                                  // Text(
+                                                  //   outlet[index].name,
+                                                  //   style: TextStyle(
+                                                  //       fontSize: 18,
+                                                  //       fontWeight: FontWeight.bold),
+                                                  // ),
+                                                  // //    ),
+                                                  // Container(
+                                                  //   child:   Text(
+                                                  //     "Number of Outlet: ${outlet.length.toString()}",
+                                                  //     style: TextStyle(
+                                                  //         fontSize: 10,
+                                                  //         fontWeight: FontWeight.bold),
+                                                  //   ),
+                                                  // ),
+                                                  // Text(
+                                                  //   outlet[index].name,
+                                                  //   style: TextStyle(
+                                                  //       fontSize: 10,
+                                                  //       fontWeight: FontWeight.bold),
+                                                  // ),
+                                                ],
+                                              )
+                                          ),
+                                          // MaterialButton(
+                                          //   onPressed: () {
+                                          //     Get.to(() =>
+                                          //         SellProductPage(
+                                          //           outlet: Get
+                                          //               .find<OutletsController>()
+                                          //               .outletList[index],
+                                          //         ));
+                                          //
+                                          //   },
+                                          //   color: Colors.green[900],
+                                          //   minWidth: Get.size.width,
+                                          //   textColor: Colors.white,
+                                          //   padding: EdgeInsets.all(10.0),
+                                          //   child: Text("Sell Product"),
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                              //   ListTile(
+                              //   onTap: (){
+                              //     Get.find<ProductBrandController>().setSelectedBrand(item);
+                              //
+                              //     Get.to(DetailsProduct(
+                              //       product: Get.find<ProductBrandController>().getNameList(item)),
+                              // // GetBuilder<ProductBrandController>(
+                              //   builder: (BrandController) {
+                              //     return Get.find<ProductBrandController>().productList.isEmpty
+                              //         ? Center(
+                              //       child: Column(
+                              //         mainAxisAlignment: MainAxisAlignment.center,
+                              //         children: [
+                              //           CupertinoActivityIndicator(),
+                              //         ],
+                              //       ),
+                              //     )
+                              //          :
+                              //     //     ElevatedButton(onPressed: (){
+                              //     //       print(Get.find<ProductBrandController>().productList.length);
+                              //     // }, child: Text("press"));
+                              //     ListView.builder(
+                              //       itemCount: Get.find<ProductBrandController>().brandList.length,
+                              //         itemBuilder: (context,index){
+                              //         var item = Get.find<ProductBrandController>().brandList[index];
+                              //    //     Get.find<ProductBrandController>().brandList[index] =Get.find<ProductBrandController>().selectedName;
+                              //         return    Card(
+                              //          color: item != null ? Colors.white : Colors.white54,
+                              //           shape: RoundedRectangleBorder(
+                              //             borderRadius: BorderRadius.circular(12.0),
+                              //           ),
+                              //           //   shape: BeveledRectangleBorder(
+                              //           //   borderRadius: BorderRadius.circular(5.0),
+                              //           // ),
+                              //           // shape: StadiumBorder(
+                              //           //     side: BorderSide(
+                              //           //       color: Colors.black,
+                              //           //       width: 1.5,
+                              //           //       borderRadius: BorderRadius.circular(10.0),
+                              //           //     ),),
+                              //           // outlet[index].selected ? Colors.grey
+                              //           elevation: 7.0,
+                              //           child: ListTile(
+                              //             selected: isSelected,
+                              //             onLongPress: selection,
+                              //             title: InkWell(
+                              //               onTap: (){
+                              //
+                              //                 // OutletInfoPages(
+                              //                 //   outlet : Get
+                              //                 //         .find<OutletsController>()
+                              //                 //         .outletList[index],
+                              //                 // ));
+                              //              //  Get.to(SellProductPage(outlet:outlet  ));
+                              //                 Get.to(DetailsProduct(
+                              //                   outlet: outlet,product: Get.find<ProductBrandController>().getNameList(item)
+                              //                ));
+                              //                // print(outlet.name);
+                              //               },
+                              //               child: Padding(
+                              //                 padding: const EdgeInsets.all(10.0),
+                              //                 child: Column(
+                              //                   crossAxisAlignment: CrossAxisAlignment.start,
+                              //                   mainAxisSize: MainAxisSize.min,
+                              //                   children: [
+                              //                     Row(
+                              //                       mainAxisAlignment:  MainAxisAlignment.end,
+                              //                       children: [
+                              //                         // SizedBox(
+                              //                         //   width: Get.size.width * 0.3,
+                              //                         // ),
+                              //                         // CircleAvatar(
+                              //                         //     radius: (20),
+                              //                         //     backgroundColor:  outlet[index].synced
+                              //                         //         ? Colors.blueGrey
+                              //                         //         : Colors.grey,
+                              //                         //     child:  IconButton(onPressed:(){
+                              //                         //      // showQuantityBottomSheet(outlet[index].id.toString());
+                              //                         //        Get.bottomSheet(
+                              //                         //         Container(
+                              //                         //             child: Padding(
+                              //                         //               padding: const EdgeInsets.all(10.0),
+                              //                         //               child: Column(
+                              //                         //                 mainAxisSize: MainAxisSize.min,
+                              //                         //                 children: [
+                              //                         //
+                              //                         //                   Padding(
+                              //                         //                     padding: const EdgeInsets.all(10.0),
+                              //                         //                     child: GetBuilder<OutletsController>(
+                              //                         //                       builder: (builder) {
+                              //                         //                         return Get.find<OutletsController>().item.length == null
+                              //                         //                             ? SizedBox()
+                              //                         //                             : InputDecorator(
+                              //                         //                           decoration: decoration("Select Remark"),
+                              //                         //                           child: ButtonTheme(
+                              //                         //                             alignedDropdown: true,
+                              //                         //                             child: DropdownButton<String>(
+                              //                         //                               // iconEnabledCo
+                              //                         //                               // iconDisabledColor: Colors.red,
+                              //                         //                               isDense: true,
+                              //                         //                               isExpanded: true,
+                              //                         //                               hint: Text(
+                              //                         //                                   Get.find<OutletsController>().selectedDrowpdown),
+                              //                         //                               items:
+                              //                         //                               Get.find<OutletsController>().item.map((e) {
+                              //                         //                                 return DropdownMenuItem<String>(
+                              //                         //                                     value: e, child: Text(e));
+                              //                         //                               }).toList(),
+                              //                         //                               onChanged: (String district) {
+                              //                         //                                 // setState(() {
+                              //                         //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+                              //                         //                                 //  Get.find<OutletsController>().setitem(district );
+                              //                         //                                 // });
+                              //                         //
+                              //                         //                                 // district = selectedDrowpdown;
+                              //                         //                                 print(Get.find<OutletsController>().selectedDrowpdown);
+                              //                         //                                 print(district);
+                              //                         //                                 //   print(Get.find<OutletsController>().setitem(district ));
+                              //                         //                                 //   district = Constants.item;
+                              //                         //                                 //      print(selectedDrowpdown);
+                              //                         //                                 //   district = Constants.selectedzone.zone;
+                              //                         //                                 // Get.find<AddressController>().getAreaList(district);
+                              //                         //                               },
+                              //                         //                             ),
+                              //                         //                           ),
+                              //                         //                         );
+                              //                         //                       },
+                              //                         //                     ),
+                              //                         //                   ),
+                              //                         //                   // ElevatedButton(
+                              //                         //                   //   onPressed: () async {
+                              //                         //                   //     if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
+                              //                         //                   //       // selectedProductList.add({
+                              //                         //                   //       //
+                              //                         //                   //       //   "remarks":  Get.find<OutletsController>().selectedDrowpdown,
+                              //                         //                   //       //
+                              //                         //                   //       // });
+                              //                         //                   //       //
+                              //                         //                   //       // if (selectedProductList.isEmpty) {
+                              //                         //                   //       //   Utilities.showInToast("Please add a product",
+                              //                         //                   //       //       toastType: ToastType.ERROR);
+                              //                         //                   //       //   return;
+                              //                         //                   //       // }
+                              //                         //                   //
+                              //                         //                   //       var sales = Sales(
+                              //                         //                   //         orders: '[{ "product_id" :"2", "batch_id": "3", "quantity" : "30", "discount": "10"}]',
+                              //                         //                   //         remark: jsonEncode(selectedProductList),
+                              //                         //                   //         soldAt:  DateTime.now().toString(),
+                              //                         //                   //         outletId: "12",
+                              //                         //                   //            outletLatitude : "444444",
+                              //                         //                   //        outletLongitude : "4343243423"
+                              //                         //                   //       );
+                              //                         //                   //       // sales.orders = "dd";
+                              //                         //                   //       // // sales.distributorId = "12";
+                              //                         //                   //       // sales.remark =jsonEncode(selectedProductList);
+                              //                         //                   //       // sales.soldAt = DateTime.now().toString();
+                              //                         //                   //       // sales.outletId = Get
+                              //                         //                   //       //     .find<OutletsController>()
+                              //                         //                   //       //     .outletList[index].id.toString();
+                              //                         //                   //       // sales.outletLatitude = "444444";
+                              //                         //                   //       // sales.outletLongitude = "4343243423";
+                              //                         //                   //
+                              //                         //                   //       //  var conn = await Utilities.isInternetWorking();
+                              //                         //                   //
+                              //                         //                   //
+                              //                         //                   //
+                              //                         //                   //       Get.find<OutletsController>().addoutletInList(outlet[index].id.toString()) ;
+                              //                         //                   //       //else {
+                              //                         //                   //       //   Get.find<ProductsController>().storeSalesOffline(sales);
+                              //                         //                   //       // }
+                              //                         //                   //       //
+                              //                         //                   //       // Get.find<ProductsController>().removeAllProductFromList();
+                              //                         //                   //   //    Get.find<ProductsController>().sellProducts(sales);
+                              //                         //                   //           var conn = await Utilities.isInternetWorking();
+                              //                         //                   //       if (conn) {
+                              //                         //                   //         var response = await sellProductApi(sales);
+                              //                         //                   //         print(sales);
+                              //                         //                   //         // Get.back();
+                              //                         //                   //         Utilities.showInToast(response.message,
+                              //                         //                   //             toastType: response.success
+                              //                         //                   //                 ? ToastType.SUCCESS
+                              //                         //                   //                 : ToastType.ERROR);
+                              //                         //                   //
+                              //                         //                   //         //   if (response.success) {
+                              //                         //                   //         //     outlet.synced = true;
+                              //                         //                   //         //     Get.back();
+                              //                         //                   //         //   }
+                              //                         //                   //         // } else {
+                              //                         //                   //         //   Get.back();
+                              //                         //                   //         //   outlet.synced = false;
+                              //                         //                   //         //
+                              //                         //                   //         //   Utilities.showInToast('Storing Offline',
+                              //                         //                   //         //       toastType: ToastType.INFO);
+                              //                         //                   //         // }
+                              //                         //                   //         // await DatabaseHelper.instance
+                              //                         //                   //         //     .insertOutlet(outlet);
+                              //                         //                   //         // Get.find<ProductsController>().addremark(sales);
+                              //                         //                   //         Get.back();
+                              //                         //                   //       } else {
+                              //                         //                   //         Utilities.showInToast('Please complete the form',
+                              //                         //                   //             toastType: ToastType.ERROR);
+                              //                         //                   //       }
+                              //                         //                   //     } else {
+                              //                         //                   //       Utilities.showInToast("Please add quantity");
+                              //                         //                   //     }
+                              //                         //                   //     Get.back(
+                              //                         //                   //
+                              //                         //                   //     );
+                              //                         //                   //   },
+                              //                         //                   //   child: Text("Add"),
+                              //                         //                   // )
+                              //                         //                 ],
+                              //                         //               ),
+                              //                         //             )),
+                              //                         //         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                              //                         //         backgroundColor: Colors.white,
+                              //                         //         enableDrag: true,
+                              //                         //       );
+                              //                         //       // Get.bottomSheet(
+                              //                         //       //   // ListView.builder(itemCount: Get.find<OutletsController>().item?.length != null ? Get.find<OutletsController>().item?.length  : "",
+                              //                         //       //   //   itemBuilder: (context, index){
+                              //                         //       //   //     return
+                              //                         //       //   Container(
+                              //                         //       //       child: Padding(
+                              //                         //       //         padding: const EdgeInsets.all(10.0),
+                              //                         //       //         child: Column(
+                              //                         //       //           mainAxisSize: MainAxisSize.min,
+                              //                         //       //           children: [
+                              //                         //       //             Padding(
+                              //                         //       //                 padding: const EdgeInsets.all(12.0),
+                              //                         //       //                 child:
+                              //                         //       //                 // DropdownButton(
+                              //                         //       //                 //
+                              //                         //       //                 //   // Initial Value
+                              //                         //       //                 //     value: selectedDrowpdown,
+                              //                         //       //                 //
+                              //                         //       //                 //     // Down Arrow Icon
+                              //                         //       //                 //     icon: const Icon(Icons.keyboard_arrow_down),
+                              //                         //       //                 //
+                              //                         //       //                 //     // Array list of items
+                              //                         //       //                 //     items: item.map((String items) {
+                              //                         //       //                 //       return DropdownMenuItem(
+                              //                         //       //                 //         value: items,
+                              //                         //       //                 //         child: Text(items),
+                              //                         //       //                 //       );
+                              //                         //       //                 //     }).toList(),
+                              //                         //       //                 // After selecting the desired option,it will
+                              //                         //       //                 // change button value to selected value
+                              //                         //       //                 // onChanged: (String newValue) {
+                              //                         //       //                 //   setState(() {
+                              //                         //       //                 //     selectedDrowpdown = newValue;
+                              //                         //       //                 //   });
+                              //                         //       //                 //                 DropdownButton(
+                              //                         //       //                 //                 hint: Text("Outlet Closed Image"), // Not necessary for Option 1
+                              //                         //       //                 //   value:selectedDrowpdown,
+                              //                         //       //                 //   onChanged: (newValue) {
+                              //                         //       //                 //     selectedDrowpdown = newValue;
+                              //                         //       //                 //   setState(() {
+                              //                         //       //                 //   selectedDrowpdown = newValue;
+                              //                         //       //                 // //  print(newValue);
+                              //                         //       //                 //   //print(selectedDrowpdown);
+                              //                         //       //                 //   });
+                              //                         //       //                 //   },
+                              //                         //       //                 //   items: item.map((location) {
+                              //                         //       //                 //   return DropdownMenuItem(
+                              //                         //       //                 //   child: new Text(location),
+                              //                         //       //                 //   value: location,
+                              //                         //       //                 //   );
+                              //                         //       //                 //   }).toList(),
+                              //                         //       //                 //   ),
+                              //                         //       //                 Padding(
+                              //                         //       //                   padding: const EdgeInsets.all(10.0),
+                              //                         //       //                   child: GetBuilder<OutletsController>(
+                              //                         //       //                     builder: (builder) {
+                              //                         //       //                       return Get.find<OutletsController>().item.length == null
+                              //                         //       //                           ? SizedBox()
+                              //                         //       //                           : InputDecorator(
+                              //                         //       //                         decoration: decoration("Select Remark"),
+                              //                         //       //                         child: ButtonTheme(
+                              //                         //       //                           alignedDropdown: true,
+                              //                         //       //                           child: DropdownButton<String>(
+                              //                         //       //                             // iconEnabledCo
+                              //                         //       //                             // iconDisabledColor: Colors.red,
+                              //                         //       //                             isDense: true,
+                              //                         //       //                             isExpanded: true,
+                              //                         //       //                             hint: Text(
+                              //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown),
+                              //                         //       //                             items:
+                              //                         //       //                             Get.find<OutletsController>().item.map((e) {
+                              //                         //       //                               return DropdownMenuItem<String>(
+                              //                         //       //                                   value: e, child: Text(e));
+                              //                         //       //                             }).toList(),
+                              //                         //       //                             onChanged: (String district) {
+                              //                         //       //                               // setState(() {
+                              //                         //       //                                 Get.find<OutletsController>().selectedDrowpdown = district;
+                              //                         //       //                                 //  Get.find<OutletsController>().setitem(district );
+                              //                         //       //                              // });
+                              //                         //       //
+                              //                         //       //                               // district = selectedDrowpdown;
+                              //                         //       //                               print(Get.find<OutletsController>().selectedDrowpdown);
+                              //                         //       //                               print(district);
+                              //                         //       //                               //   print(Get.find<OutletsController>().setitem(district ));
+                              //                         //       //                               //   district = Constants.item;
+                              //                         //       //                               //      print(selectedDrowpdown);
+                              //                         //       //                               //   district = Constants.selectedzone.zone;
+                              //                         //       //                               // Get.find<AddressController>().getAreaList(district);
+                              //                         //       //                             },
+                              //                         //       //                           ),
+                              //                         //       //                         ),
+                              //                         //       //                       );
+                              //                         //       //                     },
+                              //                         //       //                   ),
+                              //                         //       //                 )
+                              //                         //       //               // DropdownButton<String>(
+                              //                         //       //               //   hint: Text("Remark"),
+                              //                         //       //               //   value:  selectedDrowpdown,
+                              //                         //       //               //   items:
+                              //                         //       //               //   //[for(var data in  Get.find<OutletsController>().item)])
+                              //                         //       //               //   // [
+                              //                         //       //               //   //   for (var data in Get.find<OutletsController>().item)
+                              //                         //       //               //   //     DropdownMenuItem(
+                              //                         //       //               //   //       child: new Text(
+                              //                         //       //               //   //         data,
+                              //                         //       //               //   //       ),
+                              //                         //       //               //   //       value: data,
+                              //                         //       //               //   //     )
+                              //                         //       //               //   // ],
+                              //                         //       //               //
+                              //                         //       //               //   // Get.find<OutletsController>().item.map((e) {
+                              //                         //       //               //   //   return DropdownMenuItem<String>(
+                              //                         //       //               //   //           value: e,
+                              //                         //       //               //   //           child: Text(e),
+                              //                         //       //               //   //         );
+                              //                         //       //               //   // }),
+                              //                         //       //               //     item.map((  value) {
+                              //                         //       //               //     return DropdownMenuItem<String>(
+                              //                         //       //               //       value: value,
+                              //                         //       //               //       child: Text(value),
+                              //                         //       //               //     );
+                              //                         //       //               //   }).toList(),
+                              //                         //       //               //   onChanged: (newvalue) {
+                              //                         //       //               //     setState(() {
+                              //                         //       //               //      selectedDrowpdown = newvalue ;
+                              //                         //       //               //     });
+                              //                         //       //               //
+                              //                         //       //               // //   Get.find<OutletsController>().setitem(newvalue);
+                              //                         //       //               //
+                              //                         //       //               //
+                              //                         //       //               //    //_selectedvalue = newvalue;
+                              //                         //       //               //   })
+                              //                         //       //             ),
+                              //                         //       //
+                              //                         //       //             SizedBox(height: Get.size.height * 0.01),
+                              //                         //       //             // Container(
+                              //                         //       //             //   child: _imageFile == null
+                              //                         //       //             //       ? Center(
+                              //                         //       //             //     child: Text("No Image Selected"),
+                              //                         //       //             //   )
+                              //                         //       //             //       : Image.file(File(_imageFile.path)),
+                              //                         //       //             // ),
+                              //                         //       //             ElevatedButton(
+                              //                         //       //               onPressed: () async {
+                              //                         //       //                 // pickImage();
+                              //                         //       //                 if (Get.find<OutletsController>().selectedDrowpdown.isNotEmpty) {
+                              //                         //       //                   var conn = await Utilities.isInternetWorking();
+                              //                         //       //                   showDialog(
+                              //                         //       //                       barrierDismissible: false,
+                              //                         //       //                       context: context,
+                              //                         //       //                       builder: (context) {
+                              //                         //       //                         return CupertinoAlertDialog(
+                              //                         //       //                           title: Text('Please Wait'),
+                              //                         //       //                           content: Column(
+                              //                         //       //                             children: [
+                              //                         //       //                               Divider(),
+                              //                         //       //                               Padding(
+                              //                         //       //                                 padding: const EdgeInsets.all(8.0),
+                              //                         //       //                                 child: Text(conn
+                              //                         //       //                                     ? 'Registering new Sales Outlet'
+                              //                         //       //                                     : 'Saving offline'),
+                              //                         //       //                               ),
+                              //                         //       //                               CupertinoActivityIndicator(
+                              //                         //       //                                 radius: 17,
+                              //                         //       //                               )
+                              //                         //       //                             ],
+                              //                         //       //                           ),
+                              //                         //       //                         );
+                              //                         //       //                       });
+                              //                         //       //                   // var sales = Sales(
+                              //                         //       //                   //     outletId:  outlet[index].id.toString(),
+                              //                         //       //                   //     remark:  Get.find<OutletsController>().selectedDrowpdown
+                              //                         //       //                   // );
+                              //                         //       //                   // selectedoutlet.add({
+                              //                         //       //                   //   //"outlet_id": outletId,
+                              //                         //       //                   //
+                              //                         //       //                   //   "remark": selectedDrowpdown,
+                              //                         //       //                   //
+                              //                         //       //                   // });
+                              //                         //       //                   if (conn) {
+                              //                         //       //                     var response = await sellProductApi(sales);
+                              //                         //       //                     print(sales);
+                              //                         //       //                     // Get.back();
+                              //                         //       //                     Utilities.showInToast(response.message,
+                              //                         //       //                         toastType: response.success
+                              //                         //       //                             ? ToastType.SUCCESS
+                              //                         //       //                             : ToastType.ERROR);
+                              //                         //       //
+                              //                         //       //                     //   if (response.success) {
+                              //                         //       //                     //     outlet.synced = true;
+                              //                         //       //                     //     Get.back();
+                              //                         //       //                     //   }
+                              //                         //       //                     // } else {
+                              //                         //       //                     //   Get.back();
+                              //                         //       //                     //   outlet.synced = false;
+                              //                         //       //                     //
+                              //                         //       //                     //   Utilities.showInToast('Storing Offline',
+                              //                         //       //                     //       toastType: ToastType.INFO);
+                              //                         //       //                     // }
+                              //                         //       //                     // await DatabaseHelper.instance
+                              //                         //       //                     //     .insertOutlet(outlet);
+                              //                         //       //                     // Get.find<ProductsController>().addremark(sales);
+                              //                         //       //                     Get.back();
+                              //                         //       //                   } else {
+                              //                         //       //                     Utilities.showInToast('Please complete the form',
+                              //                         //       //                         toastType: ToastType.ERROR);
+                              //                         //       //                   }
+                              //                         //       //                   // if (selectedDrowpdown != null) {
+                              //                         //       //                   //   // selectedoutlet.add({
+                              //                         //       //                   //   //   //"outlet_id": outletId,
+                              //                         //       //                   //   //
+                              //                         //       //                   //   //   "remark": selectedDrowpdown,
+                              //                         //       //                   //   //
+                              //                         //       //                   //   // });
+                              //                         //       //                   //   sales.remark = jsonEncode(selectedoutlet);
+                              //                         //       //                   //   Get.find<OutletsController>().addoutletInList(outletId);
+                              //                         //       //                   //   //Get.find<ProductsController>().addremark(selectedoutlet);
+                              //                         //       //                   //   Utilities.showInToast("Remark Noted");
+                              //                         //       //                   //   print(selectedDrowpdown);
+                              //                         //       //                   // } else {
+                              //                         //       //                   //   Utilities.showInToast("Please add Remark");
+                              //                         //       //                   // }
+                              //                         //       //                   Get.back();}
+                              //                         //       //               },
+                              //                         //       //               child: Text("Add"),
+                              //                         //       //             ),
+                              //                         //       //           //  outlet.id..toString().isEmpty
+                              //                         //       //           //       ? ElevatedButton(
+                              //                         //       //           //     onPressed: () {
+                              //                         //       //           //       showQuantityBottomSheet(null, products.id.toString());
+                              //                         //       //           //     },
+                              //                         //       //           //     child: Text("Sell"),
+                              //                         //       //           //   )
+                              //                         //       //           //       : ExpansionTile(
+                              //                         //       //           //     title: Text("Batches"),
+                              //                         //       //           //     children: products.batches.map((batch) {
+                              //                         //       //           //       return buildBatchTile(batch, products);
+                              //                         //       //           //     }).toList(),
+                              //                         //       //           //   ),
+                              //                         //       //           ],
+                              //                         //       //         ),)),
+                              //                         //       //
+                              //                         //       //
+                              //                         //       //
+                              //                         //       //
+                              //                         //       //   shape: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                              //                         //       //   backgroundColor: Colors.white,
+                              //                         //       //   enableDrag: true,
+                              //                         //       // );
+                              //                         //     } , icon: Icon(Icons.add))
+                              //                         // )
+                              //                       ],
+                              //                     ),
+                              //                     Container(
+                              //                         child: Column(
+                              //                           mainAxisAlignment: MainAxisAlignment.start,
+                              //                           children: [
+                              //                             Padding(  padding: const EdgeInsets.all(10.0),
+                              //                                 child:   Row(
+                              //                                   children: [
+                              //                                     Text(
+                              //                                       item,
+                              //                                       style: TextStyle(
+                              //                                           fontSize: 15,
+                              //                                           fontWeight: FontWeight.bold),
+                              //                                     ),
+                              //
+                              //                                   ],
+                              //                                 )
+                              //
+                              //                             ),
+                              //
+                              //                             // Padding(
+                              //                             //   padding: const EdgeInsets.only(top: 1),
+                              //                             //   child:
+                              //                             // Text(
+                              //                             //   outlet[index].name,
+                              //                             //   style: TextStyle(
+                              //                             //       fontSize: 18,
+                              //                             //       fontWeight: FontWeight.bold),
+                              //                             // ),
+                              //                             // //    ),
+                              //                             // Container(
+                              //                             //   child:   Text(
+                              //                             //     "Number of Outlet: ${outlet.length.toString()}",
+                              //                             //     style: TextStyle(
+                              //                             //         fontSize: 10,
+                              //                             //         fontWeight: FontWeight.bold),
+                              //                             //   ),
+                              //                             // ),
+                              //                             // Text(
+                              //                             //   outlet[index].name,
+                              //                             //   style: TextStyle(
+                              //                             //       fontSize: 10,
+                              //                             //       fontWeight: FontWeight.bold),
+                              //                             // ),
+                              //
+                              //                           ],
+                              //                         )
+                              //                     ),
+                              //
+                              //                     // MaterialButton(
+                              //                     //   onPressed: () {
+                              //                     //     Get.to(() =>
+                              //                     //         SellProductPage(
+                              //                     //           outlet: Get
+                              //                     //               .find<OutletsController>()
+                              //                     //               .outletList[index],
+                              //                     //         ));
+                              //                     //
+                              //                     //   },
+                              //                     //   color: Colors.green[900],
+                              //                     //   minWidth: Get.size.width,
+                              //                     //   textColor: Colors.white,
+                              //                     //   padding: EdgeInsets.all(10.0),
+                              //                     //   child: Text("Sell Product"),
+                              //                     // ),
+                              //
+                              //                   ],
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         );
+                              //         //   ListTile(
+                              //         //   onTap: (){
+                              //         //     Get.find<ProductBrandController>().setSelectedBrand(item);
+                              //         //
+                              //         //     Get.to(DetailsProduct(
+                              //         //       product: Get.find<ProductBrandController>().getNameList(item)),
+                              //         //
+                              //         //     );
+                              //         //   },
+                              //         //   title: Text(item),
+                              //         // );
+                              //         });
+                              //   },
+                              // ),
+                              //     );
+                              //   },
+                              //   title: Text(item),
+                              // );
+                            });
+                      }
+                    ),
+                  ),
                   // Slide(
                   //   names:     ListView.builder(
                   //       itemCount: Get.find<ProductBrandController>().productList.length,

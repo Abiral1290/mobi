@@ -12,7 +12,7 @@ class DeleteRequest{
   String userId;
   String outletId;
   String remark;
-  // bool flag;
+   String flag;
   // String updatedAt;
   // String createdAt;
   // int id;
@@ -21,7 +21,7 @@ class DeleteRequest{
       {this.userId,
         this.outletId,
         this.remark,
-        // this.flag,
+         this.flag,
         // this.updatedAt,
         // this.createdAt,
         // this.id
@@ -31,7 +31,7 @@ class DeleteRequest{
     userId = json['user_id'];
     outletId = json['outlet_id'];
     remark = json['remark'];
-    // flag = json['flag'];
+     flag = json['flag'];
     // updatedAt = json['updated_at'];
     // createdAt = json['created_at'];
     // id = json['id'];
@@ -42,7 +42,7 @@ class DeleteRequest{
     data['user_id'] = this.userId;
     data['outlet_id'] = this.outletId;
     data['remark'] = this.remark;
-    // data['flag'] = this.flag;
+     data['flag'] = this.flag;
     // data['updated_at'] = this.updatedAt;
     // data['created_at'] = this.createdAt;
     // data['id'] = this.id;

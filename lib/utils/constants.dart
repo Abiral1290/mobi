@@ -9,12 +9,13 @@ import '../model/routes.dart';
 import '../model/town.dart';
 
 class Constants {
+  static bool isProduction= true;
   static final String callServerToken = 'abcdefghij';
   static final String looged = 'Logged In';
   static final int callWaitSec = 22;
   static Distributor selectedDistributor;
   static int value_increase = 0;
-  static Routees selectedRoute;
+  static Routes selectedRoute;
   static String selectmyRoute;
   static String selectedbrand;
   static String salesoficer_id;
@@ -26,7 +27,7 @@ class Constants {
   static Channel selectedchannel;
   static int increase;
   static String item;
-  static Route selectedroute;
+  static Routes selectedroute;
   static Town selectedzone;
   static Categories selectedcategory;
   static Outlet selectid;
@@ -41,7 +42,7 @@ class Constants {
   static String checkInOut;
   static double locationRadius = 10.0; // in meter
   static const googleAPIKey = "AIzaSyC_siAOGtkjHJ4i_1SzyjaSV8VC83vfYAw";
-  static bool isProduction = true;
+ // static bool isProduction = true;
 
   static String server = " ";
   static const server_2 = "DV Manufacturing";

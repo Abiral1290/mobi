@@ -99,6 +99,7 @@ class ProductBrandController extends GetxController {
   List<int> value = [];
   List<String> quantity = [];
   List<String> catalog = [];
+  List<String> searchResult =[];
   List<SalesReport> salesReportList = [];
   int calculate = 0;
 
@@ -150,6 +151,8 @@ class ProductBrandController extends GetxController {
       update();
     }
   }
+
+
 
   // setSelectedArea(String area) {
   //   selectedArea = area;
@@ -234,14 +237,11 @@ class ProductBrandController extends GetxController {
       //.addAll(name);
     }
   }
-
-  searchOutlets(String text) {
-    search= [];
-    if (name != null && name.isNotEmpty) {
-
-     search = name
+  searchBrand(String text) {
+    if (name.isNotEmpty) {
+      searchResult = name
           .where((element) =>
-          element .toLowerCase().contains(text.toLowerCase()))
+          element.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }

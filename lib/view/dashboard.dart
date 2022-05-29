@@ -12,22 +12,26 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hawk_fab_menu/hawk_fab_menu.dart';
+import 'package:mobitrack_dv_flutter/controller/productbrand_controller.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
 import 'package:mobitrack_dv_flutter/view/drawer.dart';
 
 import 'package:mobitrack_dv_flutter/view/outlets/remarks.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
+import 'package:mobitrack_dv_flutter/view/report/sales_report_pdf_generator.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/dashboardmain.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/scoreboard.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:perspective_pageview/perspective_pageview.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../controller/auth_controller.dart';
 import '../controller/location_controller.dart';
 import '../controller/outlets_controller.dart';
 import '../controller/preference_controller.dart';
+import '../controller/sales_report_controller.dart';
 import '../main.dart';
 import '../model/app_version.dart';
 import '../model/check_in_out.dart';
@@ -35,6 +39,7 @@ import '../model/distributor.dart';
 import '../model/location_model.dart';
 import '../utils/constants.dart';
 import '../utils/downloader.dart';
+import '../utils/pdf_api.dart';
 import '../utils/utilities.dart';
 import 'credentials/checkauth.dart';
 import 'location_status.dart';
@@ -115,9 +120,9 @@ class _DashBoard extends State<DashBoard>{
     );
   }
 
-  // void start(){
-  //   countdown = Timer.periodic(Duration(seconds: 1), (_)=> setcount());
-  // }
+  void start(){
+    countdown = Timer.periodic(Duration(seconds: 1), (_)=> setcount());
+  }
 
   void setcount(){
     final reduceSceond = 1;
@@ -133,7 +138,7 @@ class _DashBoard extends State<DashBoard>{
 
   @override
   void initState() {
-    //start();
+    start();
     // Get.find<ProductsController>();
     //  Get.find<AddressController>();
     //  Get.find<BankController>();
@@ -215,19 +220,61 @@ class _DashBoard extends State<DashBoard>{
     final minutes = strDigits( myDuration.inMinutes.remainder(60));
     final seconds = strDigits( myDuration.inSeconds.remainder(60));
    return DefaultTabController(
-     length: 3,
+     length: 2,
      child: Scaffold(
        drawer: DrawerPage(),
         appBar:  AppBar(
           backgroundColor: Colors.black,
           title:  Text("DashBoard"),
             actions: [
-
               TextButton(
                 onPressed: () {
                   Get.to(() => AttendancePage());
                 },
-                child: Text("Attendance", style: TextStyle(color: Colors.white)),
+                child:       MaterialButton(
+                  onPressed: () async {
+                    print(Get.find<SalesReportController>().formattedSalesReportList.length);
+                    print(Constants.selectedRoute.routename);
+                    final pdfFile = await PdfParagraphApi.generate(
+                        Get.find<SalesReportController>().formattedSalesReportList ,
+                        distributor: Constants.selectedRoute);
+
+                    Get.bottomSheet(
+                      Container(
+                        padding: EdgeInsets.all(10.0),
+                        child: ButtonBar(
+                          alignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Get.back();
+                                PdfApi.openFile(pdfFile);
+                              },
+                              child: Text("Open"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                Get.back();
+                                await Share.shareFiles(
+                                  [pdfFile.path],
+                                  text: "Sales Report",
+                                );
+                              },
+                              child: Text("Share"),
+                            ),
+                          ],
+                        ),
+                      ),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.picture_as_pdf),
+                  color: Colors.red[900],
+                  elevation: 10.0,
+                ),
               ),
               IconButton(
                 onPressed:
@@ -279,7 +326,7 @@ class _DashBoard extends State<DashBoard>{
             tabs:[
               Tab(icon: Text("Dashboard"),),
               Tab(icon: Text("Route")),
-              Tab(icon: Text("ScoreBoard")),
+          //    Tab(icon: Text("ScoreBoard")),
             ]
           )
         ),
@@ -416,8 +463,9 @@ class _DashBoard extends State<DashBoard>{
                           // location.stopBackgroundLocationService();
                            // Get.find<PreferenceController>()
                            //     .setCheckInValue(true);
-                           SystemNavigator.pop();
-                         //  Get.to(() => View_route());
+                           Get.find<AuthController>().logout();
+                         //  SystemNavigator.pop();
+                          // Get.to(() => View_route());
                          } else {
                            Utilities.showInToast(resp.message,
                                toastType: ToastType.ERROR);
@@ -569,10 +617,9 @@ class _DashBoard extends State<DashBoard>{
              body:  TabBarView(
                controller: tebController,
                  children: [
-
                    ScoreBoard(),
                ViewOutletstPage(),
-                   DashBoardMain(),
+              //     DashBoardMain(),
              ])
              // ListView(
              //   children: [

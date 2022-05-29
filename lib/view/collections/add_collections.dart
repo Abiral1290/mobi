@@ -165,37 +165,37 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
               ),
               // distributor name field
 
-              GetBuilder<DistributorController>(
-                  init: DistributorController(),
-                  builder: (controller) {
-                    return Get.find<DistributorController>().distributorList == null
-                        ? Center(
-                      child: CircularProgressIndicator(),
-                    ):
-                      Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Obx(
-                        () => DropdownButton<Routees>(
-                          isDense: true,
-                          isExpanded: true,
-                          hint: Text(selectedRoute.value.routename),
-                          items: Get.find<Routecontroller>()
-                              .routeList
-                              .map((value) {
-                            return DropdownMenuItem<Routees>(
-                                value: value,
-                                child: Text(
-                                  value.routename,
-                                  style: TextStyle(color: Colors.black),
-                                ));
-                          }).toList(),
-                          onChanged: (s) {
-                            selectedRoute.value = s;
-                          },
-                        ),
-                      ),
-                    );
-                  }),
+              // GetBuilder<DistributorController>(
+              //     init: DistributorController(),
+              //     builder: (controller) {
+              //       return Get.find<DistributorController>().distributorList == null
+              //           ? Center(
+              //         child: CircularProgressIndicator(),
+              //       ):
+              //         Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: Obx(
+              //           () => DropdownButton<Routees>(
+              //             isDense: true,
+              //             isExpanded: true,
+              //             hint: Text(selectedRoute.value.routename),
+              //             items: Get.find<Routecontroller>()
+              //                 .routeList
+              //                 .map((value) {
+              //               return DropdownMenuItem<Routees>(
+              //                   value: value,
+              //                   child: Text(
+              //                     value.routename,
+              //                     style: TextStyle(color: Colors.black),
+              //                   ));
+              //             }).toList(),
+              //             onChanged: (s) {
+              //               selectedRoute.value = s;
+              //             },
+              //           ),
+              //         ),
+              //       );
+              //     }),
               SizedBox(
                 height: Get.size.height * 0.03,
               ),

@@ -305,7 +305,7 @@ class _DetailsProductState extends State<DetailsProduct> {
       );
     }
 
-    searchDistributor(String text) {
+     searchDistributor(String text) {
       searchResult = Get.find<ProductBrandController>().name;
       if (Get.find<ProductBrandController>().name.isNotEmpty) {
         final searc = Get.find<ProductBrandController>().name

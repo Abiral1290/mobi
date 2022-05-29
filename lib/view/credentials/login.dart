@@ -428,26 +428,26 @@ class _LoginPageState extends State<LoginPage> {
             return false;
           }),
     );
-    if(Constants.server == Constants.server_1){
+    // if( ){
       log = true;
       var resp = await Get.find<AuthController>().signIn(_userNUmber);
       print("202.52.240");
       Utilities.showInToast(
-
         resp.toString(),
       );
       print("202.52.240.148:");
-      Get.offAll(View_route());
-    }else if(Constants.server == Constants.server_2 ){
-      log = true;
-      var resp = await Get.find<AuthController>().signIn_1(_userNUmber);
-      print("202.52.240.148:5062/dv_manufacturing/public");
-      Utilities.showInToast(
-
-        resp.toString(),
-      );
-    }
-    Get.offAll(View_route());
+      Get.back();
+      //Get.offAll(View_route());
+    // }else if(Constants.server == Constants.server_2 ){
+    //   log = true;
+    //   var resp = await Get.find<AuthController>().signIn_1(_userNUmber);
+    //   print("202.52.240.148:5062/dv_manufacturing/public");
+    //   Utilities.showInToast(
+    //
+    //     resp.toString(),
+    //   );
+    // }
+   // Get.offAll(View_route());
   }
 
   // showLoadingandCheckAPI() async {

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
 
@@ -38,6 +40,7 @@ import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import '../../controller/preference_controller.dart';
 import '../../controller/routes_controller.dart';
 import '../../utils/api_urls.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 
 class RegisterShopPage extends StatefulWidget {
   @override
@@ -170,20 +173,39 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     );
   }
 
+  Future<File> customCompressed({
+    File imagePathToCompress,
+    quality = 90,
+    percentage = 80,
+  }) async {
+    var path = await FlutterNativeImage.compressImage(
+      imagePathToCompress.absolute.path,
+      quality: 10,
+      percentage: 10,
+    );
+    return path;
+  }
   void pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(
         source: ImageSource.camera,
-        imageQuality: 25,
+        imageQuality: 10,
       );
       if (pickedFile != null) {
         setState(() {
           _imageFile = pickedFile;
-
         });
-        List<int> imageBytes = await pickedFile.readAsBytes();
-        base64Image = base64Encode(imageBytes);
-
+       // List<int> imageBytes = await pickedFile.readAsBytes();
+        File image = File(pickedFile.path);
+        final sizeInKbBefore = image.lengthSync();
+        log('before compressed $sizeInKbBefore kb');
+        File compressedImage = await customCompressed(imagePathToCompress: image);
+        final sizeInKb = compressedImage.lengthSync() / 1024;
+        log('after compressed $sizeInKb kb');
+        Uint8List bytes = image.readAsBytesSync();
+       // String base64Image = base64Encode(bytes);
+        base64Image = base64Encode(bytes);
+        print(_imageFile );
         print(base64Image);
       }
     } catch (e) {
@@ -1054,46 +1076,36 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
       ),
     );
   }
-  List<Outletss> outs= [];
-  getuserdata( ) async{
-    var response = await http.get(
-      Uri.parse(ApiUrls.outlets),
-    );
-    // final  = List<dynamic>.from(Ambulances.ma)
-    // Map<String, dynamic> jsondate = new Map<String, dynamic>.from(json.decode(response.body));
+  // List<Outletss> outs= [];
+  // getuserdata( ) async{
+  //   var response = await http.get(
+  //     Uri.parse(ApiUrls.outlets),
+  //   );
+  //   // final  = List<dynamic>.from(Ambulances.ma)
+  //   // Map<String, dynamic> jsondate = new Map<String, dynamic>.from(json.decode(response.body));
+  //
+  //   Map<String, dynamic> mapResponse = json.decode(response.body);
+  //
+  //   if (mapResponse["success"]) {
+  //     final data = mapResponse["data"].cast<Map<String, dynamic>>();
+  //     outs = await data
+  //         .map<Outletss>((json) => Outletss.fromJson(json))
+  //         .toList();
+  //   }
+  //   // foreach((u,d) in jsondate){
+  //   //   Ambulances amb = Ambulances(d['deathvehicle_number'], u['fullname'], u['phone']);
+  //   //   ambs.add(amb);
+  //   //   print(ambs.length);
+  //   // }
+  //   print(outs.length);
+  //   return outs;
+  // }
+  // List citiesList;
 
-    Map<String, dynamic> mapResponse = json.decode(response.body);
-
-    if (mapResponse["success"]) {
-      final data = mapResponse["data"].cast<Map<String, dynamic>>();
-      outs = await data
-          .map<Outletss>((json) => Outletss.fromJson(json))
-          .toList();
-    }
-    // foreach((u,d) in jsondate){
-    //   Ambulances amb = Ambulances(d['deathvehicle_number'], u['fullname'], u['phone']);
-    //   ambs.add(amb);
-    //   print(ambs.length);
-    // }
-    print(outs.length);
-    return outs;
-  }
-  List citiesList;
-  String _myCity;
 
  // String cityInfoUrl =
     //  '';
-  Future<String> _getCitiesList() async {
-    await http.post(Uri.parse(ApiUrls.distributors), headers: {
-      "data" : _myCity,
-    }).then((response) {
-      var data = json.decode(response.body);
 
-      setState(() {
-        citiesList = data['name'];
-      });
-    });
-  }
 }
 
 // import 'dart:async';

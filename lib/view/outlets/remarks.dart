@@ -36,11 +36,12 @@ class Remarks extends State<Remark>{
  // List<String> item = ['Outlet Closed Image ', 'Stock Availabe Image','Owner not in shop', 'margin Issue', 'Credit limit Issue',];
   String _remark = Remarktype.closed_outlet;
 
-  String _type = SellerType.mart;
+  String _type  ;
   var selectedProductList = [].obs;
   String base64Image;
   XFile _imageFile;
   final ImagePicker _picker = ImagePicker();
+
  // MediaQuery aksf = MA
 
   void pickImage() async {
@@ -367,63 +368,69 @@ class Remarks extends State<Remark>{
                   ElevatedButton(
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)),
                       onPressed: () async {
-                    selectedProductList.add({
-                      "product_id": "0",
-                      "batch_id": "",
-                      "quantity": "",
-                      "discount": ""
-                    });
-
-                    var conn = await Utilities.isInternetWorking();
-                    if(conn){
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return CupertinoAlertDialog(
-                              title: Text('Please Wait'),
-                              content: Column(
-                                children: [
-                                  Divider(),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(conn
-                                        ? 'Adding new Remark'
-                                        : 'Saving offline'),
+                      if( _type.isNotEmpty && _type != null){
+                        selectedProductList.add({
+                          "product_id": "0",
+                          "batch_id": "",
+                          "quantity": "",
+                          "discount": ""
+                        });
+                        var conn = await Utilities.isInternetWorking();
+                        if(conn){
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) {
+                                return CupertinoAlertDialog(
+                                  title: Text('Please Wait'),
+                                  content: Column(
+                                    children: [
+                                      Divider(),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(conn
+                                            ? 'Adding new Remark'
+                                            : 'Saving offline'),
+                                      ),
+                                      CupertinoActivityIndicator(
+                                        radius: 17,
+                                      )
+                                    ],
                                   ),
-                                  CupertinoActivityIndicator(
-                                    radius: 17,
-                                  )
-                                ],
-                              ),
-                            );
-                          });
-                      var location = Get.find<LocationController>().userPosition;
-                      print(widget.outlet.name);
-                      var remark = Sales(
-                          route: Constants.selectedRoute.toString(),
-                          soldAt:  DateTime.now().toString(),
-                          outletId: widget.outlet.id.toString(),
-                          orders:  jsonEncode(selectedProductList),
-                          remark: _type,
-                       latitude: location.latitude.toString(),
-                       longitude: location.longitude.toString(),
-                         remark_image: base64Image,
-                      );
-                      print( location.latitude.toString());
-                      print(location.longitude.toString());
-                      var response = await sellProductApi(remark);
-                      Get.find<ProductsController>().storeSalesOffline(remark);
-                      Constants.increase_unsucessfulcall ++;
-                      print(remark);
-                      Get.to(ViewOutletstPage());
-                      Utilities.showInToast(response.message,
-                          toastType: response.success
-                              ? ToastType.SUCCESS
-                              : ToastType.ERROR);
-                    }else{
-                    //  Get.find<ProductsController>().storeSalesOffline();
-                    }
+                                );
+                              });
+                          var location = Get.find<LocationController>().userPosition;
+                          print(widget.outlet.name);
+                          var remark = Sales(
+                            route: Constants.selectedRoute.toString(),
+                            soldAt:  DateTime.now().toString(),
+                            outletId: widget.outlet.id.toString(),
+                            orders:  jsonEncode(selectedProductList),
+                            remark: _type,
+                            latitude: location.latitude.toString(),
+                            longitude: location.longitude.toString(),
+                            remark_image: base64Image,
+                          );
+                          print( location.latitude.toString());
+                          print(location.longitude.toString());
+                          print(remark);
+                          var response = await sellProductApi(remark);
+                          Get.find<ProductsController>().storeSalesOffline(remark);
+                          Constants.increase_unsucessfulcall ++;
+                          print(remark);
+                          Get.back();
+                       //   Get.to(ViewOutletstPage());
+                          Utilities.showInToast(response.message,
+                              toastType: response.success
+                                  ? ToastType.SUCCESS
+                                  : ToastType.ERROR);
+                        }else{
+                          //  Get.find<ProductsController>().storeSalesOffline();
+                        }
+                      }else{if(_type.isEmpty && _type == null){
+                        Utilities.showInToast("Please Register Your Remark");
+                      }
+                      }
                   }, child: Text("Submit"))
               ],
             ),
@@ -441,7 +448,7 @@ class Remarks extends State<Remark>{
                         //             //   style: new TextStyle(
                         //             //     fontSize: 16.0,
                         //             //   ),
-                        //             // ),
+                        //             // ),Q
                         //             // new Radio(
                         //             //   value: Remarktype.closed_outlet,
                         //             //   groupValue: _remark,
@@ -600,7 +607,6 @@ class Remarks extends State<Remark>{
                 ),
               ),
             );
-
             Column(
             children: [
             new Radio(
