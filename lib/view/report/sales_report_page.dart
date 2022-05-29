@@ -1046,32 +1046,31 @@ class _SalesReportPageState extends State<SalesReportPage> {
                       },
                       tooltip: "Filter by date",
                     ),
-
-                    PopupMenuButton<Routees>(
-                      elevation: 3.2,
-                      onCanceled: () {
-                        print('You have not choosed anything');
-                      },
-                      tooltip: 'Filter by distributor',
-                      onSelected: (distributor) {
-                        Get.find<SalesReportController>()
-                            .formatSalesDistributor(distributor);
-                        Constants.selectedRoute= distributor;
-                      },
-                      icon: Icon(Icons.person),
-                      itemBuilder: (BuildContext context) {
-                        return Get.find<Routecontroller>()
-                            .routeList
-                            .map((distributor) {
-                          return PopupMenuItem<Routees>(
-                            textStyle:
-                            TextStyle(fontSize: 16.0, color: Colors.black),
-                            value: distributor,
-                            child: Text(distributor.routename),
-                          );
-                        }).toList();
-                      },
-                    ),
+                    // PopupMenuButton<Routes>(
+                    //   elevation: 3.2,
+                    //   onCanceled: () {
+                    //     print('You have not choosed anything');
+                    //   },
+                    //   tooltip: 'Filter by distributor',
+                    //   onSelected: (distributor) {
+                    //     Get.find<SalesReportController>()
+                    //         .formatSalesDistributor(distributor);
+                    //     Constants.selectedRoute= distributor;
+                    //   },
+                    //   icon: Icon(Icons.person),
+                    //   itemBuilder: (BuildContext context) {
+                    //     return Get.find<Routecontroller>()
+                    //         .routeList
+                    //         .map((distributor) {
+                    //       return PopupMenuItem<Routees>(
+                    //         textStyle:
+                    //         TextStyle(fontSize: 16.0, color: Colors.black),
+                    //         value: distributor,
+                    //         child: Text(distributor.routename),
+                    //       );
+                    //     }).toList();
+                    //   },
+                    // ),
                   ],
                 ),
               ),

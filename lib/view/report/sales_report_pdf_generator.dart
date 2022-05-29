@@ -15,7 +15,7 @@ import 'package:pdf/widgets.dart';
 class PdfParagraphApi {
   var outlets = Get.lazyPut(() => OutletsController());
   static Future<File> generate(List<SalesReport> salesList,
-      {Routees distributor}) async {
+      {Routes distributor}) async {
     final pdf = Document();
     final soldDate = DateTime.parse(salesList.first.soldAt);
     pdf.addPage(
@@ -80,7 +80,7 @@ class PdfParagraphApi {
     decoration: BoxDecoration(color: PdfColors.red),
   );
 
-  static Widget buildDistributorInfo(Routees distributor) => Header(
+  static Widget buildDistributorInfo(Routes distributor) => Header(
     child: Text(
       "${distributor.routename} (Distributor)",
       style: TextStyle(

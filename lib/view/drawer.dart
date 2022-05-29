@@ -35,7 +35,6 @@ class DrawerPage extends StatelessWidget {
         Size(Get.size.width, Get.size.height * 0.05)),
     elevation: MaterialStateProperty.all<double>(10.0),
   );
-
   @override
   Widget build(BuildContext context) {
     Widget header() {
@@ -66,7 +65,7 @@ class DrawerPage extends StatelessWidget {
                 height: Get.size.height * 0.01,
               ),
               Text(
-                user.phone,
+                user.id.toString(),
                 style: TextStyle(fontSize: 25),
               ),
             ],
@@ -406,7 +405,7 @@ class DrawerPage extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(left: 15 ,top: 4),
                       child: Text("Version : ${Constants.appVerId}"
-                          " 5May 022")),
+                          " 20May 022")),
                 ),
                 SizedBox(height: Get.size.height * 0.06),
                 Align(

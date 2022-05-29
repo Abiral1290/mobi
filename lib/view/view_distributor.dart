@@ -389,9 +389,10 @@ class _View_routeState extends State<View_route> {
 
   LocationPermission permission;
 
-  var selectedRoute = Routees();
+  var selectedRoute = Routes();
 
   var outlets = Get.lazyPut(() => OutletsController());
+  var routecontroller  = Get.lazyPut(()=>Routecontroller());
 
   bool serviceEnabled;
 
@@ -400,6 +401,8 @@ class _View_routeState extends State<View_route> {
   String checkInId = "";
   Timer countdown;
   Duration myDuration = Duration(days: 5);
+
+
   //List<Routees> list = [];
   @override
   Widget build(BuildContext context) {
@@ -424,7 +427,6 @@ class _View_routeState extends State<View_route> {
         }else{
           myDuration = Duration(seconds: second);
         }
-
     }
     void start(){
       countdown = Timer.periodic(Duration(seconds: 1), (_)=> setcount());
@@ -494,7 +496,7 @@ class _View_routeState extends State<View_route> {
             toastType: ToastType.ERROR);
       }
     }
-    Widget listSegment(List<Routees> routeList) {
+    Widget listSegment(List<Routes> routeList) {
       return ListView.builder(
         itemCount: routeList.length,
         itemBuilder: (context, index) {
@@ -514,13 +516,12 @@ class _View_routeState extends State<View_route> {
                 setState(() {
                   press();
                 });
-
                 Get.find<PreferenceController>()
                     .setDistributor(jsonEncode(Constants.selectedDistributor));
                 Utilities.showInToast(
                     "Route : ${selectedRoute.routename}");
 
-                Get.to(() => DashBoard( )) ;
+                Get.back() ;
                 //Get.off(HomePage());
               },
               selected: index == _selectedIndex.value,
@@ -540,7 +541,6 @@ class _View_routeState extends State<View_route> {
 
                 // outlet[index].selected ? Colors.grey
                 elevation: 7.0,
-
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
@@ -990,12 +990,9 @@ class _View_routeState extends State<View_route> {
                                 //       fontSize: 10,
                                 //       fontWeight: FontWeight.bold),
                                 // ),
-
                               ],
                             )
                         ),
-
-
                       ],
                     ),
                   ),
@@ -1017,7 +1014,7 @@ class _View_routeState extends State<View_route> {
                 ? listSegment(routeController.searchedroutelist)
                 : routeController.routeList != null
                 ? routeController.routeList.isEmpty
-                ? Center(child: CupertinoActivityIndicator())
+                ? Center(child: Text("No Route Assigned"))
                //  : routeController.routeList ==null ?Center(child: Text("No Route Assign Please contact your Distributor"),)
                 : listSegment(routeController.routeList)
                 : Center(
@@ -1037,11 +1034,12 @@ class _View_routeState extends State<View_route> {
         return false;
       }
     }
+
+
     return WillPopScope(
       onWillPop: willPopAction,
       child: Scaffold(
         appBar: AppBar(
-
           backgroundColor: Colors.white,
           title: Text("Routes",style: TextStyle(color: Colors.black),),
           actions: [
@@ -1067,31 +1065,43 @@ class _View_routeState extends State<View_route> {
         ),
         body: Container(
           color: Colors.black.withOpacity(0.1),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red, //this has no effect
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    hintText: "Search Routes...",
-                  ),
-                  onChanged: (text) {
-                    Get.find<Routecontroller>().searchDistributor(text);
-                  },
-                ),
-
-                routeList(),
-              ],
-            ),
-          ),
+           child: Column(
+             children: [
+               routeList()
+             ],
+           )
+          // ElevatedButton(
+          //   onPressed: (){
+          //     print(Get.find<Routecontroller>().fetchroute())
+          //     ;
+          //   },
+          //   child: Text("Press"),
+          // )
+          // Padding(
+          //   padding: const EdgeInsets.all(15.0),
+          //   child: Column(
+          //     Text()
+          //    // Text(Get.find<>())
+          //     // children: [
+          //     //   TextField(
+          //     //     decoration: InputDecoration(
+          //     //       fillColor: Colors.white,
+          //     //       filled: true,
+          //     //       border: OutlineInputBorder(
+          //     //         borderSide: BorderSide(
+          //     //           color: Colors.red, //this has no effect
+          //     //         ),
+          //     //         borderRadius: BorderRadius.circular(10.0),
+          //     //       ),
+          //     //       hintText: "Search Routes...",
+          //     //     ),
+          //     //     onChanged: (text) {
+          //     //       Get.find<Routecontroller>().searchDistributor(text);
+          //     //     },
+          //     //   ),
+          //
+          //   ),
+          // ),
         ),
       ),
     );

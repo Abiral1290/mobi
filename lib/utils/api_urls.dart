@@ -1,5 +1,17 @@
+import 'constants.dart';
+
 class ApiUrls {
-  static final String _mainUrl = 'http://202.52.240.148:5063/dv_trading';
+
+  static String get _mainUrl => Constants.isProduction ?  'http://202.52.240.148:5063/dv_trading'  : "202.52.240.148:5062/dv_manufacturing/public";
+      // ? "http://117.121.237.226:86/sbcb/" //Production
+      // : "http://202.52.240.148:8092/sbcb/"; //test
+
+  static String get endPoint => _mainUrl + "api/";
+
+  // static final String _mainUrl = 'http://202.52.240.148:5063/dv_trading'  ?  "202.52.240.148:5062/dv_manufacturing/public" : "http://202.52.240.148:5063/dv_trading";
+  // static String get _mainUrl => Consta
+  //     ? "http://117.121.237.226:86/sbcb/" //Production
+  //     : "http://202.52.240.148:8092/sbcb/"; //test
 //  static final String _mainUrl_1 = 'http://202.52.240.148:5063/dv_trading/public/';
   static final String _oldMainUrl = 'http://202.52.240.148:8092/';
   static final String manufacture = '/202.52.240.148:5062/public';
@@ -21,6 +33,7 @@ class ApiUrls {
   static final String products = _endPoint + 'products';
   static final String sales = _endPoint + 'sales';
   static final String routes = _endPoint + 'routelist';
+  static final String Day_routes = _endPoint + 'get_day_wise_route';
   static final String appversion = _endPoint + 'app_versions';
   static final String dashboard = _endPoint + "user_report/";
 

@@ -36,7 +36,7 @@ class DashBoard {
     unsuccessCall = json['unsuccess_call'];
     remainingcall = json['remainingcall'];
     orderRecevied = json['orderRecevied'];
-    target = json['target'];
+    target =  json['target'];
     achivement = json['achivement'];
   }
 
