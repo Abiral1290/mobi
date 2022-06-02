@@ -57,21 +57,21 @@ class CheckInOut {
     // updatedAt = json['updated_at'];
   }
 
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = new Map<String, dynamic>();
-  //   data['id'] = this.id;
-  //   data['sales_officer_id'] = this.salesOfficerId;
-  //   data['checkin_latitude'] = this.checkinLatitude;
-  //   data['checkin_longitude'] = this.checkinLongitude;
-  //   data['created_at'] = this.createdAt;
-  //   data['updated_at'] = this.updatedAt;
-  //   data['checkin_device_time'] = this.checkinDeviceTime;
-  //   data['checkout_latitude'] = this.checkoutLatitude;
-  //   data['checkout_longitude'] = this.checkoutLongitude;
-  //   data['checkout_device_time'] = this.checkoutDeviceTime;
-  //   data['device_time'] = this.deviceTime.toString();
-  //   return data;
-  // }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['sales_officer_id'] = this.salesOfficerId;
+    data['checkin_latitude'] = this.checkinLatitude;
+    data['checkin_longitude'] = this.checkinLongitude;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['checkin_device_time'] = this.checkinDeviceTime;
+    data['checkout_latitude'] = this.checkoutLatitude;
+    data['checkout_longitude'] = this.checkoutLongitude;
+    data['checkout_device_time'] = this.checkoutDeviceTime;
+  //  data['device_time'] = this.deviceTime.toString();
+    return data;
+  }
 }
 
 Future<ApiResponse<List<CheckInOut>>> fetchcheckDataApi() async {

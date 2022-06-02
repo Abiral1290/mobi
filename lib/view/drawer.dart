@@ -405,7 +405,7 @@ class DrawerPage extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(left: 15 ,top: 4),
                       child: Text("Version : ${Constants.appVerId}"
-                          " 20May 022")),
+                          " 2 June 022")),
                 ),
                 SizedBox(height: Get.size.height * 0.06),
                 Align(

@@ -19,6 +19,7 @@ import 'package:mobitrack_dv_flutter/view/drawer.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/remarks.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_pdf_generator.dart';
+import 'package:mobitrack_dv_flutter/view/totalcostreport.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/dashboardmain.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/scoreboard.dart';
@@ -57,8 +58,6 @@ class DashBoard extends StatefulWidget{
 }
 class _DashBoard extends State<DashBoard>{
 
-
-
   TabController tebController;
   int _selectedIndex = 0;
     VoidCallback next;
@@ -69,8 +68,6 @@ class _DashBoard extends State<DashBoard>{
   String checkInId = "";
   Timer countdown;
   Duration myDuration = Duration(days: 5);
-
-
 
   var locationController = Get.find<LocationController>();
   var outletController = Get.lazyPut(()=>OutletsController());
@@ -227,55 +224,55 @@ class _DashBoard extends State<DashBoard>{
           backgroundColor: Colors.black,
           title:  Text("DashBoard"),
             actions: [
-              TextButton(
-                onPressed: () {
-                  Get.to(() => AttendancePage());
-                },
-                child:       MaterialButton(
-                  onPressed: () async {
-                    print(Get.find<SalesReportController>().formattedSalesReportList.length);
-                    print(Constants.selectedRoute.routename);
-                    final pdfFile = await PdfParagraphApi.generate(
-                        Get.find<SalesReportController>().formattedSalesReportList ,
-                        distributor: Constants.selectedRoute);
-
-                    Get.bottomSheet(
-                      Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: ButtonBar(
-                          alignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Get.back();
-                                PdfApi.openFile(pdfFile);
-                              },
-                              child: Text("Open"),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                Get.back();
-                                await Share.shareFiles(
-                                  [pdfFile.path],
-                                  text: "Sales Report",
-                                );
-                              },
-                              child: Text("Share"),
-                            ),
-                          ],
-                        ),
-                      ),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    );
-                  },
-                  child: Icon(Icons.picture_as_pdf),
-                  color: Colors.red[900],
-                  elevation: 10.0,
-                ),
-              ),
+              // TextButton(
+              //   onPressed: () {
+              //     Get.to(() => AttendancePage());
+              //   },
+              //   child:       MaterialButton(
+              //     onPressed: () async {
+              //       print(Get.find<SalesReportController>().formattedSalesReportList.length);
+              //       print(Constants.selectedRoute.routename);
+              //       final pdfFile = await PdfParagraphApi.generate(
+              //           Get.find<SalesReportController>().formattedSalesReportList ,
+              //           distributor: Constants.selectedRoute);
+              //
+              //       Get.bottomSheet(
+              //         Container(
+              //           padding: EdgeInsets.all(10.0),
+              //           child: ButtonBar(
+              //             alignment: MainAxisAlignment.spaceEvenly,
+              //             children: [
+              //               ElevatedButton(
+              //                 onPressed: () {
+              //                   Get.back();
+              //                   PdfApi.openFile(pdfFile);
+              //                 },
+              //                 child: Text("Open"),
+              //               ),
+              //               ElevatedButton(
+              //                 onPressed: () async {
+              //                   Get.back();
+              //                   await Share.shareFiles(
+              //                     [pdfFile.path],
+              //                     text: "Sales Report",
+              //                   );
+              //                 },
+              //                 child: Text("Share"),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         backgroundColor: Colors.white,
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(20.0),
+              //         ),
+              //       );
+              //     },
+              //     child: Icon(Icons.picture_as_pdf),
+              //     color: Colors.red[900],
+              //     elevation: 10.0,
+              //   ),
+              // ),
               IconButton(
                 onPressed:
                     () {setState(() {
@@ -315,7 +312,8 @@ class _DashBoard extends State<DashBoard>{
     //           ),
               TextButton(
                 onPressed: () {
-                  Get.to(() => LocationStatusPage());
+
+                  Get.to(() => TotalCostReport());
                 },
                 child: Text("Status", style: TextStyle(color: Colors.white)),
               ),

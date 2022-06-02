@@ -358,6 +358,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/distributor_route_controller.dart';
 import 'package:mobitrack_dv_flutter/view/dashboard.dart';
 import 'package:mobitrack_dv_flutter/view/home.dart';
@@ -504,7 +505,8 @@ class _View_routeState extends State<View_route> {
                 () => ListTile(
               onTap: () {
                 //start();
-                Constants.selectedRoute = routeList[index]  ;
+          //      Get.find<Routecontroller>().selel
+                Constants.selectedRoute = routeList[index];
                 print(Constants.selectedRoute.id);
                 print(routeList[index].id);
                 selectedRoute = routeList[index];

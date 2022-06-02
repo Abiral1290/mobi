@@ -361,13 +361,18 @@ import 'package:mobitrack_dv_flutter/model/products.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mobitrack_dv_flutter/model/location_model.dart';
 
+import '../model/address.dart';
+import '../model/check_in_out.dart';
 import '../model/outlet_post.dart';
+import '../model/routes.dart';
 
 class DatabaseHelper {
   static final _databaseName = "mobitrac_dv.db";
   static final _databaseVersion = 1;
 
   static final locationTable = 'location';
+  static final routeTable = 'route';
+  static final checkinoutTable = 'checkinout';
   static final outletsTable = 'outlets';
   static final collectionsTable = 'collections';
   static final productsTable = 'products';
@@ -409,6 +414,18 @@ class DatabaseHelper {
               )
           ''');
     await db.execute('''
+          CREATE TABLE IF NOT EXISTS $routeTable (
+              routename TEXT ,
+              id TEXT
+              )
+          ''');
+    await db.execute('''
+          CREATE TABLE IF NOT EXISTS $checkinoutTable (
+              checkin_device_time TEXT ,
+               id TEXT  
+              )
+          ''');
+    await db.execute('''
           CREATE TABLE IF NOT EXISTS $bankTable (
               id INTEGER,
               bank_name TEXT,
@@ -420,15 +437,20 @@ class DatabaseHelper {
     await db.execute('''
           CREATE TABLE IF NOT EXISTS $outletsTable (
               id TEXT,
+              outlet_id TEXT,
               name TEXT,
               owner_name TEXT,
               contact TEXT,
               type TEXT,
+              saleOfficer_id TEXT,
+              townId TEXT,
+              channelId TEXT,
+              categoryId TEXT
+              routeId TEXT,
               latitude TEXT,
               longitude TEXT,
-              address_id TEXT,
-              street TEXT,
               image TEXT,
+              visitFrequency TEXT,
               distributor_id TEXT,
               synced TEXT
               )
@@ -464,9 +486,17 @@ class DatabaseHelper {
           ''');
     await db.execute('''
           CREATE TABLE IF NOT EXISTS $salesTable (
-              sold_at TEXT,
-              outlet_id TEXT,
-              id TEXT
+              sold_at TEXT ,
+              outlet_id TEXT ,
+              outlet_name TEXT,
+              orders TEXT,
+              total_cost TEXT  ,
+              id TEXT  ,
+              remarks TEXT  ,
+              latitude TEXT ,
+              remarks_image  TEXT,
+              longitude TEXT  ,
+              route_id TEXT  
               )
           ''');
   }
@@ -498,28 +528,65 @@ class DatabaseHelper {
     return await db.delete(locationTable);
   }
 
-  //for outlets
-  Future<bool> insertOutlet(OutletPost o) async {
+  //for checkinout
+
+  Future<bool> insertcheckin(CheckInOut checkinout) async{
     Database db = await instance.instace;
-    try {
-      var res = await db.insert(outletsTable, o.toJson());
+    try{
+      var res = await db.insert(checkinoutTable, checkinout.toJson());
       return res != 0;
-    } catch (e) {
+    }catch(e){
       return false;
     }
   }
 
-  Future<List<Outlet>> getAllOutletData() async {
+  Future<List<CheckInOut>> getcheckin() async{
     Database db = await instance.instace;
-    List<Outlet> outlets = [];
+    List<CheckInOut> checkinout = [];
+    var res = await db.query(checkinoutTable);
+    res.forEach((element) {
+      checkinout.add(CheckInOut.fromJson(element));
+    });
+  }
+   //for routes
+  Future<bool> insertroutes(Routes route) async{
+    Database db = await instance.instace;
+    try{
+      var res = await db.insert(routeTable, route.toJson());
+      return res != 0;
+    }catch(e){
+      return false;
+    }
+  }
+  Future<List<Routes>> getroute() async{
+    Database db = await instance.instace;
+    List<Routes> route = [];
+    var res = await db.query(routeTable);
+    res.forEach((element) {
+      route.add(Routes.fromJson(element));
+    });
+  }
+  //for outlets.
+  Future<bool> insertOutlet(OutletPost  o) async {
+    Database db = await instance.instace;
+    try {
+      var res = await db.insert(outletsTable, o.toJson());
+      return res != 0;
+      print('inserted sales data');
+    } catch (e) {
+      return false;
+    }
+  }
+  Future<List<OutletPost>> getAllOutletData() async {
+    Database db = await instance.instace;
+    List<OutletPost> outlets = [];
     var res = await db.query(outletsTable);
     res.forEach((element) {
-      outlets.add(Outlet.fromJson(element));
+      outlets.add(OutletPost.fromJson(element));
     });
     return outlets;
   }
-
-  Future<bool> deleteOutlet(Outlet o) async {
+  Future<bool> deleteOutlet(OutletPost o) async {
     Database db = await instance.instace;
     var res = await db.delete(outletsTable, where: 'id = ?', whereArgs: [o.id]);
     return res != 0;
@@ -542,7 +609,6 @@ class DatabaseHelper {
 
   Future clearOutletData() async {
     Database db = await instance.instace;
-
     await db.delete(outletsTable);
   }
 
@@ -632,6 +698,17 @@ class DatabaseHelper {
     return res != 0;
   }
 
+  // Future<List<Sales>> getItems() async {
+  //   Database db = await instance.instace;
+  //   final List<Map<String, Object>> queryResult =
+  //   await db.query(salesTable, orderBy: NoteColumn.createdAt);
+  //   return queryResult.map((e) => Note.fromMap(e)).toList();
+  // }
+
+  static Future<List<Map<String, dynamic>>> getItems() async {
+    final db = await  instance.instace;
+    return db.query(salesTable, orderBy: "id");
+  }
   Future<List<Sales>> getAllSalesData() async {
     Database db = await instance.instace;
     List<Sales> sales = [];

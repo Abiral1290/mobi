@@ -64,6 +64,11 @@ class Remarks extends State<Remark>{
       Utilities.showInToast(e.message);
     }
   }
+  bool validateInput(){
+    return _type.isNotEmpty &&
+    _imageFile != null;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -303,23 +308,36 @@ class Remarks extends State<Remark>{
                   ),
 
                   Row(
-                  children: [
-                    Radio(
-                      value: Remarktype.margin_issue,
-                      groupValue: _type,
-                      onChanged: (newValue) =>
-                          setState(() => _type = newValue),
-                      activeColor: Colors.red,
-                    ),
-                    tes(text: Remarktype.margin_issue),
-                   // Text(Remarktype.margin_issue),
-                  ],
-                ),
+                    //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Radio(
+                        value: Remarktype.margin_issue,
+                        groupValue: _type,
+                        onChanged: (newValue) =>
+                            setState(() => _type = newValue),
+                        activeColor: Colors.red,
+                      ),
+                      tes(text: Remarktype.margin_issue),
+                      // Text( Remarktype.stock_avai),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 5.0),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(),
+                          onPressed: () {
+                            pickImage();
+                          },
+                          child: Text("Select Image"),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     width: 42,
                   ),
 
                   Row(
+                    //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Radio(
                         value: Remarktype.credit_limit,
@@ -329,8 +347,18 @@ class Remarks extends State<Remark>{
                         activeColor: Colors.red,
                       ),
                       tes(text: Remarktype.credit_limit),
-                  //    Container(child: Text(Remarktype.credit_limit)),
-
+                      // Text( Remarktype.stock_avai),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 5.0),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(),
+                          onPressed: () {
+                            pickImage();
+                          },
+                          child: Text("Select Image"),
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -368,7 +396,7 @@ class Remarks extends State<Remark>{
                   ElevatedButton(
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)),
                       onPressed: () async {
-                      if( _type.isNotEmpty && _type != null){
+                      if( _type.isNotEmpty && validateInput() ){
                         selectedProductList.add({
                           "product_id": "0",
                           "batch_id": "",
@@ -404,8 +432,10 @@ class Remarks extends State<Remark>{
                           var remark = Sales(
                             route: Constants.selectedRoute.toString(),
                             soldAt:  DateTime.now().toString(),
+                            outlet_name: widget.outlet.name.toString(),
                             outletId: widget.outlet.id.toString(),
                             orders:  jsonEncode(selectedProductList),
+                            total_cost :"",
                             remark: _type,
                             latitude: location.latitude.toString(),
                             longitude: location.longitude.toString(),
@@ -415,7 +445,7 @@ class Remarks extends State<Remark>{
                           print(location.longitude.toString());
                           print(remark);
                           var response = await sellProductApi(remark);
-                          Get.find<ProductsController>().storeSalesOffline(remark);
+                         // Get.find<ProductsController>().storeSalesOffline(remark);
                           Constants.increase_unsucessfulcall ++;
                           print(remark);
                           Get.back();
@@ -427,9 +457,9 @@ class Remarks extends State<Remark>{
                         }else{
                           //  Get.find<ProductsController>().storeSalesOffline();
                         }
-                      }else{if(_type.isEmpty && _type == null){
+                      }else{
                         Utilities.showInToast("Please Register Your Remark");
-                      }
+
                       }
                   }, child: Text("Submit"))
               ],

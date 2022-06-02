@@ -1033,7 +1033,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 } else {
                                   Get.back();
                                  outlet.synced = false;
-
                                   Utilities.showInToast('Storing Offline',
                                       toastType: ToastType.INFO);
                                 }

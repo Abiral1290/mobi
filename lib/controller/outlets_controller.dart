@@ -151,6 +151,7 @@ import '../model/distributor_route.dart';
 
 class OutletsController extends GetxController {
   List<Outlet> outletList = [];
+  List<OutletPost> outletLists = [];
   List<OutletPost> allOutlet = [];
   List<Outlet> searchList = [];
   List<LatLng> latlng =[];
@@ -162,7 +163,7 @@ class OutletsController extends GetxController {
   OutletsController() {
     // if (Constants.selectedDistributor != null)
     fetchOutlets();
-    fetchOutletss();
+    //fetchOutletss();
     //fetchAllOutlets();
   }
 
@@ -191,7 +192,6 @@ class OutletsController extends GetxController {
   }
    setitem(String items){
     //selectedDrowpdown = item.first;
-
     selectedDrowpdown= items;
     items =Constants.item;
     update();
@@ -246,6 +246,7 @@ class OutletsController extends GetxController {
   //   return true;
   // }
 
+
   fetchOutlets() async {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
@@ -266,39 +267,41 @@ class OutletsController extends GetxController {
         }
       });
     }
-  }
-  fetchOutletss() async {
-    var conn = await Utilities.isInternetWorking();
-    if (conn) {
-      await fetchOutletsApis().then((value) async {
-        if (value.success) {
-          await DatabaseHelper.instance.deleteSyncedOutlet();
-
-          allOutlet = value.response;
-          //  let = outletList.forEach((element) {element.latitude.toString();});
-          allOutlet.forEach((o) {
-            DatabaseHelper.instance.insertOutlet(o);
-          });
-          update();
-        } else {
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
-          outletList = [];
-          update();
-        }
-      });
-    }
-    // outletList = await DatabaseHelper.instance.getAllOutletData();
-    var list = await DatabaseHelper.instance.getAllOutletData();
-    // outletList = list
-    //     .where((element) =>
-    // element.route ==
-    //     Constants.selectedRoute.toString())
-    //     .toList();
+    outletLists = await DatabaseHelper.instance.getAllOutletData();
     update();
-    print(outletList);
-    //Get.find<LocationController>().setNearestOutletName();
+    print(outletLists.length);
   }
-
+  // fetchOutletss() async {
+  //   var conn = await Utilities.isInternetWorking();
+  //   if (conn) {
+  //     await fetchOutletsApis().then((value) async {
+  //       if (value.success) {
+  //         await DatabaseHelper.instance.deleteSyncedOutlet();
+  //
+  //         allOutlet = value.response;
+  //         //  let = outletList.forEach((element) {element.latitude.toString();});
+  //         allOutlet.forEach((o) {
+  //           DatabaseHelper.instance.insertOutlet(o);
+  //         });
+  //         update();
+  //       } else {
+  //         Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+  //         outletList = [];
+  //         update();
+  //       }
+  //     });
+  //   }
+  //   // outletList = await DatabaseHelper.instance.getAllOutletData();
+  //   var list = await DatabaseHelper.instance.getAllOutletData();
+  //   // outletList = list
+  //   //     .where((element) =>
+  //   // element.route ==
+  //   //     Constants.selectedRoute.toString())
+  //   //     .toList();
+  //   update();
+  //   print(outletList);
+  //   //Get.find<LocationController>().setNearestOutletName();
+  // }
 
   searchOutlets(String text) {
     if (outletList != null && outletList.isNotEmpty) {

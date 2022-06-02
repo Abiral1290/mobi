@@ -4673,7 +4673,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        Get.to(DashBoard());
+        Get.back();
         return true;
       },
       child: Scaffold(backgroundColor: Colors.white54.withOpacity(0.8),
@@ -4738,6 +4738,8 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
           onRefresh:() async {
             await Future.delayed(Duration(seconds: 2));
           Get.find<OutletsController>().fetchOutlets();
+          print(Get.find<OutletsController>().outletLists.length);
+          print( Get.find<ProductsController>().localSalesList.length);
           },
           child: Constants.selectmyRoute == null?
           Column(

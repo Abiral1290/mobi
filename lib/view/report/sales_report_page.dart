@@ -1081,7 +1081,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   onPressed: (){
                 setState(() {
                         Get.find<ProductBrandController>().productList.length;
-                 //  print(  Get.find<ProductBrandController>().productList.elementAt().name );
+                 //  print(  Get.find<ProductBrandController>().productList.elementAt().name);
                   print(Get.find<SalesReportController>(). formattedSalesReportList.length);
                 });
               }
@@ -1103,11 +1103,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
                 child: Table(
                   border:  TableBorder.symmetric(inside: BorderSide(width: 1, color: Colors.blue), outside: BorderSide(width: 1)),
                     columnWidths: {
-                      0: FractionColumnWidth(0.34),
-                      1: FractionColumnWidth(0.28),
+                      0: FractionColumnWidth(0.30),
+                      1: FractionColumnWidth(0.2),
                       2: FractionColumnWidth(0.1),
                       3: FractionColumnWidth(0.1),
-                      4: FractionColumnWidth(0.18),
+                      4: FractionColumnWidth(0.1),
+                      5: FractionColumnWidth(0.20),
                     },
                   children: [
                     TableRow(
@@ -1133,6 +1134,10 @@ class _SalesReportPageState extends State<SalesReportPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text("Remark",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Total Cost",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
                       ]
                     )
                   ],
@@ -1157,14 +1162,16 @@ class _SalesReportPageState extends State<SalesReportPage> {
                               .where((element) => element.id==item[index].productId || item[index].productId == 0 ).first.name;
                           return Padding(
                             padding: const EdgeInsets.only(left: 8.0,right: 8.0),
-                            child: Table (
+                            child:
+                            Table (
                               border:   TableBorder.symmetric(inside: BorderSide(width: 1, color: Colors.blue), outside: BorderSide(width: 1)),
                           columnWidths: {
-                          0: FractionColumnWidth(0.34),
-                          1: FractionColumnWidth(0.28),
+                          0: FractionColumnWidth(0.30),
+                          1: FractionColumnWidth(0.2),
                             2: FractionColumnWidth(0.1),
                             3: FractionColumnWidth(0.1),
-                            4: FractionColumnWidth(0.18),
+                            4: FractionColumnWidth(0.1),
+                            5: FractionColumnWidth(0.20),
                           },
                               children: [
                                 // TableRow(
@@ -1184,14 +1191,15 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                          :
                                      Get.find<ProductBrandController>()
                                          .productList
-                                         .where((element) => element.id == item[index].productId || item[index].productId == 0 )
+                                         .where((element) => element.id == item[index].productId )
                                          .toList()
-                                         .first
-                                         .name,textAlign: TextAlign.center),
+                                         .first.name
+                                         .toString(),textAlign: TextAlign.center),
                                    ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text( Get.find<OutletsController>()
+                                      child: Text(
+                                          Get.find<OutletsController>()
                                           .outletList
                                           .where((element) => element.id == item[index].outletId)
                                           .toList()
@@ -1202,21 +1210,39 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                           .toList()
                                           .first
                                           .name
-                                          : "N/A",textAlign: TextAlign.center),
+                                          : "N/A",textAlign: TextAlign.center
+                                      ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(item[index].quantity.toString(),textAlign: TextAlign.center),
+                                      child: Text(item[index].quantity == 0 ? "-" :item[index].quantity.toString() ,textAlign: TextAlign.center),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text( item[index].discount,textAlign: TextAlign.center),
+                                      child: Text( item[index].discount  == null ? "-" :item[index].discount.toString(),textAlign: TextAlign.center),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(  item[index].remarks ==null ? "-" : item[index].remarks,textAlign: TextAlign.center),
-                                    )
-
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                          Get.find<ProductBrandController>()
+                                          .productList
+                                          .where((element) => element.id == item[index].productId)
+                                          .toList()
+                                          .isNotEmpty
+                                         ?
+                                          (Get.find<ProductBrandController>()
+                                          .productList
+                                          .where((element) => element.id == item[index].productId)
+                                          .toList()
+                                          .first
+                                          .value * item[index].quantity).toString()
+                                         : "N/A"
+                                          ,textAlign: TextAlign.center),
+                                    ),
                                   ]
                                 )
                               ],

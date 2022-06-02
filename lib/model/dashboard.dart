@@ -17,8 +17,10 @@ class DashBoard {
   int productivityCall;
   int unsuccessCall;
   int remainingcall;
+  String target_value;
+  String target_month;
   int orderRecevied;
-  int target;
+  String target;
   int achivement;
 
   DashBoard(
@@ -26,15 +28,19 @@ class DashBoard {
         this.productivityCall,
         this.unsuccessCall,
         this.remainingcall,
+        this.target_value,
+        this.target_month,
         this.orderRecevied,
         this.target,
         this.achivement});
 
   DashBoard.fromJson(Map<String, dynamic> json) {
-    totalcall = json['totalcall'];
+    totalcall = json['totalcall'] == null ? "0":json['totalcall'];
     productivityCall = json['productivity_call'];
     unsuccessCall = json['unsuccess_call'];
     remainingcall = json['remainingcall'];
+    target_value = json['value'] == null ? "0" : json['value'] ;
+    target_month = json['month']== null ? "0":json['month'];
     orderRecevied = json['orderRecevied'];
     target =  json['target'];
     achivement = json['achivement'];
@@ -46,6 +52,8 @@ class DashBoard {
     data['productivity_call'] = this.productivityCall;
     data['unsuccess_call'] = this.unsuccessCall;
     data['remainingcall'] = this.remainingcall;
+    data['value'] = this.target_value;
+    data['month'] = this.target_month;
     data['orderRecevied'] = this.orderRecevied;
     data['target'] = this.target;
     data['achivement'] = this.achivement;
