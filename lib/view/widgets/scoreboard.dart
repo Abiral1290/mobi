@@ -678,6 +678,8 @@
 // }
 
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:mobitrack_dv_flutter/controller/dashboard_Controller.dart';
@@ -692,6 +694,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../controller/auth_controller.dart';
+import '../../controller/database_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/preference_controller.dart';
 import '../../controller/sales_report_controller.dart';
@@ -701,6 +704,7 @@ import '../../utils/constants.dart';
 import '../../utils/pdf_api.dart';
 import '../../utils/utilities.dart';
 import '../report/sales_report_pdf_generator.dart';
+import '../totalcostreport.dart';
 import '../view_distributor.dart';
 
 
@@ -715,6 +719,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
   var product =  Get.lazyPut<ProductsController>(() => ProductsController());
 
   var saleproduct = Get.lazyPut(()=>SalesReportController());
+
+  List<Routes> route = [];
 
   var dashboard = Get.lazyPut(()=>DashBoard_Controller());
 
@@ -759,7 +765,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
         //         toastType: ToastType.ERROR);
         //   }
         // }
-
         await Get.find<LocationController>()
             .getCurrentPosition();
         if (location.userPosition != null) {
@@ -792,346 +797,415 @@ class _ScoreBoardState extends State<ScoreBoard> {
             toastType: ToastType.ERROR);
       }
     }
-    return   Scaffold(
-        body:   Constants.selectmyRoute == null?
-        Container(
-            child: Card(
-              child: InkWell(
-                onTap: (){},
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    showAlertDialog( BuildContext context ) {
+
+      // set up the buttons
+      Widget cancelButton = TextButton(
+        child: Text("Cancel"),
+        onPressed:  () {
+          Get.back();
+        },
+      );
+      Widget continueButton = TextButton(
+        child: Text("Exit"),
+        onPressed:  () async {
+          SystemNavigator.pop();
+
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Exit"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(" Are you sure to Exit ? "),
+
+            ],
+          ),
+        ),
+        actions: [
+          cancelButton,
+          continueButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
+    // void getAllData() async  {
+    //   var noteMapList = await DatabaseHelper.instance.getAllSalesData();
+    //   //   note = Get.find<OutletsController>().outletLists.where((element) => element.id == item).first.name.toString();
+    //   setState(() {
+    //     sales = noteMapList;
+    //   });
+    // }
+
+    return   WillPopScope(
+      onWillPop: () async
+      {
+        showAlertDialog(context);
+        //SystemNavigator.pop();
+      //  Get.back();
+        return true;
+      },
+      child: Scaffold(
+          body:   Constants.selectmyRoute == null?
+          Container(
+              child: Card(
+                child: InkWell(
+                  onTap: (){},
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text('Please Select The Routes'),
+                        ),
+                        ElevatedButton(
+                            style:  ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.black),
+                            ),
+                            onPressed: (){
+                              setState(() {
+                                Get.to(()=> View_route());
+
+                                // Constants.selectedRoute =  Get.find<Routecontroller>().routeList.first;
+                                // press();
+                              });
+                              print(Constants.selectedRoute.id);
+                              print( Get.find<Routecontroller>().routeList.first.id);
+                              selectedRoute = Get.find<Routecontroller>().routeList.first;
+                              Constants.salesoficer_id= user.id.toString();
+                             // _selectedIndex.value = index;
+                              Get.find<OutletsController>().fetchOutlets();
+                              print(Constants.selectedDistributor);
+                              Constants.selectmyRoute = Get.find<Routecontroller>().routeList.first.routename  ;
+                           //   setState(() {
+
+                           //   });
+                              // Get.find<PreferenceController>()
+                              //     .setDistributor(jsonEncode(Constants.selectedDistributor));
+                              Utilities.showInToast(
+                                  "Route : ${selectedRoute.routename}");
+
+                              Get.back() ;
+                             // Get.to(()=> View_route());
+
+                            },child: Text("Route")),
+                      ],
+                    ),
+
+                  ),
+                ),
+              )
+            // Column(
+            //   children: [
+            //     Text("Select Route"),
+            //     ElevatedButton(onPressed: (){
+            //       setState(() {
+            //         Get.to(()=> View_route());
+            //       });
+            //     }, child: Text("Route"))
+            //   ],
+            // ),
+          ):
+          RefreshIndicator(
+            onRefresh:() async {
+              await Future.delayed(Duration(seconds: 2));
+              Get.find<DashBoard_Controller>().fetchdashboard();
+            },
+            child: SingleChildScrollView(
+              child: GetBuilder<DashBoard_Controller>(
+                builder: (context) {
+                  return Get.find<DashBoard_Controller>().dashboard == null || Get.find<DashBoard_Controller>().dashboard.isEmpty ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("Loading.."),
+                    ],
+                  ):
+                    Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text('Please Select The Routes'),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                            elevation: 10,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        alignment: AlignmentDirectional.center,
+                                        child:   Text(
+                                          Constants.selectmyRoute,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 30.0,
+                                              color: Color.fromARGB(255, 80, 79, 79)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )),
                       ),
-                      ElevatedButton(
-                          style:  ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.black),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                            elevation: 10,
+                            child: Column(
+                              children: [
+                                Container(
+                                  alignment: AlignmentDirectional.topStart,
+                                  child: const Text(
+                                    'Calls',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15.0,
+                                        color: Color.fromARGB(255, 80, 79, 79)),
+                                  ),
+                                ),
+                                Container(
+                                  height: 90,
+                                  child: call(),
+                                ),
+                              ],
+                            )),
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Card(
+                      //       elevation: 10,
+                      //       child: Column(
+                      //         children: [
+                      //           Padding(
+                      //             padding: const EdgeInsets.all(8.0),
+                      //             child: Container(
+                      //               alignment: AlignmentDirectional.topStart,
+                      //               child: const Text(
+                      //                 'ACTIVITY',
+                      //                 style: TextStyle(
+                      //                     fontWeight: FontWeight.w600,
+                      //                     fontSize: 15.0,
+                      //                     color: Color.fromARGB(255, 80, 79, 79)),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           SizedBox(
+                      //             height: 90,
+                      //             child: activity(),
+                      //           ),
+                      //         ],
+                      //       )),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 10,
+                          child: Column(
+                            children: [
+                              Container(
+                                  height: 280,
+                                  width: 400,
+                                  color: Colors.white,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          alignment: AlignmentDirectional.topStart,
+                                          child: const Text('Productivity'),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 150,
+                                        width: 300,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: CircularPercentIndicator(
+                                                radius: 130.0,
+                                                lineWidth: 18.0,
+                                                animation: true,
+                                                animationDuration: 1200,
+                                                percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()),
+                                                circularStrokeCap:
+                                                CircularStrokeCap.butt,
+                                                center:  Text(
+                                                  (Get.find<DashBoard_Controller>().dashboard.first.achivement).toString(),
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 20.0),
+                                                ),
+                                                backgroundColor: const Color.fromARGB(
+                                                    255, 217, 221, 227),
+                                                progressColor:
+                                                Color.fromARGB(255, 15, 104, 131),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: ListView(
+                                                children:   [
+                                                  ListTile(
+                                                    title: Text(
+                                              Get.find<DashBoard_Controller>().dashboard.first.target_value
+                                                  == null ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value,
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 16.0),
+                                                    ),
+                                                    subtitle: Text(
+                                                      'Target',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 12.0,
+                                                          color: Colors.grey),
+                                                    ),
+                                                  ),
+                                                  ListTile(
+                                                    title: Text(
+                                                      Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 16.0),
+                                                    ),
+                                                    subtitle: Text(
+                                                      'Acheivement',
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 12.0,
+                                                          color: Colors.grey),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      // Container(
+                                      //   child: letters(),
+                                      // )
+                                    ],
+                                  )),
+                            ],
                           ),
-                          onPressed: (){
-                            setState(() {
-                              Constants.selectedRoute =  Get.find<Routecontroller>().routeList.first;
-                              press();
-                            });
-                            print(Constants.selectedRoute.id);
-                            print( Get.find<Routecontroller>().routeList.first.id);
-                            selectedRoute = Get.find<Routecontroller>().routeList.first;
-                            Constants.salesoficer_id= user.id.toString();
-                           // _selectedIndex.value = index;
-                            Get.find<OutletsController>().fetchOutlets();
-                            print(Constants.selectedDistributor);
-                            Constants.selectmyRoute = Get.find<Routecontroller>().routeList.first.routename  ;
-                         //   setState(() {
-
-                         //   });
-                            // Get.find<PreferenceController>()
-                            //     .setDistributor(jsonEncode(Constants.selectedDistributor));
-                            Utilities.showInToast(
-                                "Route : ${selectedRoute.routename}");
-
-                            Get.back() ;
-                           // Get.to(()=> View_route());
-
-                          },child: Text("Route")),
-                    ],
-                  ),
-
-                ),
-              ),
-            )
-          // Column(
-          //   children: [
-          //     Text("Select Route"),
-          //     ElevatedButton(onPressed: (){
-          //       setState(() {
-          //         Get.to(()=> View_route());
-          //       });
-          //     }, child: Text("Route"))
-          //   ],
-          // ),
-        ):
-        RefreshIndicator(
-          onRefresh:() async {
-            await Future.delayed(Duration(seconds: 2));
-            Get.find<DashBoard_Controller>().fetchdashboard();
-          },
-          child: SingleChildScrollView(
-            child: GetBuilder<DashBoard_Controller>(
-              builder: (context) {
-                return Get.find<DashBoard_Controller>().dashboard == null || Get.find<DashBoard_Controller>().dashboard.isEmpty ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Loading.."),
-                  ],
-                ):
-                  Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
                           elevation: 10,
                           child: Column(
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  alignment: AlignmentDirectional.topStart,
+                                  child: const Text('ACTIVE OUTLET TARGET'),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 190,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                      alignment: AlignmentDirectional.center,
-                                      child:   Text(
-                                        Constants.selectmyRoute,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 30.0,
-                                            color: Color.fromARGB(255, 80, 79, 79)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                          elevation: 10,
-                          child: Column(
-                            children: [
-                              Container(
-                                alignment: AlignmentDirectional.topStart,
-                                child: const Text(
-                                  'Calls',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.0,
-                                      color: Color.fromARGB(255, 80, 79, 79)),
-                                ),
-                              ),
-                              Container(
-                                height: 90,
-                                child: call(),
-                              ),
-                            ],
-                          )),
-                    ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: Card(
-                    //       elevation: 10,
-                    //       child: Column(
-                    //         children: [
-                    //           Padding(
-                    //             padding: const EdgeInsets.all(8.0),
-                    //             child: Container(
-                    //               alignment: AlignmentDirectional.topStart,
-                    //               child: const Text(
-                    //                 'ACTIVITY',
-                    //                 style: TextStyle(
-                    //                     fontWeight: FontWeight.w600,
-                    //                     fontSize: 15.0,
-                    //                     color: Color.fromARGB(255, 80, 79, 79)),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //           SizedBox(
-                    //             height: 90,
-                    //             child: activity(),
-                    //           ),
-                    //         ],
-                    //       )),
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        elevation: 10,
-                        child: Column(
-                          children: [
-                            Container(
-                                height: 280,
-                                width: 400,
-                                color: Colors.white,
-                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        alignment: AlignmentDirectional.topStart,
-                                        child: const Text('Productivity'),
+                                      child: CircularPercentIndicator(
+                                        radius: 130.0,
+                                        lineWidth: 18.0,
+                                        animation: true,
+                                        animationDuration: 1200,
+                                        percent: 0,
+                                        //100*100/double.parse( Get.find<DashBoard_Controller>().dashboard.first.target_value.toString()) ,
+                                        circularStrokeCap: CircularStrokeCap.butt,
+                                        center:   Text(
+                                            Get.find<DashBoard_Controller>().dashboard.first.target_value
+
+                                                == null ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0),
+                                        ),
+                                        backgroundColor:
+                                        const Color.fromARGB(255, 217, 221, 227),
+                                        progressColor:
+                                        Color.fromARGB(255, 15, 104, 131),
                                       ),
                                     ),
-                                    Container(
-                                      height: 150,
-                                      width: 300,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: CircularPercentIndicator(
-                                              radius: 130.0,
-                                              lineWidth: 18.0,
-                                              animation: true,
-                                              animationDuration: 1200,
-                                              percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()),
-                                              circularStrokeCap:
-                                              CircularStrokeCap.butt,
-                                              center:  Text(
-                                                (Get.find<DashBoard_Controller>().dashboard.first.achivement).toString(),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0),
-                                              ),
-                                              backgroundColor: const Color.fromARGB(
-                                                  255, 217, 221, 227),
-                                              progressColor:
-                                              Color.fromARGB(255, 15, 104, 131),
+                                    Expanded(
+                                      child: ListView(
+                                        children:   [
+                                          ListTile(
+                                            title: Text(
+                                              Get.find<DashBoard_Controller>().dashboard.first.target_value
+
+                                                   == null ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 16.0),
+                                            ),
+                                            subtitle: Text(
+                                              'Target',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey),
                                             ),
                                           ),
-                                          Expanded(
-                                            child: ListView(
-                                              children:   [
-                                                ListTile(
-                                                  title: Text(
-                                                    Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 16.0),
-                                                  ),
-                                                  subtitle: Text(
-                                                    'Target',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 12.0,
-                                                        color: Colors.grey),
-                                                  ),
-                                                ),
-                                                ListTile(
-                                                  title: Text(
-                                                    Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 16.0),
-                                                  ),
-                                                  subtitle: Text(
-                                                    'Acheivement',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 12.0,
-                                                        color: Colors.grey),
-                                                  ),
-                                                )
-                                              ],
+                                          ListTile(
+                                            title: Text(
+                                              Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 16.0),
+                                            ),
+                                            subtitle: Text(
+                                              'Acheivement',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey),
                                             ),
                                           )
                                         ],
                                       ),
                                     ),
-                                    // Container(
-                                    //   child: letters(),
-                                    // )
-                                  ],
-                                )),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        elevation: 10,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                alignment: AlignmentDirectional.topStart,
-                                child: const Text('ACTIVE OUTLET TARGET'),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 190,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CircularPercentIndicator(
-                                      radius: 130.0,
-                                      lineWidth: 18.0,
-                                      animation: true,
-                                      animationDuration: 1200,
-                                      percent: double.parse( Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()),
-                                      circularStrokeCap: CircularStrokeCap.butt,
-                                      center:   Text(
-                                          Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0),
-                                      ),
-                                      backgroundColor:
-                                      const Color.fromARGB(255, 217, 221, 227),
-                                      progressColor:
-                                      Color.fromARGB(255, 15, 104, 131),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ListView(
-                                      children:   [
-                                        ListTile(
-                                          title: Text(
-                                            Get.find<DashBoard_Controller>().dashboard.first.target.toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16.0),
-                                          ),
-                                          subtitle: Text(
-                                            'Target',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12.0,
-                                                color: Colors.grey),
-                                          ),
-                                        ),
-                                        ListTile(
-                                          title: Text(
-                                            Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16.0),
-                                          ),
-                                          subtitle: Text(
-                                            'Acheivement',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12.0,
-                                                color: Colors.grey),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
 
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                );
-              }
+                      )
+                    ],
+                  );
+                }
+              ),
             ),
-          ),
-        ))
+          )),
+    )
     ;
   }
 
@@ -1148,13 +1222,17 @@ class _ScoreBoardState extends State<ScoreBoard> {
 }
 
 Widget calls({String text,VoidCallback ontap}) {
-  return Column(
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 15),
-        child: Text(text,style: TextStyle(fontSize: 10),),
-      ),
-    ],
+  return InkWell(
+   onTap: ontap,
+    child: Column(
+      children: [
+
+        Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: Text(text,style: TextStyle(fontSize: 10),),
+        ),
+      ],
+    ),
   );
 }
 
@@ -1298,9 +1376,14 @@ Widget call() {
                 Column(
                   children: [
                     calls(text:   Get.find<DashBoard_Controller>().dashboard.first.productivityCall.toString(),
+                      ontap: (){
+                        Get.to(SalesReportPage());
+                       // Get.to(()=> TotalCostReport());
+                      }
                     ),
                     calls(text: "Sucessfull Calls",ontap: (){
                       Get.to(SalesReportPage());
+                      //Get.to(()=> TotalCostReport());
                     }),
                   ],
                 ),
@@ -1313,12 +1396,14 @@ Widget call() {
                     }),
                   ],
                 ),
-
                 Column(
                   children: [
-                    calls(text:   Get.find<DashBoard_Controller>().dashboard.first.remainingcall.toString()
+                    calls(text: Get.find<DashBoard_Controller>().dashboard.first.remainingcall.toString()
                     ),
-                    calls(text: "Remaining Call"),
+                    calls(text: "Remaining Call",
+                        ontap: (){
+                          Get.to(SalesReportPage());
+                        }),
                   ],
                 ),
               ],

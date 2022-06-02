@@ -607,6 +607,7 @@ import 'package:mobitrack_dv_flutter/view/products/detailsofproducts.dart';
 import 'package:mobitrack_dv_flutter/view/products/punchedproduct.dart';
 import 'package:mobitrack_dv_flutter/view/products/sell_products.dart';
 import 'package:mobitrack_dv_flutter/view/products/slide.dart';
+import 'package:mobitrack_dv_flutter/view/totalcostreport.dart';
 import 'package:mobitrack_dv_flutter/view/view_town.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/map_marker.dart';
 
@@ -1024,14 +1025,15 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
           backgroundColor: Colors.white,
           leading: IconButton(onPressed: (){Get.to(() => DashBoard());}, icon: Icon(Icons.arrow_back,color: Colors.black,)),
           title: Text(widget.outlet.name,style: TextStyle(color: Colors.black),),
-          actions: [
+          // actions: [
           //   ElevatedButton(onPressed: (){
-          //     Get.to(()=> TestExpandableView());
-          //     print(Get.find<ProductBrandController>().selectedAreaId);
-          //     print(Get.find<ProductBrandController>().selectedArea);
-          // //    Get.to(()=> DetailsProduct());
+          //     Get.to(()=> TotalCostReport());
+          //   //  Get.to(()=> TestExpandableView());
+          //     print( Get.find<ProductBrandController>().localSalesList.length);
+          // //    print(Get.find<ProductBrandController>().selectedArea);
+          // //   Get.to(()=> DetailsProduct());
           //     }, child: Text("Press"))
-          ],
+          // ],
         ),
         floatingActionButton:  FloatingActionButton.extended(
           backgroundColor: Colors.black,
@@ -1113,7 +1115,11 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
           label: Row(
             children: [
               Icon(Icons.check_circle),
-              Text("No Order Remarks"),
+              GetBuilder<ProductBrandController>(builder: (context){
+              return  Get.find<ProductBrandController>().punched_product.isEmpty ?
+                Text(   "No Order Remarks" ) : Text( "Punch Your Order");
+              })
+
             ],
           ),
         ),
@@ -4112,6 +4118,8 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                                 //role.add(selectedProductList);
                                                                 //     Get.back();
                                                                 Get.find<ProductBrandController>().getparsename(ite);
+                                                                print(ite);
+                                                                print(Get.find<ProductBrandController>().selectedunits);
                                                                 Get.find<ProductBrandController>().quantity.add(_textEditingController.text);
                                                                 print(Get.find<ProductBrandController>().punched_product.length);
                                                                 int total = int.parse(_textEditingController.text) * int.parse(Get.find<ProductBrandController>().selectedUnit);

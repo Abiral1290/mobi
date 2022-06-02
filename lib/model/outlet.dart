@@ -75,6 +75,8 @@ class Outlets {
     routeId = json['route_id'];
     channelId = json['channel_id'];
     categoryId = json['category_id'];
+
+
   }
 
   Map<String, dynamic> toJson() {

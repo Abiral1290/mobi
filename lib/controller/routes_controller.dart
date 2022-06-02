@@ -12,6 +12,9 @@ class Routecontroller extends GetxController {
   List<Routes> searchedroutelist = [];
   String selectedroute = "";
   int selectedid ;
+  DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  List<Routes> route = [];
+
 
   Routecontroller() {
     fetchroute();
@@ -55,6 +58,30 @@ class Routecontroller extends GetxController {
   //     }
   //   });
   // }
+
+  storeRouteOffline(Routes route) async {
+    //sales.id = DateTime.now().millisecondsSinceEpoch;
+    databaseHelper.insertroutes(route).then((value) {
+      if (value) {
+      //  localSalesList.add(sales);
+        print(route);
+        update();
+        Utilities.showInToast("Sales Route locally",
+            toastType: ToastType.SUCCESS);
+        Get.back();
+      } else {
+        Utilities.showInToast("Error storing sales locally",
+            toastType: ToastType.ERROR);
+      }
+    });
+  }
+   getAllData() async  {
+    var noteMapList = await DatabaseHelper.instance.getroute();
+    //   note = Get.find<OutletsController>().outletLists.where((element) => element.id == item).first.name.toString();
+
+      route = noteMapList;
+     update();
+  }
   searchDistributor(String text) {
     if (routeList.isNotEmpty) {
       searchedroutelist = routeList

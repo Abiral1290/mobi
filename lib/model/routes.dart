@@ -38,15 +38,30 @@ class Routes {
 
   Routes({this.id, this.routename});
 
-  Routes.fromJson(Map<String, dynamic> json) {
+  Routes.fromJson(Map<String, dynamic> json, [isLocalStorage = false]) {
     id = json['id'];
     routename = json['routename'];
+
+
+    if (isLocalStorage) {
+      id = json['id'];
+      // total_cost = json['total_cost'];
+      // outletLatitude = json["outlet_latitude"];
+      // outletLongitude = json["outlet_longitude"];
+    }
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson([bool isLocalStorage = false]) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['routename'] = this.routename;
+    if (isLocalStorage) {
+      data['id'] = this.id;
+
+      // data['outlet_latitude'] = this.outletLatitude;
+      // data['outlet_longitude'] = this.outletLongitude;
+    }
+
     return data;
   }
 }

@@ -120,7 +120,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                 collection.value.amount > 0 &&
                 collection.value.bankName.isNotEmpty) {
               if (selectedRoute.value != null) {
-                collection.value.distributorId = selectedRoute.value.id;
+           //     collection.value.distributorId = selectedRoute.value.id;
                 collection.value.id = DateTime.now().microsecondsSinceEpoch;
                 collection.value.deviceTime = DateTime.now().toString();
                 collection.value.createdAt = DateTime.now().toString();

@@ -91,6 +91,7 @@ class ProductBrandController extends GetxController {
   List<String> brandList = [];
   List<String> search =[];
   List<Punched> punched_product = [];
+  List<Sales>  localSalesList = [];
   // List<String> districtList = [];
   // List<String> areaList = [];
   List<Product> names = [];
@@ -237,6 +238,13 @@ class ProductBrandController extends GetxController {
       //.addAll(name);
     }
   }
+  fetchLocalSales() {
+    databaseHelper.getAllSalesData().then((value) {
+      if (value != null) {
+        localSalesList = value;
+      }
+    });
+  }
   searchBrand(String text) {
     if (name.isNotEmpty) {
       searchResult = name
@@ -247,13 +255,14 @@ class ProductBrandController extends GetxController {
     }
   }
   getparsename(String brand){
+    // var id  = productList.where((element) => element.name == brand);
+    // selectedunits.add(id.first.id.toString());
     var newlist= productList.where((element) => element.name == brand);
-    selectedunits.add(newlist.first.id.toString());
+    selectedunits.add(newlist.single.id.toString());
 
-    var newlists = productList.where((element) => element.name == brand);
-    selectedUnit = newlists.first.value.toString();
-    selectedunit.add(newlist.first.value.toString());
-
+   var newlists = productList.where((element) => element.name == brand);
+   selectedUnit = newlists.first.value.toString();
+   selectedunit.add(newlist.first.value.toString());
   }
   getNameList(String selectedBrand) {
    // districtList = [];
@@ -285,6 +294,28 @@ class ProductBrandController extends GetxController {
     // });
     //getAreaList(name.first);
     update();
+  }
+  //
+  // getAlltotalproduct() async{
+  //   final noteMapList = await databaseHelper.getAllSalesData();
+  //   localSalesList = noteMapList;
+  //   update();
+  // }
+  storeSalesOffline(Sales sales) async {
+    sales.id = DateTime.now().millisecondsSinceEpoch;
+    databaseHelper.insertSales(sales).then((value) {
+      if (value) {
+        localSalesList.add(sales);
+        print(sales);
+        update();
+        Utilities.showInToast("Sales Stored locally",
+            toastType: ToastType.SUCCESS);
+        Get.back();
+      } else {
+        Utilities.showInToast("Error storing sales locally",
+            toastType: ToastType.ERROR);
+      }
+    });
   }
   // getValueList(String selectedvalue) {
   //   // districtList = [];

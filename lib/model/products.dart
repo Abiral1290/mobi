@@ -30,10 +30,10 @@ class Product {
         this.batches});
 
   Product.fromJson(Map<String, dynamic> json, {bool isLocalDB = false}) {
-    id = json['id'];
-    name = json['name'];
-    unit = json['unit'];
-    value = json['value'];
+    id = json['id'] == null ? 0 : json['id'] ;
+    name = json['name'] == null ? "": json['name'];
+    unit = json['unit'] == null ? "":json['unit'] ;
+    value = json['value'] == null ? "": json['value'];
     brandname = json['brand_name'];
     selected = false;
     createdAt = json['created_at'];
@@ -124,6 +124,7 @@ class Sales {
 //  String distributorId;
   String soldAt;
   String outletId;
+  String outlet_name;
   String route;
  // bool isselected;
   String orders;
@@ -131,6 +132,7 @@ class Sales {
   String latitude;
   String longitude;
   String remark_image;
+  String total_cost;
   //String remark_image;
   int id;
 
@@ -139,6 +141,7 @@ class Sales {
         //this.distributorId,
         this.soldAt,
         this.outletId,
+        this.outlet_name,
         this.orders,
         this.route,
         this.remark,
@@ -146,6 +149,7 @@ class Sales {
         this.remark_image,
         this.latitude,
         this.longitude,
+        this.total_cost,
        // this.remark_image,
         this.id});
 
@@ -153,15 +157,18 @@ class Sales {
 
     soldAt = json['sold_at'];
     outletId = json['outlet_id'];
+    outlet_name = json['outlet_name'];
     remark =json["remarks"];
     orders = json['orders'];
     route = json['route_id'];
     latitude = json["latitude"];
     longitude = json["longitude"];
+    total_cost = json['total_cost'];
    remark_image = json['remarks_image'];
 
     if (isLocalStorage) {
       id = json['id'];
+     // total_cost = json['total_cost'];
       // outletLatitude = json["outlet_latitude"];
       // outletLongitude = json["outlet_longitude"];
     }
@@ -173,14 +180,17 @@ class Sales {
     // data['remarks'] = this.remark;
     data['sold_at'] = this.soldAt;
     data['outlet_id'] = this.outletId;
+    data['outlet_name']= this.outlet_name;
     data['orders'] = this.orders;
     data['route_id'] = this.route;
     data['remarks'] = remark;
+    data[' total_cost'] = this.total_cost;
     data['latitude'] = latitude;
     data['longitude'] = longitude;
     // data['remarks_image']= remark_image;
     if (isLocalStorage) {
       data['id'] = this.id;
+
       // data['outlet_latitude'] = this.outletLatitude;
       // data['outlet_longitude'] = this.outletLongitude;
     }
