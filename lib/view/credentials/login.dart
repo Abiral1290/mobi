@@ -609,6 +609,7 @@ import 'package:mobitrack_dv_flutter/controller/auth_controller.dart';
 import 'package:mobitrack_dv_flutter/utils/call_server.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
+import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -623,9 +624,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    //_initFunc();
+    // _initFunc();
   }
-  //
+
   // _initFunc() async {
   //   int count = 0;
   //   do {
@@ -663,10 +664,25 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     var resp = await Get.find<AuthController>().signIn(_userNUmber);
-    Get.back();
-    Utilities.showInToast(
-      resp.toString(),
-    );
+    // Get.back();
+    // Get.back();
+       //if()
+ //   var auth = Get.find<AuthController>().isLoggedIn;
+       if(resp.success == false){
+         Get.back();
+         Utilities.showInToast("Not Found", toastType: ToastType.ERROR);
+       }else{
+         Get.to(View_route());
+
+         Utilities.showInToast(resp.message, toastType: ToastType.SUCCESS);
+       }
+      // Get.to(View_route());
+      // Utilities.showInToast("Login", toastType: ToastType.SUCCESS);
+
+
+    // Utilities.showInToast(
+    //   resp.toString(),
+    // );
   }
   //
   // showLoadingandCheckAPI() async {

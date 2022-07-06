@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,8 +40,11 @@ class Remarks extends State<Remark>{
   String _type  ;
   var selectedProductList = [].obs;
   String base64Image;
+  bool  serviceEnabled;
+  LocationPermission permission;
   XFile _imageFile;
   final ImagePicker _picker = ImagePicker();
+  bool vechicles = true;
 
  // MediaQuery aksf = MA
 
@@ -65,8 +69,7 @@ class Remarks extends State<Remark>{
     }
   }
   bool validateInput(){
-    return _type.isNotEmpty &&
-    _imageFile != null;
+    return (_type  == 'Outlet Closed ' && base64Image.isEmpty) || (_type == "Stock Availabe  " && base64Image.isEmpty);
   }
 
   @override
@@ -135,13 +138,11 @@ class Remarks extends State<Remark>{
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(onPressed: (){Get.back();}, icon: Icon(Icons.arrow_back,color: Colors.black,)),
-        title: Text("Brands",style: TextStyle(color: Colors.black),),
+        backgroundColor: Colors.black,
+        leading: IconButton(onPressed: (){Get.back();}, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+         title: Text("Brands",style: TextStyle(color: Colors.white),),
       ),
-      body: GetBuilder<ProductsController>(
-        builder: (productcontroller){
-          return
+      body:
           //   Column(
           //   children: [mycard()],
           // );
@@ -178,7 +179,7 @@ class Remarks extends State<Remark>{
                 child:
                 ListView (
                   children: [
-                    Text(widget.outlet.name),
+                   // Text(widget.outlet.name),
                     SizedBox(
                       height: 35,
                     ),
@@ -290,17 +291,7 @@ class Remarks extends State<Remark>{
                     ),
                     tes(text: Remarktype.owner_shop),
                    // Text(Remarktype.owner_shop),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 5.0, vertical: 5.0),
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(),
-                        onPressed: () {
-                          pickImage();
-                        },
-                        child: Text("Select Image"),
-                      ),
-                    ),
+
                   ],
                 ),
                   SizedBox(
@@ -319,17 +310,7 @@ class Remarks extends State<Remark>{
                       ),
                       tes(text: Remarktype.margin_issue),
                       // Text( Remarktype.stock_avai),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 5.0),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(),
-                          onPressed: () {
-                            pickImage();
-                          },
-                          child: Text("Select Image"),
-                        ),
-                      ),
+
                     ],
                   ),
                   SizedBox(
@@ -348,17 +329,7 @@ class Remarks extends State<Remark>{
                       ),
                       tes(text: Remarktype.credit_limit),
                       // Text( Remarktype.stock_avai),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 5.0),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(),
-                          onPressed: () {
-                            pickImage();
-                          },
-                          child: Text("Select Image"),
-                        ),
-                      ),
+
                     ],
                   ),
                   SizedBox(
@@ -396,71 +367,175 @@ class Remarks extends State<Remark>{
                   ElevatedButton(
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)),
                       onPressed: () async {
-                      if( _type.isNotEmpty && validateInput() ){
-                        selectedProductList.add({
-                          "product_id": "0",
-                          "batch_id": "",
-                          "quantity": "",
-                          "discount": ""
-                        });
-                        var conn = await Utilities.isInternetWorking();
-                        if(conn){
-                          showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (context) {
-                                return CupertinoAlertDialog(
-                                  title: Text('Please Wait'),
-                                  content: Column(
-                                    children: [
-                                      Divider(),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(conn
-                                            ? 'Adding new Remark'
-                                            : 'Saving offline'),
+
+                      if( (_type == "Stock Availabe  " && base64Image == null) ){
+                        Utilities.showInToast("Please select your Image");
+                      }
+                      else if((_type  == 'Outlet Closed ' && base64Image == null)){
+                        Utilities.showInToast("Please select your Image");
+                      }
+                      else{
+                          selectedProductList.add({
+                            "product_id": "0",
+                            "batch_id": "",
+                            "quantity": "",
+                            "discount": ""
+                          });
+                          var conn = await Utilities.isInternetWorking();
+                          if (conn) {
+
+                            // Test if location services are enabled.
+
+                            serviceEnabled =
+                            await Geolocator.isLocationServiceEnabled();
+                            if (!serviceEnabled) {
+                              return Utilities.showInToast(
+                                  'Location services are disabled.',
+                                  toastType: ToastType.ERROR);
+                            }
+                            // check for permission
+                            permission = await Geolocator.checkPermission();
+                            if (permission == LocationPermission.denied ||
+                                permission ==
+                                    LocationPermission.deniedForever) {
+                              Utilities.showInToast(
+                                  "Location permission is denied, Please enable permission for future use",
+                                  toastType: ToastType.ERROR);
+                              // request permission
+                              permission = await Geolocator.requestPermission();
+                              if (permission == LocationPermission.denied ||
+                                  permission ==
+                                      LocationPermission.deniedForever) {
+                                // Permissions are denied,
+                                return Utilities.showInToast(
+                                    "Location permission is denied, Please enable permission for future use",
+                                    toastType: ToastType.ERROR);
+                              }
+                            }
+
+
+
+                           // print(item.Cost);
+                            await Get.find<LocationController>()
+                                .getCurrentPosition();
+                            var location = Get.find<LocationController>() ;
+                            if (location.userPosition != null) {
+                              showDialog(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return CupertinoAlertDialog(
+                                      title: Text('Please Wait'),
+                                      content: Column(
+                                        children: [
+                                          Divider(),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(conn
+                                                ? 'Adding new Remark'
+                                                : 'Saving offline'),
+                                          ),
+                                          CupertinoActivityIndicator(
+                                            radius: 17,
+                                          )
+                                        ],
                                       ),
-                                      CupertinoActivityIndicator(
-                                        radius: 17,
-                                      )
-                                    ],
-                                  ),
-                                );
-                              });
-                          var location = Get.find<LocationController>().userPosition;
-                          print(widget.outlet.name);
-                          var remark = Sales(
-                            route: Constants.selectedRoute.toString(),
-                            soldAt:  DateTime.now().toString(),
-                            outlet_name: widget.outlet.name.toString(),
-                            outletId: widget.outlet.id.toString(),
-                            orders:  jsonEncode(selectedProductList),
-                            total_cost :"",
-                            remark: _type,
-                            latitude: location.latitude.toString(),
-                            longitude: location.longitude.toString(),
-                            remark_image: base64Image,
-                          );
-                          print( location.latitude.toString());
-                          print(location.longitude.toString());
-                          print(remark);
-                          var response = await sellProductApi(remark);
-                         // Get.find<ProductsController>().storeSalesOffline(remark);
-                          Constants.increase_unsucessfulcall ++;
-                          print(remark);
-                          Get.back();
-                       //   Get.to(ViewOutletstPage());
-                          Utilities.showInToast(response.message,
-                              toastType: response.success
-                                  ? ToastType.SUCCESS
-                                  : ToastType.ERROR);
-                        }else{
-                          //  Get.find<ProductsController>().storeSalesOffline();
-                        }
-                      }else{
-                        Utilities.showInToast("Please Register Your Remark");
+                                    );
+                                  });
+                              var location = Get.find<LocationController>().userPosition;
+                              print(widget.outlet.name);
+                              var remark = Sales(
+                                route: Constants.selectedRoute.toString(),
+                                soldAt:  DateTime.now().toString(),
+                                outlet_name: widget.outlet.name.toString(),
+                                outletId: widget.outlet.id.toString(),
+                                orders:  jsonEncode(selectedProductList),
+                                total_cost :"",
+                                remark: _type,
+                                latitude: location.latitude.toString(),
+                                longitude: location.longitude.toString(),
+                                remark_image: base64Image,
+                              );
+                              print( location.latitude.toString());
+                              print(location.longitude.toString());
+                              print(remark);
+                              var response = await sellProductApi(remark);
+                              // Get.find<ProductsController>().storeSalesOffline(remark);
+                              Constants.increase_unsucessfulcall ++;
+                              print(remark);
+                              Get.back();
+                              //   Get.to(ViewOutletstPage());
+                              Utilities.showInToast(response.message,
+                                  toastType: response.success
+                                      ? ToastType.SUCCESS
+                                      : ToastType.ERROR);
+                              Get.back();
+                            } else {
+                              Utilities.showInToast("Outlet Saved Sucessfully",
+                                  toastType: ToastType.ERROR);
+                            }
+                          } else {
+                            Utilities.showInToast(
+                                "Could not get your location",
+                                toastType: ToastType.ERROR);
+                          }
+                          // if(conn){
+                          //   showDialog(
+                          //       barrierDismissible: false,
+                          //       context: context,
+                          //       builder: (context) {
+                          //         return CupertinoAlertDialog(
+                          //           title: Text('Please Wait'),
+                          //           content: Column(
+                          //             children: [
+                          //               Divider(),
+                          //               Padding(
+                          //                 padding: const EdgeInsets.all(8.0),
+                          //                 child: Text(conn
+                          //                     ? 'Adding new Remark'
+                          //                     : 'Saving offline'),
+                          //               ),
+                          //               CupertinoActivityIndicator(
+                          //                 radius: 17,
+                          //               )
+                          //             ],
+                          //           ),
+                          //         );
+                          //       });
+                          //   var location = Get.find<LocationController>().userPosition;
+                          //   print(widget.outlet.name);
+                          //   var remark = Sales(
+                          //     route: Constants.selectedRoute.toString(),
+                          //     soldAt:  DateTime.now().toString(),
+                          //     outlet_name: widget.outlet.name.toString(),
+                          //     outletId: widget.outlet.id.toString(),
+                          //     orders:  jsonEncode(selectedProductList),
+                          //     total_cost :"",
+                          //     remark: _type,
+                          //     latitude: location.latitude.toString(),
+                          //     longitude: location.longitude.toString(),
+                          //     remark_image: base64Image,
+                          //   );
+                          //   print( location.latitude.toString());
+                          //   print(location.longitude.toString());
+                          //   print(remark);
+                          //   var response = await sellProductApi(remark);
+                          //   // Get.find<ProductsController>().storeSalesOffline(remark);
+                          //   Constants.increase_unsucessfulcall ++;
+                          //   print(remark);
+                          //   Get.back();
+                          //   //   Get.to(ViewOutletstPage());
+                          //   Utilities.showInToast(response.message,
+                          //       toastType: response.success
+                          //           ? ToastType.SUCCESS
+                          //           : ToastType.ERROR);
+                          //   Get.back();
+                          // }else{
+                          //   //  Get.find<ProductsController>().storeSalesOffline();
+                          // }
 
                       }
+
                   }, child: Text("Submit"))
               ],
             ),
@@ -636,91 +711,90 @@ class Remarks extends State<Remark>{
                   // },
                 ),
               ),
-            );
-            Column(
-            children: [
-            new Radio(
-                  value: 0,
-                  groupValue: null,
-                  onChanged: null,
-                ),
-                new Text(
-                  'Outlet Closed Image',
-                  style: new TextStyle(fontSize: 16.0),
-                ),
-          new Text(
-                'Stock Availabe Image',
-                style: new TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
-          new Text(
-                'Owner not in shop',
-                style: new TextStyle(fontSize: 16.0),
-              ),
-                  new Text(
-                    'margin Issue',
-                    style: new TextStyle(fontSize: 16.0),
-                  ),
-          new Text(
-                'Credit limit Issue',
-                style: new TextStyle(fontSize: 16.0),
-              ),
-            ],
-          );
-            Row(
-            children: [
-              new Radio(
-                value: 0,
-                groupValue: null,
-                onChanged: null,
-              ),
-              new Text(
-                'Outlet Closed Image',
-                style: new TextStyle(fontSize: 16.0),
-              ),
-              new Radio(
-                value: 1,
-                groupValue: null,
-                onChanged: null,
-              ),
-              new Text(
-                'Stock Availabe Image',
-                style: new TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
-              new Radio(
-                value: 2,
-                groupValue: null,
-                onChanged: null,
-              ),
-              new Text(
-                'Owner not in shop',
-                style: new TextStyle(fontSize: 16.0),
-              ),
-              new Radio(
-                value: 2,
-                groupValue: null,
-                onChanged: null,
-              ),
-              new Text(
-                'margin Issue',
-                style: new TextStyle(fontSize: 16.0),
-              ),
-              new Radio(
-                value: 2,
-                groupValue: null,
-                onChanged: null,
-              ),
-              new Text(
-                'Credit limit Issue',
-                style: new TextStyle(fontSize: 16.0),
-              ),
-            ],
-          );
-        }
-      ),
+            )
+          //   Column(
+          //   children: [
+          //   new Radio(
+          //         value: 0,
+          //         groupValue: null,
+          //         onChanged: null,
+          //       ),
+          //       new Text(
+          //         'Outlet Closed Image',
+          //         style: new TextStyle(fontSize: 16.0),
+          //       ),
+          // new Text(
+          //       'Stock Availabe Image',
+          //       style: new TextStyle(
+          //         fontSize: 16.0,
+          //       ),
+          //     ),
+          // new Text(
+          //       'Owner not in shop',
+          //       style: new TextStyle(fontSize: 16.0),
+          //     ),
+          //         new Text(
+          //           'margin Issue',
+          //           style: new TextStyle(fontSize: 16.0),
+          //         ),
+          // new Text(
+          //       'Credit limit Issue',
+          //       style: new TextStyle(fontSize: 16.0),
+          //     ),
+          //   ],
+          // );
+          //   Row(
+          //   children: [
+          //     new Radio(
+          //       value: 0,
+          //       groupValue: null,
+          //       onChanged: null,
+          //     ),
+          //     new Text(
+          //       'Outlet Closed Image',
+          //       style: new TextStyle(fontSize: 16.0),
+          //     ),
+          //     new Radio(
+          //       value: 1,
+          //       groupValue: null,
+          //       onChanged: null,
+          //     ),
+          //     new Text(
+          //       'Stock Availabe Image',
+          //       style: new TextStyle(
+          //         fontSize: 16.0,
+          //       ),
+          //     ),
+          //     new Radio(
+          //       value: 2,
+          //       groupValue: null,
+          //       onChanged: null,
+          //     ),
+          //     new Text(
+          //       'Owner not in shop',
+          //       style: new TextStyle(fontSize: 16.0),
+          //     ),
+          //     new Radio(
+          //       value: 2,
+          //       groupValue: null,
+          //       onChanged: null,
+          //     ),
+          //     new Text(
+          //       'margin Issue',
+          //       style: new TextStyle(fontSize: 16.0),
+          //     ),
+          //     new Radio(
+          //       value: 2,
+          //       groupValue: null,
+          //       onChanged: null,
+          //     ),
+          //     new Text(
+          //       'Credit limit Issue',
+          //       style: new TextStyle(fontSize: 16.0),
+          //     ),
+          //   ],
+          // );
+
     );
   }
 

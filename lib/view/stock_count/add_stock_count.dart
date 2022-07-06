@@ -130,7 +130,7 @@ class _AddStockCountState extends State<AddStockCount> {
                       });
                   addStockCountApi(
                     jsonEncode(Get.find<ProductsController>().stockCountList),
-                    Constants.selectedDistributor.id.toString(),
+                    Constants.selectmyRoute.toString(),
                     selectedStockType.value,
                   ).then((value) {
                     Get.back();

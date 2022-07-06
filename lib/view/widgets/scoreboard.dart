@@ -688,12 +688,13 @@ import 'package:mobitrack_dv_flutter/controller/products_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/routes_controller.dart';
 import 'package:mobitrack_dv_flutter/model/dashboard.dart';
 import 'package:mobitrack_dv_flutter/view/attendance/show_attendance.dart';
+import 'package:mobitrack_dv_flutter/view/dashboard.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_page.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../../controller/auth_controller.dart';
+import '../../controller/check_controller.dart';
 import '../../controller/database_controller.dart';
 import '../../controller/location_controller.dart';
 import '../../controller/preference_controller.dart';
@@ -706,6 +707,7 @@ import '../../utils/utilities.dart';
 import '../report/sales_report_pdf_generator.dart';
 import '../totalcostreport.dart';
 import '../view_distributor.dart';
+import 'package:flutter/material.dart';
 
 
 
@@ -717,6 +719,7 @@ class ScoreBoard extends StatefulWidget {
 
 class _ScoreBoardState extends State<ScoreBoard> {
   var product =  Get.lazyPut<ProductsController>(() => ProductsController());
+  var checkin = Get.lazyPut(()=>CheckController());
 
   var saleproduct = Get.lazyPut(()=>SalesReportController());
 
@@ -725,14 +728,39 @@ class _ScoreBoardState extends State<ScoreBoard> {
   var dashboard = Get.lazyPut(()=>DashBoard_Controller());
 
   var selectedRoute = Routes();
+  //Double achivemednt = Get.find<>
 
   var user = Get.find<AuthController>().user;
+  var outleresss =Get.lazyPut(()=>OutletsController());
+  TimeOfDay noonTime = TimeOfDay(hour: 0, minute: 0); // 3:00 P
+//  DateTime dt1 = DateTime.parse(Get.find<CheckController>().checkin.first.checkinDeviceTime. toString());
+ // DateTime a = DataTime(Get.find<CheckController>().checkin.first.checkinDeviceTime);
+  DateTime b = DateTime.now();
+  bool _isLoading = true;
+  List<Routes> _journals = [];
+ // String Percentage = (double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement * 100 ) / double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value)).toString();
 
   String checkInId = "";
+    DatabaseHelper _databasehelper;
 
+  @override
+  void initState() {
+    super.initState();
+
+    _refreshJournals(); // Loading the diary when the app starts
+  }
+
+  void _refreshJournals() async {
+    final data = await DatabaseHelper. getItemsm();
+    setState(() {
+      _journals = data;
+      _isLoading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
 
+    //Duration difference =  dt1.difference(b);
     press() async{
       var location = Get.find<LocationController>();
       //  workManagerInitialization();
@@ -798,7 +826,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
       }
     }
     showAlertDialog( BuildContext context ) {
-
       // set up the buttons
       Widget cancelButton = TextButton(
         child: Text("Cancel"),
@@ -810,10 +837,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
         child: Text("Exit"),
         onPressed:  () async {
           SystemNavigator.pop();
-
         },
       );
-
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
         title: Text("Exit"),
@@ -822,7 +847,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(" Are you sure to Exit ? "),
-
             ],
           ),
         ),
@@ -831,7 +855,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
           continueButton,
         ],
       );
-
       // show the dialog
       showDialog(
         context: context,
@@ -840,7 +863,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
         },
       );
     }
-
     // void getAllData() async  {
     //   var noteMapList = await DatabaseHelper.instance.getAllSalesData();
     //   //   note = Get.find<OutletsController>().outletLists.where((element) => element.id == item).first.name.toString();
@@ -848,7 +870,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
     //     sales = noteMapList;
     //   });
     // }
-
     return   WillPopScope(
       onWillPop: () async
       {
@@ -858,68 +879,91 @@ class _ScoreBoardState extends State<ScoreBoard> {
         return true;
       },
       child: Scaffold(
-          body:   Constants.selectmyRoute == null?
-          Container(
-              child: Card(
-                child: InkWell(
-                  onTap: (){},
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text('Please Select The Routes'),
-                        ),
-                        ElevatedButton(
-                            style:  ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.black),
+          body:   Constants.selectmyRoute   == null?
+          GetBuilder<Routecontroller>(
+            builder: (routecontroller) {
+              return Container(
+                  child: Card(
+                    child: InkWell(
+                      onTap: (){},
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text('Please Select The Routes'),
                             ),
-                            onPressed: (){
-                              setState(() {
-                                Get.to(()=> View_route());
+                            ElevatedButton(
+                                style:  ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(Colors.black),
+                                ),
+                                onPressed: (){
+                                  // setState(() {
+                                   Get.to(()=> View_route());
+                                    // Constants.selectedRoute =  Get.find<Routecontroller>().routeList.first;
+                                    // press();
+                            //      });
+                                //  if(_journals.first.isNotEmpty){}
+                                 // print(Constants.selectedRoute.id);
+                                  //print( Get.find<Routecontroller>().routeList.first.id);
+                                  // selectedRoute =  Get.find<Routecontroller>().routeList.first;
+                                  //
+                                  // Constants.selectedRoute =  Get.find<Routecontroller>().routeList.first;
+                                  // Constants.salesoficer_id= user.id.toString();
+                                  // // _selectedIndex.value = index;
+                                  // Get.find<OutletsController>().fetchOutlets();
+                                  // print(Constants.selectedDistributor);
+                                  // Constants.selectmyRoute =  Get.find<Routecontroller>().routeList.first.routename;
+                                  // Utilities.showInToast(
+                                  //     "Route : ${selectedRoute.routename}");
+                                  // Get.back() ;
+                                    // if(_journals.first.day == Get.find<Routecontroller>().routeList.first.day){
+                                    //   Get.to(()=> DashBoards());
+                                    // //  print(_journals.first.routename);
+                                    //   selectedRoute = _journals.first;
+                                    //
+                                    //   Constants.selectedRoute = _journals.first;
+                                    //   Constants.salesoficer_id= user.id.toString();
+                                    //   // _selectedIndex.value = index;
+                                    //   Get.find<OutletsController>().fetchOutlets();
+                                    //   print(Constants.selectedDistributor);
+                                    //   Constants.selectmyRoute = _journals.first.routename ;
+                                    //   Utilities.showInToast(
+                                    //       "Route : ${selectedRoute.routename}");
+                                    //   Get.back() ;
+                                    // }else{
+                                    //   Get.to(()=> View_route());
+                                    //   DatabaseHelper.instance.deleteSyncedroute();
+                                    // }
+                                    print(DayPeriod.am);
+                               //   setState(() {
 
-                                // Constants.selectedRoute =  Get.find<Routecontroller>().routeList.first;
-                                // press();
-                              });
-                              print(Constants.selectedRoute.id);
-                              print( Get.find<Routecontroller>().routeList.first.id);
-                              selectedRoute = Get.find<Routecontroller>().routeList.first;
-                              Constants.salesoficer_id= user.id.toString();
-                             // _selectedIndex.value = index;
-                              Get.find<OutletsController>().fetchOutlets();
-                              print(Constants.selectedDistributor);
-                              Constants.selectmyRoute = Get.find<Routecontroller>().routeList.first.routename  ;
-                           //   setState(() {
+                               //   });
+                                  // Get.find<PreferenceController>()
+                                  //     .setDistributor(jsonEncode(Constants.selectedDistributor));
 
-                           //   });
-                              // Get.find<PreferenceController>()
-                              //     .setDistributor(jsonEncode(Constants.selectedDistributor));
-                              Utilities.showInToast(
-                                  "Route : ${selectedRoute.routename}");
-
-                              Get.back() ;
-                             // Get.to(()=> View_route());
-
-                            },child: Text("Route")),
-                      ],
+                                 // Get.to(()=> View_route());
+                                },child: Text("Route")),
+                          ],
+                        ),
+                      ),
                     ),
-
-                  ),
-                ),
-              )
-            // Column(
-            //   children: [
-            //     Text("Select Route"),
-            //     ElevatedButton(onPressed: (){
-            //       setState(() {
-            //         Get.to(()=> View_route());
-            //       });
-            //     }, child: Text("Route"))
-            //   ],
-            // ),
+                  )
+                // Column(
+                //   children: [
+                //     Text("Select Route"),
+                //     ElevatedButton(onPressed: (){
+                //       setState(() {
+                //         Get.to(()=> View_route());
+                //       });
+                //     }, child: Text("Route"))
+                //   ],
+                // ),
+              );
+            }
           ):
           RefreshIndicator(
             onRefresh:() async {
@@ -941,6 +985,10 @@ class _ScoreBoardState extends State<ScoreBoard> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              side: BorderSide(color: Colors.black)
+                          ),
                             elevation: 10,
                             child: Column(
                               children: [
@@ -968,21 +1016,28 @@ class _ScoreBoardState extends State<ScoreBoard> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: BorderSide(color: Colors.black)
+                          ),
                             elevation: 10,
                             child: Column(
                               children: [
-                                Container(
-                                  alignment: AlignmentDirectional.topStart,
-                                  child: const Text(
-                                    'Calls',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15.0,
-                                        color: Color.fromARGB(255, 80, 79, 79)),
+                                Padding(
+                                  padding: EdgeInsets.only(top:Get.size.height * 0.02,left:Get.size.height * 0.03 ),
+                                  child: Container(
+                                    alignment: AlignmentDirectional.topStart,
+                                    child: const Text(
+                                      'Calls',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15.0,
+                                          color: Color.fromARGB(255, 80, 79, 79)),
+                                    ),
                                   ),
                                 ),
                                 Container(
-                                  height: 90,
+                                  height: 80,
                                   child: call(),
                                 ),
                               ],
@@ -1017,11 +1072,15 @@ class _ScoreBoardState extends State<ScoreBoard> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: BorderSide(color: Colors.black)
+                          ),
                           elevation: 10,
                           child: Column(
                             children: [
                               Container(
-                                  height: 280,
+                                  height: Get.size.height * 0.4,
                                   width: 400,
                                   color: Colors.white,
                                   child: Column(
@@ -1047,11 +1106,13 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                                 lineWidth: 18.0,
                                                 animation: true,
                                                 animationDuration: 1200,
-                                                percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()),
+                                                percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())/double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value) > 1 ? 1 :
+                                              double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())/double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value) ,
                                                 circularStrokeCap:
                                                 CircularStrokeCap.butt,
-                                                center:  Text(
-                                                  (Get.find<DashBoard_Controller>().dashboard.first.achivement).toString(),
+                                                center:  Text((int.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()) * 100  /
+                                                    int.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value))
+                                                    .toStringAsFixed(2) + "%",
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 20.0),
@@ -1114,6 +1175,10 @@ class _ScoreBoardState extends State<ScoreBoard> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: BorderSide(color: Colors.black)
+                          ),
                           elevation: 10,
                           child: Column(
                             children: [
@@ -1136,13 +1201,27 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                         lineWidth: 18.0,
                                         animation: true,
                                         animationDuration: 1200,
-                                        percent: 0,
+                                        percent:
+                                        (double.parse(Get.find<DashBoard_Controller>().dashboard.first.productivityCall.toString())+
+                                              double.parse(
+                                            Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall.toString()))
+                                             /double.parse(Get.find<DashBoard_Controller>().dashboard.first.totalcall.toString()),
+                                   //        > 1? 1:
+                                        // double.parse(Get.find<DashBoard_Controller>().dashboard.first.productivityCall.toString())+
+                                        //     (double.parse(
+                                        //         Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall.toString()))
+                                        //   /double.parse(Get.find<DashBoard_Controller>().dashboard.first.totalcall.toString() ),
+                                        // double.parse(Get.find<DashBoard_Controller>().dashboard.first.remainingcall.toString() +Get.find<DashBoard_Controller>().dashboard.first.remainingcall.toString())
+                                        //     /double.parse(Get.find<DashBoard_Controller>().dashboard.first.totalcall.toString()) ,
                                         //100*100/double.parse( Get.find<DashBoard_Controller>().dashboard.first.target_value.toString()) ,
                                         circularStrokeCap: CircularStrokeCap.butt,
                                         center:   Text(
-                                            Get.find<DashBoard_Controller>().dashboard.first.target_value
-
-                                                == null ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value,
+                                          "${((int.parse(Get.find<DashBoard_Controller>()
+                                            .dashboard.first.productivityCall.toString())+ int.parse(  Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall
+                                            .toString()))*100/ int.parse(Get.find<DashBoard_Controller>().dashboard.first.totalcall.toString())).toStringAsFixed(2)} %",
+                                            // Get.find<DashBoard_Controller>().dashboard.first.target_value
+                                            //     == null ? "0" : (double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())~/double.parse(Get.find<DashBoard_Controller>()
+                                            //     .dashboard.first.target_value)*100).toString(),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 20.0),
@@ -1158,9 +1237,9 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                         children:   [
                                           ListTile(
                                             title: Text(
-                                              Get.find<DashBoard_Controller>().dashboard.first.target_value
+                  ( Get.find<DashBoard_Controller>().dashboard.first.totalcall
 
-                                                   == null ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value,
+                                                   == 0 ? 0 :  Get.find<DashBoard_Controller>().dashboard.first.totalcall).toString(),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 16.0),
@@ -1174,8 +1253,7 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                             ),
                                           ),
                                           ListTile(
-                                            title: Text(
-                                              Get.find<DashBoard_Controller>().dashboard.first.achivement.toString(),
+                                            title: Text((int.parse(Get.find<DashBoard_Controller>().dashboard.first.unsuccessCall.toString()) + int.parse( Get.find<DashBoard_Controller>().dashboard.first.productivityCall.toString())).toString(),
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 16.0),
@@ -1228,7 +1306,7 @@ Widget calls({String text,VoidCallback ontap}) {
       children: [
 
         Padding(
-          padding: const EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.only(top: 10),
           child: Text(text,style: TextStyle(fontSize: 10),),
         ),
       ],

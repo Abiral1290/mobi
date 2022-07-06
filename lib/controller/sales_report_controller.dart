@@ -12,6 +12,7 @@ import 'database_controller.dart';
 class SalesReportController extends GetxController {
   List<SalesReport> salesReportList = [];
   List<SalesReport> formattedSalesReportList = [];
+
   List<Product> formattedSales  = [];
   String selectedData = DateTime.now().toString();
 

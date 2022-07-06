@@ -8,11 +8,11 @@ import 'package:http/http.dart' as http;
 
 class
 Address {
-  int id;
-  String province;
-  String district;
-  String localLevelEn;
-  String route;
+  int? id;
+  String? province;
+  String? district;
+  String? localLevelEn;
+  String? route;
 
   Address({this.id, this.province, this.district, this.localLevelEn});
 
@@ -34,10 +34,10 @@ Address {
 }
 
 class Districts {
-  int id;
-  int provinceId;
-  String name;
-  List<Areas> areas;
+  int? id;
+  int? provinceId;
+  String? name;
+  List<Areas>? areas;
 
   Districts({this.id, this.provinceId, this.name, this.areas});
 
@@ -48,7 +48,7 @@ class Districts {
     if (json['areas'] != null) {
       areas = [];
       json['areas'].forEach((v) {
-        areas.add(new Areas.fromJson(v));
+        areas!.add(new Areas.fromJson(v));
       });
     }
   }
@@ -59,17 +59,17 @@ class Districts {
     data['province_id'] = this.provinceId;
     data['name'] = this.name;
     if (this.areas != null) {
-      data['areas'] = this.areas.map((v) => v.toJson()).toList();
+      data['areas'] = this.areas!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class Areas {
-  int id;
-  int districtId;
-  String name;
-  List<Streets> streets;
+  int? id;
+  int? districtId;
+  String? name;
+  List<Streets>? streets;
 
   Areas({this.id, this.districtId, this.name, this.streets});
 
@@ -80,7 +80,7 @@ class Areas {
     if (json['streets'] != null) {
       streets = [];
       json['streets'].forEach((v) {
-        streets.add(new Streets.fromJson(v));
+        streets!.add(new Streets.fromJson(v));
       });
     }
   }
@@ -91,15 +91,15 @@ class Areas {
     data['district_id'] = this.districtId;
     data['name'] = this.name;
     if (this.streets != null) {
-      data['streets'] = this.streets.map((v) => v.toJson()).toList();
+      data['streets'] = this.streets!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class Route{
-  int id;
-  String route_name;
+  int? id;
+  String? route_name;
 
   Route({this.id,this.route_name});
   Route.fromJson(Map<String,dynamic> json){
@@ -115,9 +115,9 @@ class Route{
 }
 
 class Streets {
-  int id;
-  int areaId;
-  String name;
+  int? id;
+  int? areaId;
+  String? name;
 
   Streets({this.id, this.areaId, this.name});
 
@@ -155,10 +155,10 @@ Future<ApiResponse<List<Address>>> fetchAddressApi() async {
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }

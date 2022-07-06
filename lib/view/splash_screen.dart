@@ -106,13 +106,11 @@ class _SplashScreenState extends State<SplashScreen> {
   initFunction() async {
     var tempPath = await getTemporaryDirectory();
     var downloadPath = tempPath.path + '/' + Constants.tempApkName;
-
     //delete previous apk if exists
     var apk = File(downloadPath);
     if (apk.existsSync()) {
       apk.delete();
     }
-
     var conn = await Utilities.isInternetWorking();
     var auth = Get.find<AuthController>().isLoggedIn;
     if (conn && auth) {
@@ -197,7 +195,6 @@ class _SplashScreenState extends State<SplashScreen> {
           //     // : Text(
           //     //   "Version :${Constants.appVerId.toString()}")
           // ),
-
           Center(child: Image.asset("assets/DV_banner.png")),
        // ],
      // ),

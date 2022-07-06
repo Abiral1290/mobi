@@ -379,17 +379,18 @@ class DatabaseHelper {
   static final salesTable = 'sales';
   static final bankTable = 'banks';
 
+
   // make this a singleton class
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   // only have a single app-wide reference to the database
-  static Database _database;
+  static Database? _database;
   Future<Database> get instace async {
-    if (_database != null) return _database;
+    if (_database != null) return _database!;
     // lazily instantiate the db the first time it is accessed
     _database = await _initDatabase();
-    return _database;
+    return _database!;
   }
 
   // this opens the database (and creates it if it doesn't exist)
@@ -400,6 +401,8 @@ class DatabaseHelper {
     }, version: _databaseVersion, onCreate: _onCreate);
   }
 
+  Future<void> deleteDatabase(String path) =>
+      databaseFactory.deleteDatabase(path);
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     //create user table
@@ -415,8 +418,9 @@ class DatabaseHelper {
           ''');
     await db.execute('''
           CREATE TABLE IF NOT EXISTS $routeTable (
-              routename TEXT ,
-              id TEXT
+              id INTEGER,
+              routename TEXT,
+              day TEXT
               )
           ''');
     await db.execute('''
@@ -527,9 +531,7 @@ class DatabaseHelper {
     Database db = await instance.instace;
     return await db.delete(locationTable);
   }
-
   //for checkinout
-
   Future<bool> insertcheckin(CheckInOut checkinout) async{
     Database db = await instance.instace;
     try{
@@ -539,7 +541,6 @@ class DatabaseHelper {
       return false;
     }
   }
-
   Future<List<CheckInOut>> getcheckin() async{
     Database db = await instance.instace;
     List<CheckInOut> checkinout = [];
@@ -552,19 +553,52 @@ class DatabaseHelper {
   Future<bool> insertroutes(Routes route) async{
     Database db = await instance.instace;
     try{
+
       var res = await db.insert(routeTable, route.toJson());
+      print("inserted");
       return res != 0;
+
     }catch(e){
       return false;
     }
   }
+  static Future<List<Map<String, dynamic>>> getItems() async {
+    final db = await  instance.instace;
+    return db.query(salesTable, orderBy: "id");
+  }
   Future<List<Routes>> getroute() async{
     Database db = await instance.instace;
     List<Routes> route = [];
-    var res = await db.query(routeTable);
+    var res = await db.query(routeTable, orderBy: "id");
     res.forEach((element) {
       route.add(Routes.fromJson(element));
     });
+  }
+  Future<bool> deleteSyncedroute() async {
+    Database db = await instance.instace;
+    var res =
+    await db.rawDelete('DELETE FROM $routeTable ');
+    print(res);
+    return res != 0;
+  }
+  Future clearrouteData() async {
+    Database db = await instance.instace;
+    await db.delete(routeTable);
+  }
+  static Future<List<Routes>> getItemsm() async {
+    final db = await instance.instace;
+    final List<Map<String, Object>> queryResult =
+    await db.query(routeTable);
+    return queryResult.map((e) => Routes.fromJson(e)).toList();
+  }
+  static Future<List<Map<String, dynamic>>> getItemsss() async {
+    final db = await instance.instace;
+    return db.query(routeTable );
+  }
+  Future<List<Map<String, dynamic>>> getNoteMapList() async {
+    Database db = await instance.instace;
+    var result = await db.query(routeTable );
+    return result;
   }
   //for outlets.
   Future<bool> insertOutlet(OutletPost  o) async {
@@ -705,10 +739,10 @@ class DatabaseHelper {
   //   return queryResult.map((e) => Note.fromMap(e)).toList();
   // }
 
-  static Future<List<Map<String, dynamic>>> getItems() async {
-    final db = await  instance.instace;
-    return db.query(salesTable, orderBy: "id");
-  }
+  // static Future<List<Map<String, dynamic>>> getItems() async {
+  //   final db = await  instance.instace;
+  //   return db.query(salesTable, orderBy: "id");
+  // }
   Future<List<Sales>> getAllSalesData() async {
     Database db = await instance.instace;
     List<Sales> sales = [];

@@ -10,14 +10,14 @@ import '../utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class AllOutlet {
-  int id;
-  int outletId;
-  String name;
+  int? id;
+  int? outletId;
+  String? name;
 
   AllOutlet({this.id, this.outletId, this.name});
 
   AllOutlet.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = (json['id']!=null)? json['id'] : '';
     outletId = json['outlet_id'];
     name = json['name'];
   }

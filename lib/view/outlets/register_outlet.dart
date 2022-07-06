@@ -23,6 +23,7 @@ import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/distributed_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/sales_report_controller.dart';
 import 'package:mobitrack_dv_flutter/model/distributer_outlet.dart';
 import 'package:mobitrack_dv_flutter/model/distributor.dart';
 import 'package:mobitrack_dv_flutter/model/latlang.dart';
@@ -73,8 +74,8 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   var outletlists = Get.lazyPut<OutletsController>(() => OutletsController());
 
   int id;
-  String channel;
-  String category;
+  String channel ;
+  String category  ;
   String town;
   String route;
   String visit_frequency;
@@ -98,6 +99,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   bool isProvinceSelected = false;
   bool iszoneSelected = false;
   Position position;
+
 
   @override
   void initState() {
@@ -270,16 +272,61 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   isDense: true,
                   isExpanded: true,
                   hint: Text(
-                      Get.find<ChannelController>().channelList.first.channel),
+                      Get.find<ChannelController>().selectedchannel),
                   items:
                   Get.find<ChannelController>().channelList.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.channel.toString(), child: Text(e.channel.toString()));
                   }).toList(),
                   onChanged: (channel ) {
+                    Get.find<ChannelController>().setSelectedTown(channel);
                   //  Get.find<ChannelController>().setSelectedTown(channel );
                 //    channel = channel;
                 //    channel =Constants.selectedchannel.channel;
+
+                    // isProvinceSelected = true;
+                    // Get.find<AddressController>()
+                    //     .setSelectedProvince(province);
+                    // Get.find<AddressController>()
+                    //     .getDistrictList(province);
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    Widget _buildrouteDropdown() {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: GetBuilder<Routecontroller>(
+          builder: (builder) {
+            return
+              // Get.find<Routecontroller>().routess.isEmpty
+              //   ? SizedBox()
+               // :
+            InputDecorator(
+              decoration: decoration("Select Routes"),
+              child: ButtonTheme(
+                alignedDropdown: true,
+                child: DropdownButton<String>(
+                  iconEnabledColor: Colors.green,
+                  iconDisabledColor: Colors.red,
+                  isDense: true,
+                  isExpanded: true,
+                  // hint: Text(
+                  //     Get.find<Routecontroller>().selectedchannel),
+                  items:
+                  Get.find<Routecontroller>().routeList.map((e) {
+                    return DropdownMenuItem<String>(
+                        value: e.routename.toString(), child: Text(e.routename.toString()));
+                  }).toList(),
+                  onChanged: (channel ) {
+                   Get.find<Routecontroller>().setSelectedProvince(channel);
+                    //  Get.find<ChannelController>().setSelectedTown(channel );
+                    //    channel = channel;
+                    //    channel =Constants.selectedchannel.channel;
 
                     // isProvinceSelected = true;
                     // Get.find<AddressController>()
@@ -319,7 +366,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                 )
             ))  ;
       });
-
     }
 
     // Widget routelist(){
@@ -339,7 +385,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         padding: const EdgeInsets.all(10.0),
         child: GetBuilder<Routecontroller>(
           builder: (builder) {
-            return Get.find<Routecontroller>().routeList.isEmpty
+            return Get.find<Routecontroller>().routess.isEmpty
                 ? SizedBox()
                 : InputDecorator(
               decoration: decoration("Select Route"),
@@ -351,15 +397,15 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   isDense: true,
                   isExpanded: true,
                   hint: Text(
-                      Get.find<Routecontroller>().selectedroute),
+                      Get.find<Routecontroller>().routess.first.routename),
                   items:
-                  Get.find<Routecontroller>().routeList.map((e) {
+                  Get.find<Routecontroller>().routess.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.routename, child: Text(e.routename));
                   }).toList(),
                   onChanged: (route) {
                     Get.find<Routecontroller>().setSelectedProvince(route);
-                    route = route;
+                    //route = route;
                 //    route = Constants.selectedRoute.routename;
                    // isProvinceSelected = true;
                    // Get.find<AddressController>()
@@ -391,15 +437,15 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   isDense: true,
                   isExpanded: true,
                   hint: Text(
-                      Get.find<CategoriesController>().categoriesList.first.category),
+                      Get.find<CategoriesController>().selectedCategory),
                   items:
                   Get.find<CategoriesController>().categoriesList.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.category, child: Text(e.category));
                   }).toList(),
                   onChanged: (district) {
-                    Get.find<CategoriesController>().selectedCategory.toString();
-                   // Get.find<CategoriesController>().setSelectedProvince(district );
+                  //  Get.find<CategoriesController>().selectedCategory.toString();
+                   Get.find<CategoriesController>().setSelectedProvince(district );
                     district = category;
               //      district = Constants.selectedcategory.category;
                    // Get.find<AddressController>().getAreaList(district);
@@ -414,12 +460,12 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     Widget _buildzoneDropdown() {
       return Padding(
         padding: const EdgeInsets.all(10.0),
-        child: GetBuilder<TownController>(
+        child: GetBuilder<CategoriesController>(
           builder: (builder) {
-            return Get.find<TownController>().townlist.isEmpty
+            return Get.find<CategoriesController>().categoriesList.isEmpty
                 ? SizedBox()
                 : InputDecorator(
-              decoration: decoration("Select Zone"),
+              decoration: decoration("Select Categories"),
               child: ButtonTheme(
                 alignedDropdown: true,
                 child: DropdownButton<String>(
@@ -428,17 +474,19 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   isDense: true,
                   isExpanded: true,
                    hint: Text(
-                  Get.find<TownController>().townlist.first.zone
+                       Get.find<CategoriesController>().selectedCategory
                    ),
                   items:
-                  Get.find<TownController>().townlist.map((e) {
+                  Get.find<CategoriesController>().categoriesList.map((e) {
                     return DropdownMenuItem<String>(
-                        value: e.zone, child: Text(e.zone));
+                        value: e.category, child: Text(e.category));
                   }).toList(),
                   onChanged: (district) {
-                    Get.find<TownController>().setSelectionZone(district );
+                    Get.find<CategoriesController>().setSelectedProvince(district );
+                //    district = category;
+                 //   Get.find<TownController>().setSelectionZone(district );
                     // district = zone;
-                  //   print(Constants.selectedzone.zone);
+                  //   print(Constants.selectedzone.zone);s
                     // Get.find<AddressController>().getAreaList(district);
                   },
                 ),
@@ -479,6 +527,46 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
     //     ),
     //   );
     // }
+    Widget _buildtownDropdownss() {
+      return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: GetBuilder<TownController>(
+          builder: (builder) {
+            return Get.find<TownController>().townlist.isEmpty
+                ? SizedBox()
+                : InputDecorator(
+              decoration: decoration("Select Town"),
+              child: ButtonTheme(
+                alignedDropdown: true,
+                child: DropdownButton<String>(
+                  iconEnabledColor: Colors.green,
+                  iconDisabledColor: Colors.red,
+                  isDense: true,
+                  isExpanded: true,
+                  hint: Text( Get.find<TownController>().selectedtowns),
+                  items:
+                  // item_town.map((e) {
+                  //   return DropdownMenuItem<String>(
+                  //     value: e, child: Text(e),
+                  //   );
+                  // }),
+                  Get.find<TownController>().townlist.map((e) {
+                    return DropdownMenuItem<String>(
+                        value: e.town, child: Text(e.town));
+                  }).toList(),
+                  onChanged: (town) {
+                    Get.find<TownController>().setSelectedTown(town);
+                    //   town = town;
+                    //town = Constants.selectedtown.town;
+                    // Get.find<TownController>().setSelectedTown(town);
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
     Widget _buildtownDropdown() {
       return Padding(
         padding: const EdgeInsets.all(10.0),
@@ -495,7 +583,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   iconDisabledColor: Colors.red,
                   isDense: true,
                   isExpanded: true,
-                    hint: Text( Get.find<TownController>().townlist.first.town),
+                    hint: Text( Get.find<TownController>().selectedtowns),
                   items:
                   // item_town.map((e) {
                   //   return DropdownMenuItem<String>(
@@ -507,7 +595,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         value: e.town, child: Text(e.town));
                   }).toList(),
                   onChanged: (town) {
-                    Get.find<TownController>().setSelectionZone(town);
+                    Get.find<TownController>().setSelectedTown(town);
                  //   town = town;
                     //town = Constants.selectedtown.town;
                     // Get.find<TownController>().setSelectedTown(town);
@@ -569,7 +657,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
               ),
       );
     }
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -648,6 +735,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         //       //outlet.name = this._nameCntrl.text;
                         //       ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(SnackBar(content: Text("Selected ${outlet.name.toString()}"),));
                         //     },),
+                        // Constants.selectedRoute == null ? TextField(
+                        //     controller: _nameCntrl,
+                        //     autofocus: false,
+                        //     decoration: InputDecoration(
+                        //         labelText: "Shop Name",
+                        //         prefixIcon: Icon(Icons.shopping_bag_outlined)
+                        //     )
+                        // ):
                         TypeAheadFormField<Outlet>(
                           suggestionsCallback: UserApi.getUserSuggestionsa,
                           //     (element) async{
@@ -672,7 +767,6 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                             )
                           ),
                           onSuggestionSelected: (Outlet suggestion){
-
                             //_query();
                             id =suggestion.id ;
                             _nameCntrl.text =  suggestion.name ;
@@ -687,8 +781,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                           },
                           itemBuilder: (context, suggestion){
                            // final outlet = suggestion;åßß
+                            var item = suggestion.name;
                             return ListTile(
-                              title: Text(suggestion.name.toString()),
+                              title: Text(suggestion.name  == null ? "No Product Found": suggestion.name.toString()),
                            //leading:  Text(sugesstion.image == null? Icon(Icons.circle).toString() : sugesstion.image),
                            //   subtitle: Text(outlet.ownerName),
                             );
@@ -718,7 +813,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                             controller: _phoneCntrl,
                           ),
                         ),
-                       // _buildProvinceDropdown(),
+                     //  _buildProvinceDropdown(),
                        // _buildDistrictDropdown(),
                         //_buildAreaDropdown(),
                        // _buildzone(),
@@ -757,12 +852,17 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         //     ),
                         //   ),
                         // ),
-                       //_buildzoneDropdown(),
-                       //  _buildtownDropdown(),
-                       // _buildzoneDropdown(),
-                //        _buildcategoryDropdown(),
-                //          _buildchanelDropdown(),
-                //         _buildRoute(),
+                       //  Constants.selectedRoute == null?
+                       // _buildzoneDropdown(): SizedBox(),
+                        Get.find<OutletsController>().outletList.isEmpty?
+                        _buildtownDropdown() : SizedBox(),
+                     //  _buildzoneDropdown(),
+                        Get.find<OutletsController>().outletList.isEmpty?
+            _buildzoneDropdown() : SizedBox(),
+                        Get.find<OutletsController>().outletList.isEmpty?
+                         _buildchanelDropdown() : SizedBox(),
+                        Constants.selectedRoute == null?
+                       _buildrouteDropdown() :SizedBox(),
                       // _buildtownDropdown(),
                         // Padding(
                         //   padding: const EdgeInsets.all(12.0),
@@ -972,7 +1072,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                       );
                                     });
 
-                                print(Get.find<OutletsController>().outletList.first.town_id);
+                          //      print(Get.find<OutletsController>().outletList.first.town_id);
 
                                 var outlet = OutletPost(
                                   id: id == null ? DateTime.now().millisecondsSinceEpoch : id,
@@ -981,27 +1081,43 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                  latitude:position.latitude.toString(),
                                   name: _nameCntrl.text,
                                   ownerName: _ownerCntrl.text,
-                               distributorId: distributer_id == null ? Get.find<OutletsController>().outletList.first.distributorId: distributer_id,
+                           distributorId: '',
+                           //Get.find<SalesReportController>().salesReportList.first.distributorId.toString(),
+                          // distributer_id == null ? Get.find<AuthController().: distributer_id,
                                salesOfficer:  Get.find<AuthController>().user.id.toString(),
-                               townId: town == null ? Get.find<OutletsController>().outletList.first.town_id.toString(): town,
-                           //    Get.find<TownController>().selectedtown  ,
+                               townId:
+                               Get.find<TownController>().selectedtown== 0 ? Get.find<OutletsController>().outletList.first.town_id:
+                               Get.find<TownController>().selectedtown.toString(),
 
+                                // Get.find<OutletsController>().outletList.first.town_id== null
+                                //     ? Get.find<TownController>().selectedtown.toString(): Get.find<OutletsController>().outletList.first.town_id,
+                           //    Get.find<TownController>().selectedtown,
                                //Constants.selectedRoute.id.toString(),
                              //  Get.find<TownController>().selectedtown,
                               //  : Get.find<TownController>().selectedZone,
-                                channelId: channel== null ?
-                                Get.find<OutletsController>().outletList.first.channel_id.toString(): channel,
+                                channelId:
+                                Get.find<ChannelController>().selectedid   == 0 ?Get.find<OutletsController>().outletList.first.channel_id:
+                                Get.find<ChannelController>().selectedid.toString(),
+                                // Get.find<OutletsController>().outletList.first.channel_id== null ?
+                                // Get.find<ChannelController>().selectedchannel.toString(): Get.find<OutletsController>().outletList.first.channel_id,
                                 //Constants.selectedRoute.id.toString(),
                                 //Get.find<ChannelController>().selectedchannel,
-                                categoryId:  category == null ?Get.find<OutletsController>().outletList.first.category_id.toString() : category,
+                                categoryId:
+                                Get.find<CategoriesController>().selectedid.isEmpty ? Get.find<OutletsController>().outletList.first.category_id:
+                                Get.find<CategoriesController>().selectedid,
+                                // Get.find<OutletsController>().outletList.first.category_id == null ?Get.find<CategoriesController>().selectedCategory :
+                                // Get.find<OutletsController>().outletList.first.category_id ,
                                 //Constants.selectedRoute.id.toString(),
-                                routeId: route== null?   Constants.selectedRoute.id.toString() : route,
+                                routeId:
+                                Constants.selectedRoute.id.toString() == null ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute.id.toString(),
+                                //   Constants.selectedRoute.id.toString() == null? Get.find<Routecontroller>().selectedroute : Constants.selectedRoute.id.toString() ,
                              //   //route  ,
                                 //"1",
                                // Constants.selectedRoute.id.toString(),
                                 //Constants.selectedRoute.id.toString(),
                              //   Get.find<Routecontroller>().selectedroute,
-                               visitFrequency: visit_frequency == null ? "Weekly": visit_frequency,
+                               visitFrequency:
+                                visit_frequency == null ? "Weekly": visit_frequency,
                                image: base64Image,
                                // town: Get.find<TownController>().selectedtown,
                            //  zone:  zone,
@@ -1013,14 +1129,20 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                   longitude: position.longitude.toString(),
                                  // image: base64Image,
                                 );
-
                                 if (conn) {
                                   var response = await registerOutletPost(outlet);
-                                  print(outlet);
+                                  print( Get.find<CategoriesController>().selectedid.toString());
+                                  print(town);
+                                  print(channel);
+                                   print( Get.find<CategoriesController>().selectedCategory);
+
+                                  // print( Get.find<TownController>().selectedtown);
+                                  // print( Get.find<Routecontroller>().selectedroute);
+                                //  print(outlet.townId);
+                           //       Get.find<TownController>().selectedtown
                                   // await DatabaseHelper.instance
                                   //     .insertOutlet(outlet);
-                                  Get.back();
-
+                                //  Get.back();
                                   Utilities.showInToast(response.message,
                                       toastType: response.success
                                           ? ToastType.SUCCESS

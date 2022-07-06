@@ -7,20 +7,24 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import '../model/address.dart';
 
 class Routecontroller extends GetxController {
-  List<Routes> routeList = [];
+  List<Routes> routeList = [] ?? "";
   Routes routes ;
   List<Routes> searchedroutelist = [];
-  String selectedroute = "";
-  int selectedid ;
+  String selectedroute;
+  int selectedid =0 ;
   DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  List<Routes> route = [];
+  List<Routes> routess= [];
 
 
   Routecontroller() {
     fetchroute();
   }
-  setSelectedProvince(String route,  ){
-    selectedroute = route;
+  setSelectedProvince(String route ){
+   // selectedroute = route;
+    var list = routeList.where((element) => element.routename == route);
+    selectedroute = list.first.routename.toString();
+    selectedid = list.first.id;
+    update();
     //selectedid = route_id;
   }
   //
@@ -63,7 +67,8 @@ class Routecontroller extends GetxController {
     //sales.id = DateTime.now().millisecondsSinceEpoch;
     databaseHelper.insertroutes(route).then((value) {
       if (value) {
-      //  localSalesList.add(sales);
+        routess.add(route);
+       // localSalesList.add(sales);
         print(route);
         update();
         Utilities.showInToast("Sales Route locally",
@@ -75,13 +80,13 @@ class Routecontroller extends GetxController {
       }
     });
   }
-   getAllData() async  {
-    var noteMapList = await DatabaseHelper.instance.getroute();
-    //   note = Get.find<OutletsController>().outletLists.where((element) => element.id == item).first.name.toString();
-
-      route = noteMapList;
-     update();
-  }
+  //  getAllData() async  {
+  //   var noteMapList = await DatabaseHelper.instance.getroute();
+  //   //   note = Get.find<OutletsController>().outletLists.where((element) => element.id == item).first.name.toString();
+  //
+  //     route = noteMapList;
+  //    update();
+  // }
   searchDistributor(String text) {
     if (routeList.isNotEmpty) {
       searchedroutelist = routeList

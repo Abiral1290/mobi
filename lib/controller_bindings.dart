@@ -7,6 +7,7 @@ import 'package:mobitrack_dv_flutter/controller/bank_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/categories_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/channelController.dart';
 import 'package:mobitrack_dv_flutter/controller/collections_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/dashboard_Controller.dart';
 import 'package:mobitrack_dv_flutter/controller/distributor_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/outlets_controller.dart';
@@ -35,6 +36,7 @@ class ControllerBindings implements Bindings {
 
     //Get.lazyPut<AddressController>(() => AddressController());
     Get.lazyPut<SalesReportController>(() => SalesReportController());
+    Get.lazyPut<DashBoard_Controller>(()=>DashBoard_Controller());
     Get.lazyPut<ProductsController>(() => ProductsController());
     Get.lazyPut<BankController>(() => BankController());
     Get.lazyPut<DistributorController>(() => DistributorController());

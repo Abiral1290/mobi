@@ -1,8 +1,10 @@
 import 'constants.dart';
 
 class ApiUrls {
-
-  static String get _mainUrl => Constants.isProduction ?  'http://202.52.240.148:5063/dv_trading'  : "202.52.240.148:5062/dv_manufacturing/public";
+  static final String baseurl = 'http://202.52.240.148:5063';
+    static String get _mainUrl => Constants.isProduction ?  'http://202.52.240.148:5063/dv_trading'  : "202.52.240.148:5062/dv_manufacturing/public";
+  // static String get _mainUrl => Constants.isProduction ?  'http://172.16.1.142:5063/dv_trading'
+  //      : "http://172.16.1.142:5062/dv_trading";
       // ? "http://117.121.237.226:86/sbcb/" //Production
       // : "http://202.52.240.148:8092/sbcb/"; //test
 
@@ -43,12 +45,12 @@ class ApiUrls {
   static final String distributors = _endPoint + 'distributors';
   static final String checkInOuts =
       _endPoint + 'check_in_outs'; //get to fetch data and post to check in
-  static final String _mainUrl_1 = 'http://202.52.240.148:5063/dv_trading/public/';
+ // static final String _mainUrl_1 = 'http://202.52.240.148:5063/dv_trading/public/';
   static final String checkOut = _endPoint + 'checkout';
   static final String dailyLocation = _endPoint + 'daily_locations';
   static final String monthlyTour = _endPoint + 'monthly_tours';
   static final String stockCounts = _endPoint + 'stock_counts';
-
+  static final String imaggeurl = 'http://202.52.240.148:5063' + Constants.image;
   static final String storageURL = _mainUrl + 'image';
 
   /*

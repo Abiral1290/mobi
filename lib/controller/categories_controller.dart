@@ -12,16 +12,16 @@ import "package:collection/collection.dart";
 class CategoriesController extends GetxController {
   List<Categories> categoriesList = [];
    List<String> category = [];
-   List <Categories> cat= [];
+ //  List <Categories> cat= [];
   // List<String> districtList = [];
   // List<String> areaList = [];
   // List<String> zonelist = [];
   // List<String> townlist = [];
   // List<String> routelist = [];
-  String selectedCategory= "";
+  String selectedCategory ='';
 
 
-  int selectedid ;
+  String selectedid = '' ;
 
   // var districtList = {};
   // var areaList = {};
@@ -40,9 +40,11 @@ class CategoriesController extends GetxController {
   // }
   //
   setSelectedProvince( String category  ) {
-    selectedCategory = category;
-    // var newlist = cat.where((element) => element.category == category);
-    // selectedid = newlist.first.id;
+    //selectedCategory = category;
+    var newlist = categoriesList.where((element) => element.category == category);
+    selectedCategory = newlist.first.category;
+    var list = categoriesList.where((element) => element.category == selectedCategory);
+    selectedid =  list.first.id.toString();
    // selectedid = category_id;
     update();
   }
@@ -83,7 +85,7 @@ class CategoriesController extends GetxController {
         print(value.response);
         if (value.success) {
           categoriesList = value.response;
-          setSelectedProvince(categoriesList.first.id.toString() );
+        //  setSelectedProvince(categoriesList.first.id.toString() );
           update();
           print(categoriesList.length);
           // Get.find<PreferenceController>()

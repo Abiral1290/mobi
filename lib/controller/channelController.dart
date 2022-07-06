@@ -9,18 +9,26 @@ class ChannelController extends GetxController{
   List idss =[];
   List<Channel> list =[];
 
-  int selectedchannel;
-  String selectedid;
+  String selectedchannel =  "";
+  int selectedid = 0 ;
 
   ChannelController(){
     getChannelList();
   }
 
-  setSelectedTown(int channel  ) {
-    selectedchannel= channel;
+  setSelectedtown(String province) {
+    selectedchannel = province;
+    update();
+  }
+  setSelectedTown(String channel  ) {
+   // selectedchannel= channel;
 
-    // var newlist = list.where((element) => element.channel== selectedchannel);
-    // selectedid = newlist.first.id.toString();
+    //selectedid = channelList.first.channel;
+    var newlist = channelList.where((element) => element.channel== channel);
+    selectedchannel = newlist.first.channel;
+
+    var list = channelList.where((element) => element.channel== selectedchannel);
+    selectedid = list.first.id;
     //var news =channelList.forEach((element) {element.channel == selectedchannel;});
     //idss.add(news);
     // selectedid = channel_id;
@@ -35,46 +43,46 @@ class ChannelController extends GetxController{
   //   var newlsit = channelList.where((element) => element.channel = selectedchannel);
   //   selectedTown = newlsit.first.id;
   // }
-  setSelectedid(String id){
-    selectedid = id;
-    update();
-  }
+  // setSelectedid(String id){
+  //   selectedchannel= id;
+  //   update();
+  // }
 
-  getNameList(String selectedBrand) {
-    // districtList = [];
-
-      var newlsit = channelList.where((element) => element.channel == selectedchannel);
-      selectedid = newlsit.first.id.toString();
-    // var newList = channelList
-    //     .where((element) => element.brandname == selectedBrand)
-    //     .toList();
-    // var newdistrictList = newList.groupListsBy((element) => element.name);
-    // newdistrictList.keys.forEach((names) {
-    //   name.add(names.toString()) ;
-    //
-    // });
-    // var newlists = productList.where((element) => element.name == name.first);
-    // selectedAreaId = newlists.first.id.toString();
-    // var newList = channelList
-    //     .where((element) => element.channel == selectedBrand)
-    //     .toList();
-    // newList.forEach((element) {idss.add(element.id);});
-    // setSelectedid(idss.first);
-   // var newdistrictList = newList.groupListsBy((element) => element.name);
-    // newdistrictList.keys.forEaczh((names) {
-    //   name.add(names);
-    // });
-    // setSelectedName(name.first);
-    // setSelectedValue(value.first);
-
-    // var newdistrictLists = newList.groupListsBy((element) => element.id);
-    // newdistrictList.keys.forEach((names) {
-    //   name.add(names);
-    // });
-    //getAreaList(name.first);
-
-    update();
-  }
+  // getNameList(String selectedBrand) {
+  //   // districtList = [];
+  //
+  //     var newlsit = channelList.where((element) => element.channel == selectedchannel);
+  //     selectedid = newlsit.first.id.toString();
+  //   // var newList = channelList
+  //   //     .where((element) => element.brandname == selectedBrand)
+  //   //     .toList();
+  //   // var newdistrictList = newList.groupListsBy((element) => element.name);
+  //   // newdistrictList.keys.forEach((names) {
+  //   //   name.add(names.toString()) ;
+  //   //
+  //   // });
+  //   // var newlists = productList.where((element) => element.name == name.first);
+  //   // selectedAreaId = newlists.first.id.toString();
+  //   // var newList = channelList
+  //   //     .where((element) => element.channel == selectedBrand)
+  //   //     .toList();
+  //   // newList.forEach((element) {idss.add(element.id);});
+  //   // setSelectedid(idss.first);
+  //  // var newdistrictList = newList.groupListsBy((element) => element.name);
+  //   // newdistrictList.keys.forEaczh((names) {
+  //   //   name.add(names);
+  //   // });
+  //   // setSelectedName(name.first);
+  //   // setSelectedValue(value.first);
+  //
+  //   // var newdistrictLists = newList.groupListsBy((element) => element.id);
+  //   // newdistrictList.keys.forEach((names) {
+  //   //   name.add(names);
+  //   // });
+  //   //getAreaList(name.first);
+  //
+  //   update();
+  // }
 
   getChannelList() async {
     var conn = await Utilities.isInternetWorking();
@@ -84,7 +92,7 @@ class ChannelController extends GetxController{
         if (value.success) {
           channelList = value.response;
           print(channelList.length);
-          setSelectedTown(channelList.first.id );
+        //  setSelectedTown(channelList.first.id );
          // setSelectedid(channelList.first.channel );
           update();
 
