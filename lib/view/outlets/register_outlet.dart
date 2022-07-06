@@ -73,32 +73,32 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   //var outletlist=   Get.find<OutletsController>().outletList.obs;
   var outletlists = Get.lazyPut<OutletsController>(() => OutletsController());
 
-  int id;
-  String channel ;
-  String category  ;
-  String town;
-  String route;
-  String visit_frequency;
-  String distributer_id;
+  int? id;
+  dynamic channel ;
+  dynamic category  ;
+  dynamic town;
+  dynamic route;
+  String? visit_frequency;
+  String? distributer_id;
 
   List<String> outlet = [];
   var _selctIndex = 0.obs;
   var sellecOutlet = Outletss().obs;
 
-  List<Outlet> out;
+  late List<Outlet> out;
   Completer<GoogleMapController> _controller = Completer();
   Map<String, Marker> markers = <String, Marker>{};
 
   final ImagePicker _picker = ImagePicker();
 
-  XFile _imageFile;
+  XFile? _imageFile;
 
   String _type = SellerType.mart; //dafault is mart
-  String base64Image;
+  String? base64Image;
   var street = "".obs;
   bool isProvinceSelected = false;
   bool iszoneSelected = false;
-  Position position;
+  Position? position;
 
 
   @override
@@ -116,10 +116,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   determineStreet(double lat, double lng) async {
     try {
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      street.value = placemarks[0].street;
+          await placemarkFromCoordinates(position!.latitude, position!.longitude);
+      street.value = placemarks[0].street!;
       _streetCntrl.value.text = street.value;
-      print("Place: " + placemarks[0].street);
+      print("Place: " + placemarks[0].street!);
     } catch (e) {
       Utilities.showInToast(
           "No address information found for supplied coordinates! Please manually write street address",
@@ -135,7 +135,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
       position = Get.find<LocationController>().userPosition;
     }
     if (position != null) {
-      determineStreet(position.latitude, position.longitude);
+      determineStreet(position!.latitude, position!.longitude);
     }
   }
   bool validateInput() {
@@ -176,12 +176,12 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
   }
 
   Future<File> customCompressed({
-    File imagePathToCompress,
+    File? imagePathToCompress,
     quality = 90,
     percentage = 80,
   }) async {
     var path = await FlutterNativeImage.compressImage(
-      imagePathToCompress.absolute.path,
+      imagePathToCompress!.absolute.path,
       quality: 10,
       percentage: 10,
     );
@@ -211,7 +211,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         print(base64Image);
       }
     } catch (e) {
-      Utilities.showInToast(e.message);
+      Utilities.showInToast(e.toString());
     }
   }
 
@@ -243,7 +243,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         onChanged: (province) {
                           isProvinceSelected = true;
                           Get.find<AddressController>()
-                              .setSelectedProvince(province);
+                              .setSelectedProvince(province!);
                           Get.find<AddressController>()
                               .getDistrictList(province);
                         },
@@ -279,7 +279,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         value: e.channel.toString(), child: Text(e.channel.toString()));
                   }).toList(),
                   onChanged: (channel ) {
-                    Get.find<ChannelController>().setSelectedTown(channel);
+                    Get.find<ChannelController>().setSelectedTown(channel!);
                   //  Get.find<ChannelController>().setSelectedTown(channel );
                 //    channel = channel;
                 //    channel =Constants.selectedchannel.channel;
@@ -323,7 +323,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         value: e.routename.toString(), child: Text(e.routename.toString()));
                   }).toList(),
                   onChanged: (channel ) {
-                   Get.find<Routecontroller>().setSelectedProvince(channel);
+                   Get.find<Routecontroller>().setSelectedProvince(channel!);
                     //  Get.find<ChannelController>().setSelectedTown(channel );
                     //    channel = channel;
                     //    channel =Constants.selectedchannel.channel;
@@ -362,7 +362,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                 },
                 selected: index == _selectedInde_1.value,
                 title: Text(
-                  routelist[index].name,
+                  routelist[index].name!,
                 )
             ))  ;
       });
@@ -397,14 +397,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   isDense: true,
                   isExpanded: true,
                   hint: Text(
-                      Get.find<Routecontroller>().routess.first.routename),
+                      Get.find<Routecontroller>().routess.first.routename!),
                   items:
                   Get.find<Routecontroller>().routess.map((e) {
                     return DropdownMenuItem<String>(
-                        value: e.routename, child: Text(e.routename));
+                        value: e.routename, child: Text(e.routename!));
                   }).toList(),
                   onChanged: (route) {
-                    Get.find<Routecontroller>().setSelectedProvince(route);
+                    Get.find<Routecontroller>().setSelectedProvince(route!);
                     //route = route;
                 //    route = Constants.selectedRoute.routename;
                    // isProvinceSelected = true;
@@ -441,11 +441,11 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   items:
                   Get.find<CategoriesController>().categoriesList.map((e) {
                     return DropdownMenuItem<String>(
-                        value: e.category, child: Text(e.category));
+                        value: e.category, child: Text(e.category!));
                   }).toList(),
                   onChanged: (district) {
                   //  Get.find<CategoriesController>().selectedCategory.toString();
-                   Get.find<CategoriesController>().setSelectedProvince(district );
+                   Get.find<CategoriesController>().setSelectedProvince(district!);
                     district = category;
               //      district = Constants.selectedcategory.category;
                    // Get.find<AddressController>().getAreaList(district);
@@ -479,10 +479,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   items:
                   Get.find<CategoriesController>().categoriesList.map((e) {
                     return DropdownMenuItem<String>(
-                        value: e.category, child: Text(e.category));
+                        value: e.category, child: Text(e.category!));
                   }).toList(),
                   onChanged: (district) {
-                    Get.find<CategoriesController>().setSelectedProvince(district );
+                    Get.find<CategoriesController>().setSelectedProvince(district! );
                 //    district = category;
                  //   Get.find<TownController>().setSelectionZone(district );
                     // district = zone;
@@ -552,10 +552,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   // }),
                   Get.find<TownController>().townlist.map((e) {
                     return DropdownMenuItem<String>(
-                        value: e.town, child: Text(e.town));
+                        value: e.town, child: Text(e.town!));
                   }).toList(),
                   onChanged: (town) {
-                    Get.find<TownController>().setSelectedTown(town);
+                    Get.find<TownController>().setSelectedTown(town!);
                     //   town = town;
                     //town = Constants.selectedtown.town;
                     // Get.find<TownController>().setSelectedTown(town);
@@ -592,10 +592,10 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   // }),
                   Get.find<TownController>().townlist.map((e) {
                     return DropdownMenuItem<String>(
-                        value: e.town, child: Text(e.town));
+                        value: e.town, child: Text(e.town!));
                   }).toList(),
                   onChanged: (town) {
-                    Get.find<TownController>().setSelectedTown(town);
+                    Get.find<TownController>().setSelectedTown(town!);
                  //   town = town;
                     //town = Constants.selectedtown.town;
                     // Get.find<TownController>().setSelectedTown(town);
@@ -617,7 +617,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
               )
             : GoogleMap(
                 initialCameraPosition: CameraPosition(
-                    target: LatLng(position.latitude, position.longitude),
+                    target: LatLng(position!.latitude, position!.longitude),
                     zoom: 16),
                 onMapCreated: (GoogleMapController controller) {
                   _controller.complete(controller);
@@ -652,7 +652,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                       heading: 0.0,
                       speed: 0.0,
                       speedAccuracy: 0.0);
-                  determineStreet(position.latitude, position.longitude);
+                  determineStreet(position!.latitude, position!.longitude);
                 },
               ),
       );
@@ -769,12 +769,12 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                           onSuggestionSelected: (Outlet suggestion){
                             //_query();
                             id =suggestion.id ;
-                            _nameCntrl.text =  suggestion.name ;
-                           _ownerCntrl.text = suggestion.ownerName;
-                           _phoneCntrl.text = suggestion.contact;
-                           town = suggestion.route_id.toString() == null ? 1 : suggestion.route_id.toString();
-                           channel = suggestion.channel_id.toString() == null ? 2 :suggestion.channel_id.toString();
-                           category = suggestion.category_id.toString() == null ? 2 : suggestion.category_id.toString() ;
+                            _nameCntrl.text =  suggestion.name! ;
+                           _ownerCntrl.text = suggestion.ownerName!;
+                           _phoneCntrl.text = suggestion.contact!;
+                           town = suggestion.route_id.toString().isNotEmpty ? 1 : suggestion.route_id.toString()!;
+                           channel = suggestion.channel_id.toString().isNotEmpty  ? 2 :suggestion.channel_id.toString();
+                           category = suggestion.category_id.toString().isNotEmpty  ? 2 : suggestion.category_id.toString() ;
                            route = suggestion.route_id.toString() == null ? 2 : suggestion.route_id.toString();
                            visit_frequency = suggestion.visitfrequency.toString();
                            distributer_id = suggestion.distributorId;
@@ -1026,7 +1026,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                               ? Center(
                             child: Text("No Image Selected"),
                           )
-                              : Image.file(File(_imageFile.path)),
+                              : Image.file(File(_imageFile!.path)),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -1078,7 +1078,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                   id: id == null ? DateTime.now().millisecondsSinceEpoch : id,
                                   outletId:  DateTime.now().millisecondsSinceEpoch.toString() ,
                                   contact: _phoneCntrl.text,
-                                 latitude:position.latitude.toString(),
+                                 latitude:position!.latitude.toString(),
                                   name: _nameCntrl.text,
                                   ownerName: _ownerCntrl.text,
                            distributorId: '',
@@ -1109,7 +1109,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                 // Get.find<OutletsController>().outletList.first.category_id ,
                                 //Constants.selectedRoute.id.toString(),
                                 routeId:
-                                Constants.selectedRoute.id.toString() == null ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute.id.toString(),
+                                Constants.selectedRoute!.id.toString().isNotEmpty ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute!.id.toString(),
                                 //   Constants.selectedRoute.id.toString() == null? Get.find<Routecontroller>().selectedroute : Constants.selectedRoute.id.toString() ,
                              //   //route  ,
                                 //"1",
@@ -1126,7 +1126,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                //   category: _categoryCntrl.text,
                                  // visitfrequency: _selectedvalue,
                                //   type: _type,
-                                  longitude: position.longitude.toString(),
+                                  longitude: position!.longitude.toString(),
                                  // image: base64Image,
                                 );
                                 if (conn) {
@@ -1143,12 +1143,12 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                                   // await DatabaseHelper.instance
                                   //     .insertOutlet(outlet);
                                 //  Get.back();
-                                  Utilities.showInToast(response.message,
-                                      toastType: response.success
+                                  Utilities.showInToast(response.message!,
+                                      toastType: response.success!
                                           ? ToastType.SUCCESS
                                           : ToastType.ERROR);
 
-                                  if (response.success) {
+                                  if (response.success!) {
                                    outlet.synced = true;
                                     Get.back();
                                   }

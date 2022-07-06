@@ -917,7 +917,7 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class SellProductPage extends StatelessWidget {
-  final Outlet outlet;
+  final Outlet? outlet;
 
   SellProductPage({@required this.outlet});
 
@@ -945,7 +945,7 @@ class SellProductPage extends StatelessWidget {
     );
   }
 
-  String validateDiscount(int value) {
+  String? validateDiscount(int value) {
     if (!(value >= 0) && !(value <= 100)) {
       return "Discount should be less than or equal to 100%";
     }
@@ -953,7 +953,7 @@ class SellProductPage extends StatelessWidget {
   }
 
   void showQuantityBottomSheet(String batchId, String productId) {
-    String addedQuantity;
+    String addedQuantity = '';
     String discountPercent = "0";
     Get.bottomSheet(
       Container(
@@ -989,7 +989,7 @@ class SellProductPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (addedQuantity != null && discountPercent != null) {
+                    if (addedQuantity != '') {
                       selectedProductList.add({
                         "product_id": productId,
                         "batch_id": batchId,
@@ -1060,7 +1060,7 @@ class SellProductPage extends StatelessWidget {
                                       .elementAt(0)))
                                   .toList()
                                   .first
-                                  .name,
+                                  .name!,
                               overflow: TextOverflow.visible,
                             ),
                           ),
@@ -1105,7 +1105,7 @@ class SellProductPage extends StatelessWidget {
                   Spacer(),
                   Text(
                     DateFormat.yMEd()
-                        .format(DateTime.parse(batches.manufacturedAt)),
+                        .format(DateTime.parse(batches.manufacturedAt!)),
                     style: contentStyle,
                   ),
                 ],
@@ -1115,7 +1115,7 @@ class SellProductPage extends StatelessWidget {
                   Text("Expire:", style: contentStyle),
                   Spacer(),
                   Text(
-                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt)),
+                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt!)),
                     style: contentStyle,
                   ),
                 ],
@@ -1135,7 +1135,7 @@ class SellProductPage extends StatelessWidget {
 
     Widget buildMainTile(Product products) {
       return Card(
-        color: products.selected ? Colors.grey : Colors.white,
+        color: products.selected! ? Colors.grey : Colors.white,
         elevation: 7.0,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -1150,7 +1150,7 @@ class SellProductPage extends StatelessWidget {
                   Spacer(),
                   Expanded(
                     child: Text(
-                      products.name,
+                      products.name!,
                       overflow: TextOverflow.visible,
                       maxLines: null,
                       style: contentStyle,
@@ -1163,7 +1163,7 @@ class SellProductPage extends StatelessWidget {
                   Text("Unit:", style: titleStyle),
                   Spacer(),
                   Text(
-                    products.unit,
+                    products.unit!,
                     style: contentStyle,
                   ),
                 ],
@@ -1179,16 +1179,16 @@ class SellProductPage extends StatelessWidget {
                   ),
                 ],
               ),
-              products.batches.isEmpty
+              products.batches!.isEmpty
                   ? ElevatedButton(
                 onPressed: () {
-                  showQuantityBottomSheet(null, products.id.toString());
+                  showQuantityBottomSheet('', products.id.toString());
                 },
                 child: Text("Sell"),
               )
                   : ExpansionTile(
                 title: Text("Batches"),
-                children: products.batches.map((batch) {
+                children: products.batches!.map((batch) {
                   return buildBatchTile(batch, products);
                 }).toList(),
               ),
@@ -1228,9 +1228,9 @@ class SellProductPage extends StatelessWidget {
             sales.orders = jsonEncode(selectedProductList);
          //   sales. = Constants.selectedDistributor.id.toString();
             sales.soldAt = DateTime.now().toString();
-            sales.outletId = outlet.id.toString();
-            sales.latitude = outlet.latitude.toString();
-            sales.longitude = outlet.longitude.toString();
+            sales.outletId = outlet!.id!.toString();
+            sales.latitude = outlet!.latitude!.toString();
+            sales.longitude = outlet!.longitude!.toString();
 
             var conn = await Utilities.isInternetWorking();
             if (conn) {
@@ -1264,7 +1264,7 @@ class SellProductPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          outlet.name,
+                          outlet!.name!,
                           style: TextStyle(fontSize: 20.0),
                         ),
                         Obx(
@@ -1279,7 +1279,7 @@ class SellProductPage extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      "Distributor: ${Constants.selectedDistributor.name}",
+                      "Distributor: ${Constants.selectedDistributor!.name}",
                       style: TextStyle(fontSize: 18.0),
                     ),
                     SizedBox(

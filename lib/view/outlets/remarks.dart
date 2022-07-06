@@ -20,8 +20,8 @@ import '../../utils/utilities.dart';
 
 class Remark extends StatefulWidget{
  //  Product product;
-  final Outlet outlet;
-   const Remark({Key key ,@required this.outlet}) : super(key: key);
+  final Outlet? outlet;
+   const Remark({Key? key ,@required this.outlet}) : super(key: key);
    // Remark({this.product,this.outlet});
   @override
   State<StatefulWidget> createState() {
@@ -37,12 +37,12 @@ class Remarks extends State<Remark>{
  // List<String> item = ['Outlet Closed Image ', 'Stock Availabe Image','Owner not in shop', 'margin Issue', 'Credit limit Issue',];
   String _remark = Remarktype.closed_outlet;
 
-  String _type  ;
+  dynamic _type  ;
   var selectedProductList = [].obs;
-  String base64Image;
-  bool  serviceEnabled;
-  LocationPermission permission;
-  XFile _imageFile;
+  String? base64Image;
+
+  LocationPermission? permission;
+  XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
   bool vechicles = true;
 
@@ -65,11 +65,11 @@ class Remarks extends State<Remark>{
         print(base64Image);
       }
     } catch (e) {
-      Utilities.showInToast(e.message);
+      Utilities.showInToast(e.toString());
     }
   }
   bool validateInput(){
-    return (_type  == 'Outlet Closed ' && base64Image.isEmpty) || (_type == "Stock Availabe  " && base64Image.isEmpty);
+    return (_type  == 'Outlet Closed ' && base64Image!.isEmpty) || (_type == "Stock Availabe  " && base64Image!.isEmpty);
   }
 
   @override
@@ -129,7 +129,7 @@ class Remarks extends State<Remark>{
     // }
     // TODO: implement build
 
-    Widget tes({String
+    Widget tes({String?
     text}){
       return Container(
         width: Get.size.width * 0.3,
@@ -386,7 +386,7 @@ class Remarks extends State<Remark>{
 
                             // Test if location services are enabled.
 
-                            serviceEnabled =
+                           bool serviceEnabled =
                             await Geolocator.isLocationServiceEnabled();
                             if (!serviceEnabled) {
                               return Utilities.showInToast(
@@ -443,12 +443,12 @@ class Remarks extends State<Remark>{
                                     );
                                   });
                               var location = Get.find<LocationController>().userPosition;
-                              print(widget.outlet.name);
+                              print(widget.outlet!.name!);
                               var remark = Sales(
                                 route: Constants.selectedRoute.toString(),
                                 soldAt:  DateTime.now().toString(),
-                                outlet_name: widget.outlet.name.toString(),
-                                outletId: widget.outlet.id.toString(),
+                                outlet_name: widget.outlet!.name.toString(),
+                                outletId: widget.outlet!.id.toString(),
                                 orders:  jsonEncode(selectedProductList),
                                 total_cost :"",
                                 remark: _type,
@@ -465,8 +465,8 @@ class Remarks extends State<Remark>{
                               print(remark);
                               Get.back();
                               //   Get.to(ViewOutletstPage());
-                              Utilities.showInToast(response.message,
-                                  toastType: response.success
+                              Utilities.showInToast(response.message!,
+                                  toastType: response.success!
                                       ? ToastType.SUCCESS
                                       : ToastType.ERROR);
                               Get.back();

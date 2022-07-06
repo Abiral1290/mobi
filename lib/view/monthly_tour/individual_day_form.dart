@@ -7,8 +7,8 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 class IndividualDayFormPage extends StatelessWidget {
   IndividualDayFormPage({@required this.day, @required this.date});
 
-  String date;
-  String day;
+  String? date;
+  String? day;
 
   TextEditingController townController = TextEditingController();
   TextEditingController routeController = TextEditingController();
@@ -53,7 +53,7 @@ class IndividualDayFormPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(day),
+          title: Text(day!),
           leading: IconButton(
             onPressed: () {
               Get.back(result: null);
@@ -130,8 +130,8 @@ class IndividualDayFormPage extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       if (validate()) {
-                        tourMap["date"] = date;
-                        tourMap["day"] = day;
+                        tourMap["date"] = date!;
+                        tourMap["day"] = day!;
                         tourMap["town"] = townController.text;
                         tourMap["route"] = routeController.text;
                         tourMap["nightHalt"] = nightHaltController.text;

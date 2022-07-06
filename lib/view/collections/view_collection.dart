@@ -57,13 +57,13 @@ class ViewCollectionPage extends StatelessWidget {
                                 children: [
                                   Divider(),
                                   Text(item.accountOf.toString()),
-                                  Text(item.createdAt.split('.').first),
+                                  Text(item.createdAt!.split('.').first),
                                   if (item.remarks != null)
-                                    if (item.remarks.isNotEmpty)
-                                      Text(item.remarks)
+                                    if (item.remarks!.isNotEmpty)
+                                      Text(item.remarks!)
                                 ],
                               ),
-                              trailing: Text(item.mode),
+                              trailing: Text(item.mode!),
                             ),
                           );
                         })
