@@ -24,16 +24,16 @@ class _AttendancePageState extends State<AttendancePage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             ApiResponse<List<CheckInOut>> data = snapshot.data;
-            if (data.success) {
+            if (data.success!) {
               var newMap =
-                  data.response.groupListsBy((element) => element.date);
+                  data.response!.groupListsBy((element) => element.date);
               print(newMap);
               return ListView.builder(
                 physics: ScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: newMap.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String key = newMap.keys.elementAt(index);
+                  String key = newMap.keys.elementAt(index)!;
                   var item = newMap.values.elementAt(index);
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -63,13 +63,13 @@ class _AttendancePageState extends State<AttendancePage> {
                                         Text("IN"),
                                         e.checkinDeviceTime == null
                                             ? Text("null")
-                                            : Text(e.checkinDeviceTime.hour
+                                            : Text(e.checkinDeviceTime!.hour
                                                     .toString() +
                                                 ":" +
-                                                e.checkinDeviceTime.minute
+                                                e.checkinDeviceTime!.minute
                                                     .toString() +
                                                 ":" +
-                                                e.checkinDeviceTime.second
+                                                e.checkinDeviceTime!.second
                                                     .toString()),
                                       ],
                                     ),
@@ -92,13 +92,13 @@ class _AttendancePageState extends State<AttendancePage> {
                                         Text("OUT"),
                                         e.checkoutDeviceTime == null
                                             ? Text("Not Checkedout")
-                                            : Text(e.checkoutDeviceTime.hour
+                                            : Text(e.checkoutDeviceTime!.hour
                                                     .toString() +
                                                 ":" +
-                                                e.checkoutDeviceTime.minute
+                                                e.checkoutDeviceTime!.minute
                                                     .toString() +
                                                 ":" +
-                                                e.checkoutDeviceTime.second
+                                                e.checkoutDeviceTime!.second
                                                     .toString()),
                                       ],
                                     ),
@@ -114,7 +114,7 @@ class _AttendancePageState extends State<AttendancePage> {
                 },
               );
             } else {
-              return Text(data.message);
+              return Text(data.message!);
             }
           }
           return Center(child: CupertinoActivityIndicator());

@@ -27,8 +27,8 @@ import 'detailsofproducts.dart';
 
 class Slide extends StatelessWidget{
   // String names;
-  String title;
-  ListView names;
+  String? title;
+  ListView? names;
 
   Slide({
     this.names, this.title
@@ -53,7 +53,7 @@ class Slide extends StatelessWidget{
          ],
        ),
      ) :
-     names;
+     names!;
    }));
          //     ElevatedButton(onPressed: (){
          //       print(Get.find<ProductBrandController>().productList.length);

@@ -25,8 +25,8 @@ import '../../utils/utilities.dart';
 
 class DetailsProduct extends StatefulWidget{
 
-  final List product;
-  final Outlet outlet;
+  final List? product;
+  final Outlet? outlet;
 
   DetailsProduct({this.product,this.outlet});
 
@@ -43,8 +43,8 @@ class _DetailsProductState extends State<DetailsProduct> {
 
   TextEditingController editingController = TextEditingController();
 
-  Position position;
-  String query;
+  Position? position;
+  String? query;
   Sales sales = Sales();
   List<String> searchResult = [];
   String text = '';
@@ -74,14 +74,14 @@ class _DetailsProductState extends State<DetailsProduct> {
   onItemChanged(String value) {
     setState(() {
       newDataList = Get.find<ProductBrandController>().productList
-          .where((string) => string.name.toLowerCase().contains(value.toLowerCase()))
+          .where((string) => string.name!.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
 
 
   void showQuantityBottomSheet( String productId, BuildContext context) {
-    String addedQuantity;
+    String addedQuantity = '';
     String discountPercent = "0";
     Get.bottomSheet(
       Container(
@@ -120,7 +120,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                       backgroundColor: MaterialStateProperty.all(Colors.black)
                   ),
                   onPressed: () async {
-                    if (selectedProductList != null && addedQuantity != null) {
+                    if (selectedProductList.isNotEmpty && addedQuantity.isNotEmpty) {
                       selectedProductList.add({
                         "product_id": Get.find<ProductBrandController>().selectedAreaId,
                         "batch_id": "",
@@ -133,7 +133,7 @@ class _DetailsProductState extends State<DetailsProduct> {
                       // print(position.longitude);
                       var conn = await Utilities.isInternetWorking();
                       if (conn) {
-                        print(widget.outlet.id);
+                        print(widget.outlet!.id);
                         showDialog(
                             barrierDismissible: true,context: context,
                             builder: (context) {
@@ -162,15 +162,15 @@ class _DetailsProductState extends State<DetailsProduct> {
                           //   "[{ \"product_id\" :\"2\", \"batch_id\": \"3\", \"quantity\" : \"30\", \"discount\": \"10\"}]",
                           soldAt:
                           DateTime.now().toString(),
-                          outletId: widget.outlet.id.toString(),
+                          outletId: widget.outlet!.id!.toString(),
                           latitude:  location.userPosition.latitude.toString(),
                           longitude:   location.userPosition.longitude.toString(),
                           //remark_image: "",
                         );
-                        print(widget.outlet.id.toString());
+                        print(widget.outlet!.id.toString());
                         print(location.userPosition.latitude.toString());
                         print(location.userPosition.longitude.toString());
-                        print(widget.outlet.id);
+                        print(widget.outlet!.id);
                         // var register = Outlet(
                         //   outid:  outlet.id,
                         //   route_id: Constants.selectedRoute.toString(),
@@ -193,8 +193,8 @@ class _DetailsProductState extends State<DetailsProduct> {
                   //    Get.to(DetailsProduct());
                         Get.back();
                         Get.back();
-                        Utilities.showInToast(response.message,
-                            toastType: response.success
+                        Utilities.showInToast(response.message!,
+                            toastType: response.success!
                                 ? ToastType.SUCCESS
                                 : ToastType.ERROR);
                         //  Get.find<ProductsController>().sellProducts(sales);

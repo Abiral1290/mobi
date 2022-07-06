@@ -27,7 +27,7 @@ class ViewProductsPage extends StatelessWidget {
                   Spacer(),
                   Text(
                     DateFormat.yMEd()
-                        .format(DateTime.parse(batches.manufacturedAt)),
+                        .format(DateTime.parse(batches.manufacturedAt!)),
                     style: contentStyle,
                   ),
                 ],
@@ -37,7 +37,7 @@ class ViewProductsPage extends StatelessWidget {
                   Text("Expire:", style: contentStyle),
                   Spacer(),
                   Text(
-                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt)),
+                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt!)),
                     style: contentStyle,
                   ),
                 ],
@@ -64,7 +64,7 @@ class ViewProductsPage extends StatelessWidget {
                   Spacer(),
                   Expanded(
                     child: Text(
-                      products.name,
+                      products.name!,
                       overflow: TextOverflow.visible,
                       maxLines: null,
                       style: contentStyle,
@@ -77,7 +77,7 @@ class ViewProductsPage extends StatelessWidget {
                   Text("Unit:", style: titleStyle),
                   Spacer(),
                   Text(
-                    products.unit,
+                    products.unit!,
                     style: contentStyle,
                   ),
                 ],
@@ -95,7 +95,7 @@ class ViewProductsPage extends StatelessWidget {
               ),
               ExpansionTile(
                 title: Text("Batches"),
-                children: products.batches.map((batch) {
+                children: products.batches!.map((batch) {
                   return buildBatchTile(batch, products);
                 }).toList(),
               ),

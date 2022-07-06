@@ -94,14 +94,14 @@ class  FirstWidget extends StatelessWidget{
                 Constants.server = Constants.server_1;
                 Get.to(() => LoginPage(),
                     transition: Transition.rightToLeftWithFade);
-              }, Colors.amber[900]),
+              }, Colors.amber[900]!),
               individualTileWidget(
                   context, Icons.confirmation_num, Constants.server_2, () {
                 Colors.amber[900];
                 Constants.server = Constants.server_2;
                 Get.to(() => LoginPage(),
                     transition: Transition.rightToLeftWithFade);
-              }, Colors.amber[900]),
+              }, Colors.amber[900]!),
               // ElevatedButton(onPressed: (){
               //   Get.to(LoginPage());
               // },child: Text("DV_trading"),),

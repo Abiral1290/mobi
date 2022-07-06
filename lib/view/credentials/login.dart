@@ -674,7 +674,7 @@ class _LoginPageState extends State<LoginPage> {
        }else{
          Get.to(View_route());
 
-         Utilities.showInToast(resp.message, toastType: ToastType.SUCCESS);
+         Utilities.showInToast(resp.message!, toastType: ToastType.SUCCESS);
        }
       // Get.to(View_route());
       // Utilities.showInToast("Login", toastType: ToastType.SUCCESS);

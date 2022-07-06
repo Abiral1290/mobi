@@ -615,8 +615,8 @@ import '../outlets/remarks.dart';
 
 class BrandWiseProduct extends StatefulWidget {
 
-  final Outlet outlet;
-  final List sales;
+  final Outlet? outlet;
+  final List? sales;
   BrandWiseProduct({ this.outlet, this.sales});
 
   @override
@@ -626,7 +626,7 @@ class BrandWiseProduct extends StatefulWidget {
 class _BrandWiseProductState extends State<BrandWiseProduct> {
    bool selected = false;
 
- Outlet outss;
+ Outlet? outss;
    var selectedProductList = [].obs;
    int _selected = 0;
 
@@ -635,14 +635,14 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
   var provinceLists = Get.find<ProductBrandController>().productList.obs;
 
   bool isProvinceSelected = false;
-  Symbol symbol;
+  Symbol? symbol;
   bool change = false;
-   int _activeMeterIndex;
+   int? _activeMeterIndex;
    var isSelected = false;
    List<String> searchResult = [];
    String text = '';
-   String my_product;
-  Position position;
+   String? my_product;
+  Position? position;
   TextEditingController _textEditingController =TextEditingController();
 
   var mycolor = Colors.white;
@@ -747,7 +747,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                   onChanged: (province) {
                     isProvinceSelected = true;
                     Get.find<ProductBrandController>()
-                        .setSelectedBrand(province);
+                        .setSelectedBrand(province!);
                     // Get.find<ProductBrandController>()
                     //     .getNameList(province);
                   },
@@ -783,7 +783,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                   }).toList(),
                   onChanged: (district) {
                     Get.find<ProductBrandController>()
-                        .setSelectedName(district);
+                        .setSelectedName(district!);
                   //  Get.find<AddressController>().getAreaList(district);
                   },
                 ),
@@ -932,7 +932,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
       );
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
-        title: Text(my_product),
+        title: Text(my_product!),
         content: Row(
           children: [
             // TextField(
@@ -949,7 +949,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                   value = _textEditingController?.text;
+                   value = _textEditingController.text;
               //      userInput.text = value.toString();
                   });
                 },
@@ -1026,7 +1026,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           leading: IconButton(onPressed: (){Get.to(() => DashBoards());}, icon: Icon(Icons.arrow_back,color: Colors.white,)),
-          title: Text(widget.outlet.name,style: TextStyle(color: Colors.white),),
+          title: Text(widget.outlet!.name!,style: TextStyle(color: Colors.white),),
           actions: [
           //   ElevatedButton(onPressed: (){
           //     Get.to(()=> TotalCostReport());
@@ -1043,13 +1043,13 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
             if (Get.find<ProductBrandController>().punched_product.isEmpty) {
             //  print( Constants.selectedbrand );
               Get.to(() => Remark(outlet: widget.outlet,));
-              print(widget.outlet.name);
+              print(widget.outlet!.name);
             //  Constants.increase++;
             //  Constants.selectedbrand = outlet.id.toString();
               // Utilities.showInToast("Please add a product",
               ////     toastType: ToastType.ERROR);
             }else{
-              Get.to(()=> PunchedProduct(outlet: widget.outlet,));
+              Get.to(()=> PunchedProduct(outlet: widget.outlet!,));
               //   sales.orders = jsonEncode(selectedProductList);
               // // sales.distributorId = "11";
               //   sales.soldAt = DateTime.now().toString();
@@ -4169,9 +4169,9 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                                       color: Colors.blue,
                                                                       fontWeight: FontWeight.w600,
                                                                     ),
-                                                                    onChanged: (value) {
+                                                                    onChanged: (String? value) {
                                                                       setState(() {
-                                                                        value = _textEditingController?.text;
+                                                                        value = _textEditingController.text;
                                                                         // _textEditingController.clear();
                                                                         //      userInput.text = value.toString();
                                                                       });
@@ -4361,7 +4361,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                           // ));
                                           //  Get.to(SellProductPage(outlet:outlet  ));
                                           Get.to(DetailsProduct(
-                                              outlet: widget.outlet,product: Get.find<ProductBrandController>().getNameList(item)
+                                              outlet: widget.outlet!,product: Get.find<ProductBrandController>().getNameList(item)
                                           ));
                                           // print(outlet.name);
                                         },
@@ -4489,7 +4489,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                   );
                                                   // set up the AlertDialog
                                                   AlertDialog alert = AlertDialog(
-                                                    title: Text(my_product),
+                                                    title: Text(my_product!),
                                                     content: Row(
                                                       children: [
                                                         // TextField(
@@ -4505,9 +4505,9 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                               color: Colors.blue,
                                                               fontWeight: FontWeight.w600,
                                                             ),
-                                                            onChanged: (value) {
+                                                            onChanged: (String? value) {
                                                               setState(() {
-                                                                value = _textEditingController?.text;
+                                                                value = _textEditingController.text;
                                                                // _textEditingController.clear();
                                                                 //      userInput.text = value.toString();
                                                               });
@@ -8448,7 +8448,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                       child:   Row(
                                                         children: [
                                                           Text(
-                                                            items.name,
+                                                            items.name!,
                                                             style: TextStyle(
                                                                 fontSize: 15,
                                                                 fontWeight: FontWeight.bold),
@@ -11261,7 +11261,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
       mycolor = Colors.white;
       isSelected = false;
     }else{
-      mycolor = Colors.grey[300];
+      mycolor = Colors.grey[300]!;
       isSelected = true;
     }
   }

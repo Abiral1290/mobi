@@ -44,7 +44,7 @@ class RemarkPage extends StatelessWidget {
     );
   }
 
-  String validateDiscount(int value) {
+  String? validateDiscount(int value) {
     if (!(value >= 0) && !(value <= 100)) {
       return "Discount should be less than or equal to 100%";
     }
@@ -52,7 +52,7 @@ class RemarkPage extends StatelessWidget {
   }
 
   void showQuantityBottomSheet(  String outletid) {
-    String addedremark;
+    String? addedremark;
     //String discountPercent = "0";
     Get.bottomSheet(
       Container(
@@ -74,10 +74,8 @@ class RemarkPage extends StatelessWidget {
                   onPressed: () {
                     if (addedremark != null  ) {
                       selectedOutletlist.add({
-
                         "outlet_id": outletid,
                         "remarks": addedremark,
-
                       });
                       Get.find<OutletsController>().addoutletInList(outletid);
                     } else {
@@ -143,7 +141,7 @@ class RemarkPage extends StatelessWidget {
                                       .elementAt(0)))
                                   .toList()
                                   .first
-                                  .name,
+                                  .name!,
                               overflow: TextOverflow.visible,
                             ),
                           ),
@@ -217,11 +215,11 @@ class RemarkPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                   child: CircleAvatar(
-                    backgroundColor:  outlet.synced
+                    backgroundColor:  outlet.synced!
                         ? Colors.green
                         : Colors.grey,
                     child: Icon(
-                      !outlet.synced
+                      outlet.synced!
                           ? Icons.cloud_off_outlined
                           : Icons.shopping_bag_outlined,
                       color: Colors.white,
@@ -230,8 +228,7 @@ class RemarkPage extends StatelessWidget {
             ),
             Center(
               child: Text(
-
-                outlet.name,
+                outlet.name!,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold),

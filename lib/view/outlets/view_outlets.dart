@@ -3441,7 +3441,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
 
   Sales sales = Sales();
 
-  String outletlength;
+  String? outletlength;
 
   var selectedProductList = [].obs;
   bool selected = false;
@@ -3471,7 +3471,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
     );
   }
 
-  String validateDiscount(int value) {
+  String? validateDiscount(int value) {
     if (!(value >= 0) && !(value <= 100)) {
       return "Discount should be less than or equal to 100%";
     }
@@ -3482,7 +3482,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
 
   void updateData(){
     int i = Get.find<OutletsController>().outletList.length +1;
-    Get.find<OutletsController>().outletList.first.name.allMatches(i.toString());
+    Get.find<OutletsController>().outletList.first.name!.allMatches(i.toString());
     setState(() {
 
     });
@@ -3501,7 +3501,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                   padding: const EdgeInsets.all(10.0),
                   child: GetBuilder<OutletsController>(
                     builder: (builder) {
-                      return Get.find<OutletsController>().item.length == null
+                      return Get.find<OutletsController>().item.length!=0
                           ? SizedBox()
                           : InputDecorator(
                         decoration: decoration("Select Remark"),
@@ -3519,9 +3519,9 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                               return DropdownMenuItem<String>(
                                   value: e, child: Text(e));
                             }).toList(),
-                            onChanged: (String district) {
+                            onChanged: (String? district) {
                               // setState(() {
-                              Get.find<OutletsController>().selectedDrowpdown = district;
+                              Get.find<OutletsController>().selectedDrowpdown = district!;
                               //  Get.find<OutletsController>().setitem(district );
                               // });
 
@@ -3542,7 +3542,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    if ( Get.find<OutletsController>().selectedDrowpdown != null  ) {
+                    if ( Get.find<OutletsController>().selectedDrowpdown.isNotEmpty  ) {
                       selectedProductList.add({
                         "id": outletid,
                        // "batch_id": batchId,
@@ -3635,7 +3635,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                       .elementAt(0)))
                                   .toList()
                                   .first
-                                  .name,
+                                  .name!,
                               overflow: TextOverflow.visible,
                             ),
                           ),
@@ -3680,7 +3680,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                   Spacer(),
                   Text(
                     DateFormat.yMEd()
-                        .format(DateTime.parse(batches.manufacturedAt)),
+                        .format(DateTime.parse(batches.manufacturedAt!)),
                     style: contentStyle,
                   ),
                 ],
@@ -3690,7 +3690,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                   Text("Expire:", style: contentStyle),
                   Spacer(),
                   Text(
-                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt)),
+                    DateFormat.yMEd().format(DateTime.parse(batches.expiredAt!)),
                     style: contentStyle,
                   ),
                 ],
@@ -3714,7 +3714,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
           itemBuilder: (context, index){
             return
               Card(
-              color: outlet[index].selected ? Colors.grey : Colors.white,
+              color: outlet[index].selected! ? Colors.grey : Colors.white,
               elevation: 7.0,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -3730,11 +3730,11 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                           child: Center(
                               child: CircleAvatar(
                                 radius: (35),
-                                backgroundColor:  outlet[index].synced
+                                backgroundColor:  outlet[index].synced!
                                     ? Colors.green
                                     : Colors.grey,
                                 child: Icon(
-                                  !outlet[index].synced
+                                  !(outlet[index].synced!)
                                       ? Icons.cloud_off_outlined
                                       : Icons.shopping_bag_outlined,
                                   color: Colors.white,
@@ -3746,7 +3746,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                         ),
                         CircleAvatar(
                             radius: (20),
-                            backgroundColor:  outlet[index].synced
+                            backgroundColor:  outlet[index].synced!
                                 ? Colors.blueGrey
                                 : Colors.grey,
                             child:  IconButton(onPressed:(){
@@ -4008,7 +4008,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                     Center(
                       child: Text(
 
-                        outlet[index].name,
+                        outlet[index].name!,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
@@ -4080,8 +4080,8 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
             if(conn){
               var response = await DeleteOutletPost(delete);
 
-              Utilities.showInToast(response.message,
-                  toastType: response.success
+              Utilities.showInToast(response.message!,
+                  toastType: response.success!
                       ? ToastType.SUCCESS
                       : ToastType.ERROR);
               Get.back();
@@ -4620,7 +4620,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                               //   padding: const EdgeInsets.only(top: 1),
                              //   child:
                                 Text(
-                                  outlet[index].name,
+                                  outlet[index].name!,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
@@ -4797,7 +4797,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
             padding: const EdgeInsets.all(20),
             child: GetBuilder<OutletsController>(
               builder: (outletController){
-                return  (Get.find<OutletsController>().outletList == null  || Get.find<OutletsController>().outletList.isEmpty) ?
+                return  (Get.find<OutletsController>().outletList.isNotEmpty  || Get.find<OutletsController>().outletList.isEmpty) ?
                 ListView(
                     children: [
                       Column(
@@ -4824,7 +4824,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                     Scrollbar(child: ListView.builder(
                         itemCount: Get.find<OutletsController>().outletList.length,
                         itemBuilder: (context, index){
-                          var item = Get.find<OutletsController>().outletList[index];
+                          Outlet? item = Get.find<OutletsController>().outletList[index];
                       return
                         Slidable(
                             startActionPane: ActionPane(
@@ -4840,7 +4840,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                 // A SlidableAction can have an icon and/or a label.
                                 SlidableAction(
                                   onPressed:(text){
-                                    showAlertDialog(context,item.id);
+                                    showAlertDialog(context,item.id!);
                                   },
                                   backgroundColor: Colors.black,
                                   foregroundColor: Colors.white,
@@ -4870,7 +4870,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                          //  ),
                           child: Column(
                           children: [
-                            item == null && item.isBlank ? Text("No Outlets"):
+                            (item.addressId!=null) ? Text("No Outlets"):
                             Container(
                             //         color: Get
                             //         .find<SalesReportController>()
@@ -5387,7 +5387,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                                 //   padding: const EdgeInsets.only(top: 1),
                                                 //   child:
                                                 Text(
-                                                  item.name,
+                                                  item.name!,
                                                   style: TextStyle(
                                                       fontSize: 18,
                                                       fontWeight: FontWeight.bold),

@@ -40,7 +40,7 @@ class ViewSalesPage extends StatelessWidget {
                   title: Text(DateFormat().add_yMEd().format(DateTime.parse(
                       Get.find<ProductsController>()
                           .localSalesList[index]
-                          .soldAt))),
+                          .soldAt!))),
                   subtitle: ExpansionTile(
                     title: Text(Get.find<OutletsController>()
                         .outletList
@@ -48,13 +48,13 @@ class ViewSalesPage extends StatelessWidget {
                     element.id ==
                         int.parse(Get.find<ProductsController>()
                             .localSalesList[index]
-                            .outletId))
+                            .outletId!))
                         .toList()
                         .first
-                        .name),
+                        .name!),
                     children: jsonDecode((Get.find<ProductsController>()
                         .localSalesList[index]
-                        .orders))
+                        .orders!))
                         .map<Widget>((product) {
                       print(product);
                       return ListTile(
@@ -64,7 +64,7 @@ class ViewSalesPage extends StatelessWidget {
                         element.id == int.parse(product["product_id"]))
                             .toList()
                             .first
-                            .name),
+                            .name!),
                         subtitle: Text("Quantity: ${product["quantity"]}"),
                       );
                     }).toList(),

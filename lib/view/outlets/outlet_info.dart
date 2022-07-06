@@ -26,8 +26,8 @@ import '../products/brandwiseproduct.dart';
 
 class OutletInfoPages extends StatefulWidget{
 
-  final Outlet outlet;
-  OutletInfoPages({Key key, this.outlet}): super(key: key);
+  final Outlet? outlet;
+  OutletInfoPages({Key? key, this.outlet}): super(key: key);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -39,28 +39,28 @@ class OutletInfoPage extends State<OutletInfoPages>{
 
 
 
-  int id;
+  int? id;
   final TextEditingController _nameCntrl = new TextEditingController();
   final TextEditingController _ownerCntrl = new TextEditingController();
   final TextEditingController _phoneCntrl = new TextEditingController();
-  String base64Image;
-  XFile _imageFile;
+  String? base64Image;
+  XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
   bool edit = false;
-  String visit_frequency;
-  double width  ;
-  DatabaseHelper databaseHelper;
-    GoogleMapController mapController;
+  String? visit_frequency;
+  double? width  ;
+  DatabaseHelper? databaseHelper;
+    GoogleMapController? mapController;
 
     LatLng _center = const LatLng(27.7172, 85.3240);
-   Location _location  ;
+   Location? _location  ;
   final Set<Marker> markers = new Set(); //markers for google map
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _location.onLocationChanged.listen((l) {
-      mapController.animateCamera(
+    _location!.onLocationChanged.listen((l) {
+      mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 20),
+          CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 20),
         ),
       );
     });
@@ -87,7 +87,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
           print(base64Image);
         }
       } catch (e) {
-        Utilities.showInToast(e.message);
+        Utilities.showInToast(e.toString());
       }
     }
 
@@ -147,11 +147,11 @@ class OutletInfoPage extends State<OutletInfoPages>{
                 edit = true;
                 width = 250;
                 textfield();
-                id = widget.outlet.id;
-                base64Image = widget.outlet.image;
-                _nameCntrl.text =   widget.outlet.name;
-                _ownerCntrl.text = widget.outlet.ownerName;
-                _phoneCntrl.text = widget.outlet.contact;
+                id = widget.outlet!.id;
+                base64Image = widget.outlet!.image;
+                _nameCntrl.text =   widget.outlet!.name!;
+                _ownerCntrl.text = widget.outlet!.ownerName!;
+                _phoneCntrl.text = widget.outlet!.contact!;
               });
             }, icon: Icon(Icons.edit, color: Colors.white))
             //Icon(Icons.edit, color: Color.fromARGB(255, 34, 47, 53)),
@@ -176,14 +176,14 @@ class OutletInfoPage extends State<OutletInfoPages>{
               fillColor: Colors.white, filled: true,
               focusColor: Colors.white,
               hintStyle: TextStyle(fontSize: 17),
-              hintText:  widget.outlet.name,
+              hintText:  widget.outlet!.name!,
              // suffixIcon: Icon(Icons.search),
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(20),
             ),
           ):
           Text(
-            widget.outlet.name,
+            widget.outlet!.name!,
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -207,7 +207,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
 
                   constraints: BoxConstraints.expand(
                     height:
-                    Theme.of(context).textTheme.headline4.fontSize * 1.1 +
+                    (Theme.of(context).textTheme.headline4?.fontSize!)! * 1.1 +
                         250.0,
                   ),
                   padding: const EdgeInsets.all(8.0),
@@ -218,7 +218,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                   Image.network(
                       ApiUrls.baseurl+Get.find<OutletsController>().image.toString()
                   )
-                      : Image.file(File(_imageFile.path)),
+                      : Image.file(File(_imageFile!.path)),
                   // const Icon(
                   //   Icons.cloud_download_sharp,
                   //   size: 100,
@@ -276,13 +276,13 @@ class OutletInfoPage extends State<OutletInfoPages>{
                         controller: _ownerCntrl ,
                         decoration: InputDecoration(
                           hintStyle: TextStyle(fontSize: 17),
-                          hintText: widget.outlet.ownerName,
+                          hintText: widget.outlet!.ownerName,
                        //   suffixIcon: Icon(Icons.search),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(20),
                         ),
                       ):
-                      Text("${widget.outlet.ownerName}",
+                      Text("${widget.outlet!.ownerName}",
                         style: TextStyle(
                         fontSize: 15.0,
                         color: Color.fromARGB(255, 22, 21, 21),
@@ -304,7 +304,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                     // ):
                     ListTile(
                       onTap: (){
-                        UrlLauncher.launchUrl(Uri.parse("tel://${widget.outlet.contact}"));
+                        UrlLauncher.launchUrl(Uri.parse("tel://${widget.outlet!.contact}"));
                      //   launchUrl(Uri.parse(widget.outlet.contact));
                       },
                       leading: Icon(
@@ -321,7 +321,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                           decoration: InputDecoration(
                               prefixText: '+977 - ',
                            //   labelText: "Phone",
-                              hintText:  widget.outlet.contact,
+                              hintText:  widget.outlet!.contact,
                             //  prefixIcon: Icon(Icons.phone)
                           ),
                           controller: _phoneCntrl,
@@ -338,7 +338,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                       //   ),
                       // )
                           :Text(
-                       widget.outlet.contact,
+                       widget.outlet!.contact!,
                         style: TextStyle(
                           fontSize: 15.0,
                           color: Color.fromARGB(255, 22, 21, 21),
@@ -417,7 +417,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                               // Get.find<OutletsController>().outletList.first.category_id ,
                               //Constants.selectedRoute.id.toString(),
                               routeId:
-                              Constants.selectedRoute.id.toString() == null ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute.id.toString(),
+                              Constants.selectedRoute!.id.toString().isNotEmpty ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute!.id.toString(),
                               //   Constants.selectedRoute.id.toString() == null? Get.find<Routecontroller>().selectedroute : Constants.selectedRoute.id.toString() ,
                               //   //route  ,
                               //"1",
@@ -451,12 +451,12 @@ class OutletInfoPage extends State<OutletInfoPages>{
                               // await DatabaseHelper.instance
                               //     .insertOutlet(outlet);
                               //  Get.back();
-                              Utilities.showInToast(response.message,
-                                  toastType: response.success
+                              Utilities.showInToast(response.message!,
+                                  toastType: response.success!
                                       ? ToastType.SUCCESS
                                       : ToastType.ERROR);
 
-                              if (response.success) {
+                              if (response.success!) {
                                 outlet.synced = true;
                                 Get.back();
                               }
@@ -597,7 +597,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                                fontWeight: FontWeight.w600,
                              ),),
                            IconButton(onPressed: (){ Get.to(() =>
-                               BrandWiseProduct(outlet: widget.outlet
+                               BrandWiseProduct(outlet: widget.outlet!
                                  // Get
                                  //   .find<OutletsController>()
                                  //   .outletList[index])
@@ -692,11 +692,11 @@ class OutletInfoPage extends State<OutletInfoPages>{
       markers.add(Marker(
         //add third marker
         markerId: MarkerId(_center.toString()),
-        position: LatLng(double.parse(widget.outlet.latitude), double.parse(widget.outlet.longitude)), //position of marker
+        position: LatLng(double.parse(widget.outlet!.latitude!), double.parse(widget.outlet!.longitude!)), //position of marker
         infoWindow: InfoWindow(
           //popup info
-          title: widget.outlet.name,
-          snippet:  widget.outlet.contact,
+          title: widget.outlet!.name!,
+          snippet:  widget.outlet!.contact!,
         ),
         icon: BitmapDescriptor.defaultMarker, //Icon for Marker
       ));

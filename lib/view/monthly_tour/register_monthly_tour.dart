@@ -8,7 +8,7 @@ import 'package:mobitrack_dv_flutter/view/monthly_tour/individual_day_form.dart'
 import 'package:nepali_utils/nepali_utils.dart';
 
 class RegisterMonthlyTourPage extends StatefulWidget {
-  NepaliDateTime dateTime;
+  NepaliDateTime? dateTime;
   RegisterMonthlyTourPage({@required this.dateTime});
   @override
   _RegisterMonthlyTourPageState createState() =>
@@ -16,7 +16,7 @@ class RegisterMonthlyTourPage extends StatefulWidget {
 }
 
 class _RegisterMonthlyTourPageState extends State<RegisterMonthlyTourPage> {
-  NepaliDateTime selectedDate;
+  NepaliDateTime? selectedDate;
   var currentMonthInString = "".obs;
   var currentMonthInInt = 0.obs;
   var totalNumberOfDays = 0.obs;
@@ -31,8 +31,8 @@ class _RegisterMonthlyTourPageState extends State<RegisterMonthlyTourPage> {
   @override
   void initState() {
     selectedDate = widget.dateTime;
-    currentMonthInString.value = NepaliDateFormat.MMMM().format(selectedDate);
-    currentMonthInInt.value = selectedDate.month;
+    currentMonthInString.value = NepaliDateFormat.MMMM().format(selectedDate!);
+    currentMonthInInt.value = selectedDate!.month;
     getNumberOfDays();
     super.initState();
   }
@@ -43,7 +43,7 @@ class _RegisterMonthlyTourPageState extends State<RegisterMonthlyTourPage> {
 
   void getNumberOfDays() {
     final lastDay = selectedDate;
-    totalNumberOfDays.value = lastDay.totalDays;
+    totalNumberOfDays.value = lastDay!.totalDays;
     for (var i = 0; i < totalNumberOfDays.value; i++) {
       selectedMap[i + 1] = false;
     }
@@ -70,20 +70,20 @@ class _RegisterMonthlyTourPageState extends State<RegisterMonthlyTourPage> {
                               MonthlyTourApiData();
                           monthlyTourApiData.data = data;
                           monthlyTourApiData.year =
-                              selectedDate.year.toString();
+                              selectedDate!.year.toString();
                           monthlyTourApiData.month =
                               currentMonthInString.value.toString();
                           monthlyTourApiData.deviceTime =
                               NepaliDateTime.now().toString();
                           postMonthlyTours(monthlyTourApiData).then((value) {
                             isSubmitable.value = true;
-                            if (value.success) {
+                            if (value.success!) {
                               Utilities.showInToast(
                                   "Successfully posted monthly data",
                                   toastType: ToastType.SUCCESS);
                               Get.back();
                             } else {
-                              Utilities.showInToast(value.message,
+                              Utilities.showInToast(value.message!,
                                   toastType: ToastType.ERROR);
                             }
                           });
@@ -118,7 +118,7 @@ class _RegisterMonthlyTourPageState extends State<RegisterMonthlyTourPage> {
             return ListTile(
               leading: Text((index + 1).toString()),
               title: Text(getDayInString(
-                  selectedDate.year, selectedDate.month, index + 1)),
+                  selectedDate!.year, selectedDate!.month, index + 1)),
               trailing: Obx(() => Icon(
                     Icons.check_circle,
                     color: selectedMap[index + 1] ? Colors.green : Colors.grey,
@@ -128,7 +128,7 @@ class _RegisterMonthlyTourPageState extends State<RegisterMonthlyTourPage> {
                   () => IndividualDayFormPage(
                     date: (index + 1).toString(),
                     day: getDayInString(
-                        selectedDate.year, selectedDate.month, index + 1),
+                        selectedDate!.year, selectedDate!.month, index + 1),
                   ),
                 );
                 if (data != null) {

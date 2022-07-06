@@ -28,7 +28,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
   var route = Get.lazyPut(()=>Routecontroller());
 
   var chequeImage = "".obs;
-  var bankName = "Select Bank".obs;
+  dynamic bankName = "Select Bank".obs;
   var paymentMode = "Cash".obs;
   var accountOf = "GNP".obs;
 
@@ -38,8 +38,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
 
   bool validator() {
     return collection.value.mode == PaymentMode.cheque
-        ? (collection.value.chequePhoto.isNotEmpty &&
-                collection.value.chequeNo.isNotEmpty)
+        ? (collection.value.chequePhoto!.isNotEmpty &&
+                collection.value.chequeNo!.isNotEmpty)
             ? true
             : false
         : true;
@@ -59,7 +59,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
     return base64Image;
   }
 
-  Future<String> _showPicker(context) async {
+  Future<String?> _showPicker(context) async {
     return await showModalBottomSheet<String>(
         context: context,
         builder: (BuildContext bc) {
@@ -71,14 +71,14 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                       leading: new Icon(Icons.photo_library),
                       title: new Text('Photo Library'),
                       onTap: () async {
-                        var resp = await _getImg(ImageSource.gallery);
+                        dynamic resp = await _getImg(ImageSource.gallery);
                         return resp;
                       }),
                   new ListTile(
                     leading: new Icon(Icons.photo_camera),
                     title: new Text('Camera'),
                     onTap: () async {
-                      var resp = await _getImg(ImageSource.camera);
+                      dynamic resp = await _getImg(ImageSource.camera);
                       return resp;
                     },
                   ),
@@ -117,8 +117,8 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                   }),
             );
             if (validator() &&
-                collection.value.amount > 0 &&
-                collection.value.bankName.isNotEmpty) {
+                collection.value.amount! > 0 &&
+                collection.value.bankName!.isNotEmpty) {
               if (selectedRoute.value != null) {
            //     collection.value.distributorId = selectedRoute.value.id;
                 collection.value.id = DateTime.now().microsecondsSinceEpoch;
@@ -159,7 +159,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
             children: [
               Obx(
                 () => Text(
-                  "Distributor: ${selectedRoute.value.routename}",
+                  "Distributor: ${selectedRoute.value!.routename}",
                   style: TextStyle(fontSize: 20.0),
                 ),
               ),
@@ -222,13 +222,13 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
 
                           value: value,
                           child: Text(
-                            value.bankName,
+                            value.bankName!,
                             style: TextStyle(color: Colors.black),
                           ),
                         );
                       }).toList(),
                       onChanged: (s) {
-                        collection.value.bankName = s.bankName;
+                        collection.value.bankName = s!.bankName;
                         bankName.value = s.bankName;
                       },
                     ),
@@ -321,7 +321,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                         }).toList(),
                         onChanged: (s) {
                           collection.value.mode = s;
-                          paymentMode.value = s;
+                          paymentMode.value = s!;
                         },
                       ),
                     ),
@@ -341,7 +341,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
                         }).toList(),
                         onChanged: (s) {
                           collection.value.accountOf = s;
-                          accountOf.value = s;
+                          accountOf.value = s!;
                         },
                       ),
                     ),
