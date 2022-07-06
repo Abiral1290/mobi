@@ -18,10 +18,13 @@ import 'package:mobitrack_dv_flutter/view/drawer.dart';
 
 import 'package:mobitrack_dv_flutter/view/outlets/remarks.dart';
 import 'package:mobitrack_dv_flutter/view/outlets/view_outlets.dart';
+import 'package:mobitrack_dv_flutter/view/profile.dart';
 import 'package:mobitrack_dv_flutter/view/report/sales_report_pdf_generator.dart';
+import 'package:mobitrack_dv_flutter/view/stock_count/add_stock_count.dart';
 import 'package:mobitrack_dv_flutter/view/totalcostreport.dart';
 import 'package:mobitrack_dv_flutter/view/view_distributor.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/dashboardmain.dart';
+import 'package:mobitrack_dv_flutter/view/widgets/google_maps.dart';
 import 'package:mobitrack_dv_flutter/view/widgets/scoreboard.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:perspective_pageview/perspective_pageview.dart';
@@ -29,6 +32,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../controller/auth_controller.dart';
+import '../controller/check_controller.dart';
+import '../controller/database_controller.dart';
 import '../controller/location_controller.dart';
 import '../controller/outlets_controller.dart';
 import '../controller/preference_controller.dart';
@@ -45,7 +50,7 @@ import '../utils/utilities.dart';
 import 'credentials/checkauth.dart';
 import 'location_status.dart';
 
-class DashBoard extends StatefulWidget{
+class DashBoards extends StatefulWidget{
 
   //Duration myDuration = Duration(days: 5);
 
@@ -56,12 +61,16 @@ class DashBoard extends StatefulWidget{
     return _DashBoard();
   }
 }
-class _DashBoard extends State<DashBoard>{
+class _DashBoard extends State<DashBoards>{
 
   TabController tebController;
   int _selectedIndex = 0;
     VoidCallback next;
 
+    var checkin = Get.lazyPut(()=>CheckController());
+   //DateTime dt1 = DateTime.parse(Get.find<CheckController>().checkin.last.checkinDeviceTime.toString() );
+  // DateTime a = DataTime(Get.find<CheckController>().checkin.first.checkinDeviceTime);
+ // DateTime b = DateTime.parse();
   LocationPermission permission;
   bool serviceEnabled;
   bool hasLocationPermission = false;
@@ -135,41 +144,57 @@ class _DashBoard extends State<DashBoard>{
 
   @override
   void initState() {
-    start();
+    // setState(() {
+    //   Get.find<CheckController>().checkin.first.checkinDeviceTime;
+    // });
+  //  start();
     // Get.find<ProductsController>();
     //  Get.find<AddressController>();
     //  Get.find<BankController>();
     //  Get.find<CollectionController>();
 
-    Get.find<PreferenceController>().getCheckInValue().then((value) {
-      if (value.split("//").last == "true") {
-        Constants.checkInOut = value.split("//")[1];
-        Get.find<LocationController>().startLocationService();
-        checkInId = value.split("//")[1];
-      }
-    });
-
-    Get.find<PreferenceController>().getDistributor().then((value) {
-      if (value.isEmpty) {
-        Get.to(() => View_route());
-      } else {
-        Constants.selectedDistributor = Distributor.fromJson(jsonDecode(value));
-        print(Constants.selectedDistributor);
-      }
-    });
-
-    Future.delayed(Duration(seconds: 6), () {
-      Get.find<OutletsController>();
-    });
-
-    // Timer.periodic(Duration(hours: 1), (timer) {
-    //   pushLocationData();
+    // Get.find<PreferenceController>().getCheckInValue().then((value) {
+    //   if (value.split("//").last == "true") {
+    //     Constants.checkInOut = value.split("//")[1];
+    //     Get.find<LocationController>().startLocationService();
+    //     checkInId = value.split("//")[1];
+    //   }
     // });
-
-    pushLocationData();
+    //
+    // Get.find<PreferenceController>().getDistributor().then((value) {
+    //   if (value.isEmpty) {
+    //     Get.to(() => View_route());
+    //   } else {
+    //     Constants.selectedDistributor = Distributor.fromJson(jsonDecode(value));
+    //     print(Constants.selectedDistributor);
+    //   }
+    // });
+    //
+    // Future.delayed(Duration(seconds: 6), () {
+    //   Get.find<OutletsController>();
+    // });
+    //
+    // // Timer.periodic(Duration(hours: 1), (timer) {
+    // //   pushLocationData();
+    // // });
+    //
+    // pushLocationData();
+   // _refreshJournals();
 
     //initFunction();
     super.initState();
+  }
+  //
+  // void _refreshJournals() async {
+  //   final data = await DatabaseHelper. getItemsm();
+  //   setState(() {
+  //     _journals = data;
+  //     _isLoading = false;
+  //   });
+  // }
+  @override
+  void dispose() {
+    super.dispose();
   }
   initFunction() async {
     var tempPath = await getTemporaryDirectory();
@@ -216,14 +241,17 @@ class _DashBoard extends State<DashBoard>{
     final hours = strDigits( myDuration.inHours.remainder(6));
     final minutes = strDigits( myDuration.inMinutes.remainder(60));
     final seconds = strDigits( myDuration.inSeconds.remainder(60));
+
+   // var difference =  dt1.add(new Duration(hours: 6));
    return DefaultTabController(
      length: 2,
      child: Scaffold(
        drawer: DrawerPage(),
         appBar:  AppBar(
           backgroundColor: Colors.black,
-          title:  Text("DashBoard"),
+         // title:  Text("DashBoard"),
             actions: [
+              IconButton(onPressed: (){ Get.to( ()=> GoogelMaps());}, icon: Icon(Icons.map_outlined,color: Colors.white,)),
               // TextButton(
               //   onPressed: () {
               //     Get.to(() => AttendancePage());
@@ -312,12 +340,25 @@ class _DashBoard extends State<DashBoard>{
     //           ),
               TextButton(
                 onPressed: () {
-
-                  Get.to(() => TotalCostReport());
+                 Get.to(() => TotalCostReport());
                 },
                 child: Text("Status", style: TextStyle(color: Colors.white)),
               ),
+              Padding(
+                padding:   EdgeInsets.all(Get.size.height  * 0.02),
+                child:  GestureDetector(
+                  onTap: () => Get.to(() => ProfilePage()),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    radius: Get.size.width * 0.05,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
 
+                    ),
+                  ),
+                ),
+              ),
             ],
           bottom: TabBar(
             controller: tebController,
@@ -328,17 +369,16 @@ class _DashBoard extends State<DashBoard>{
             ]
           )
         ),
-       body: GetBuilder<PreferenceController>(
-         builder: (preferenceController) {
+       body: GetBuilder<CheckController>(
+         builder: (cController) {
           // print("Checked in home: ${preferenceController.isCheckedIn}");
            // var user = Get.find<AuthController>();
            var location = Get.find<LocationController>();
          //  print(preferenceController.isCheckedIn ? 'is check' : ' not check');
            return HawkFabMenu(
              icon: AnimatedIcons.arrow_menu,
-             fabColor: Get.find<PreferenceController>().isCheckedIn ?
-                  Colors.black
-                 : Colors.white,
+             fabColor:
+                  Colors.black,
                //  : Colors.red[900],
              iconColor: Colors.white,
              items: [
@@ -413,18 +453,17 @@ class _DashBoard extends State<DashBoard>{
                // )
            //        :
            HawkFabMenuItem(
-                   label:
-                  '$hours:$minutes:$seconds',
+                 label: "Your checkout time: \n"
+                     "${Get.find<CheckController>().checkin.isEmpty ? "":Get.find<CheckController>().checkin.first.checkinDeviceTime.add( Duration(hours: 6)).toString()}",
                    ontap: () async {
                      // cancel workmanager
                     // Workmanager().cancelAll();
-
                      var conn = await Utilities.isInternetWorking();
                      if (conn) {
                        // sync location data
 
                        // await pushLocationData();
-                       //
+
                        // // Test if location services are enabled.
                        // serviceEnabled =
                        // await Geolocator.isLocationServiceEnabled();
@@ -453,19 +492,28 @@ class _DashBoard extends State<DashBoard>{
                        await Get.find<LocationController>()
                            .getCurrentPosition();
                        if (location.userPosition != null) {
-                         var resp = await checkOutAPI(
-                             location.userPosition.latitude.toString(),
-                             location.userPosition.longitude.toString(),
-                             Constants.checkInOut);
-                         if (resp.success) {
-                          // location.stopBackgroundLocationService();
-                           // Get.find<PreferenceController>()
-                           //     .setCheckInValue(true);
-                           Get.find<AuthController>().logout();
-                         //  SystemNavigator.pop();
-                          // Get.to(() => View_route());
-                         } else {
-                           Utilities.showInToast(resp.message,
+                         if(DateTime.now().isAfter(Get.find<CheckController>().checkin.first.checkinDeviceTime.add(Duration(hours: 6))  )){
+                           var resp = await checkOutAPI(
+                               location.userPosition.latitude.toString(),
+                               location.userPosition.longitude.toString(),
+                               Get.find<CheckController>().checkin.first.checkinDeviceTime.toString());
+                           print(  location.userPosition.latitude.toString());
+                            print(   location.userPosition.longitude.toString());
+                             print(  Constants.checkInOut);
+                           if (resp.success) {
+                             // location.stopBackgroundLocationService();
+                             // Get.find<PreferenceController>()
+                             //     .setCheckInValue(true);
+                             //   Get.find<AuthController>().logout();
+                             SystemNavigator.pop();
+                             // Get.to(() => View_route());
+                           } else {
+                             Utilities.showInToast(resp.message,
+                                 toastType: ToastType.ERROR);
+                           }
+                         }else{
+                           Utilities.showInToast(
+                               "You need reach your given working hour ",
                                toastType: ToastType.ERROR);
                          }
                        } else {
@@ -612,13 +660,24 @@ class _DashBoard extends State<DashBoard>{
            //     ),
              ],
 
-             body:  TabBarView(
-               controller: tebController,
-                 children: [
-                   ScoreBoard(),
-               ViewOutletstPage(),
-              //     DashBoardMain(),
-             ])
+             body:  RefreshIndicator(
+               onRefresh:() async {
+                 await Future.delayed(Duration(seconds: 1));
+                 Get.find<OutletsController>().fetchOutlets();
+                 Get
+                     .find<SalesReportController>()
+                     .fetchSalesReportFromAPI();
+                 // print(Get.find<OutletsController>().outletLists.length);
+                 // print( Get.find<ProductsController>().localSalesList.length);
+               },
+               child: TabBarView(
+                 controller: tebController,
+                   children: [
+                     ScoreBoard(),
+                 ViewOutletstPage(),
+                //     DashBoardMain(),
+               ]),
+             )
              // ListView(
              //   children: [
              //     // Container(

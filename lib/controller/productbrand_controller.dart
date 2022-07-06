@@ -102,6 +102,7 @@ class ProductBrandController extends GetxController {
   List<String> catalog = [];
   List<String> searchResult =[];
   List<SalesReport> salesReportList = [];
+  List<String> brandwisename  = [];
   int calculate = 0;
 
   String selectedBrand = "";
@@ -152,9 +153,6 @@ class ProductBrandController extends GetxController {
       update();
     }
   }
-
-
-
   // setSelectedArea(String area) {
   //   selectedArea = area;
   //   getSelectedAreaId(area);
@@ -191,7 +189,6 @@ class ProductBrandController extends GetxController {
   //     }
   //   });
   // }
-
 
   getProvinceList() {
     var newprovinceList =

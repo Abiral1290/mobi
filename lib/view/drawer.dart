@@ -73,6 +73,89 @@ class DrawerPage extends StatelessWidget {
         ),
       );
     }
+    showAlertDialog( BuildContext context ) {
+
+      // set up the buttons
+      Widget cancelButton = TextButton(
+        child: Text("Cancel"),
+        onPressed:  () {
+          Get.back();
+        },
+      );
+      Widget continueButton = TextButton(
+        child: Text("Submit Request"),
+        onPressed:  () async {
+          var conn = await Utilities.isInternetWorking();
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Text('Please Wait'),
+                  content: Column(
+                    children: [
+                      Divider(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(conn
+                            ? 'Submitting Your Request'
+                            : 'Saving offline'),
+                      ),
+                      CupertinoActivityIndicator(
+                        radius: 17,
+                      )
+                    ],
+                  ),
+                );
+              });
+
+          // if(conn){
+          //   var response = await DeleteOutletPost(delete);
+          //
+          //   Utilities.showInToast(response.message,
+          //       toastType: response.success
+          //           ? ToastType.SUCCESS
+          //           : ToastType.ERROR);
+          //   Get.back();
+          //   Get.back();
+          // }else{
+          //   Get.back();
+          //   //  outlet.synced = false;
+          //
+          //   Utilities.showInToast('Storing Offline',
+          //       toastType: ToastType.INFO);
+          // }
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Absent Request"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("Register your reason for taking a leave below :"),
+              TextField(
+          //      controller: remarkcontroller,
+              )
+            ],
+          ),
+        ),
+        actions: [
+          cancelButton,
+          continueButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -135,9 +218,9 @@ class DrawerPage extends StatelessWidget {
                                   }
                                 }
                               : () => Utilities.showInToast(
-                                  "Please select distributor first")
+                                  "Please select route first")
                           : () => Utilities.showInToast(
-                              "Please select distributor first"),
+                              "Please select route first"),
                       child: Text("Register Shop"),
                       style: expandedButtonStyle,
                     ),
@@ -146,9 +229,9 @@ class DrawerPage extends StatelessWidget {
                           ? Constants.selectmyRoute != null
                               ? () => Get.to(() => ViewOutletstPage())
                               : () => Utilities.showInToast(
-                                  "Please select distributor first")
+                                  "Please select route first")
                           : () => Utilities.showInToast(
-                              "Please select distributor first"),
+                              "Please select route first"),
                       child: Text("View Shop"),
                       style: expandedButtonStyle,
                     ),
@@ -282,6 +365,64 @@ class DrawerPage extends StatelessWidget {
                     decoration: InputDecoration(),
                     child: Row(
                       children: [
+                        Icon(Icons.request_quote),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Absent Request",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (context) {
+                        //     return
+                        //        CupertinoAlertDialog(
+                        //       title: Text("Please Wait"),
+                        //       content: Column(
+                        //         children: [
+                        //           Text("Stock Status is being fetch!"),
+                        //           CupertinoActivityIndicator(),
+                        //         ],
+                        //       ),
+                        //     );
+                        //   },
+                        //   barrierDismissible: false,
+                        // );
+                        // fetchStockStatus(
+                        //     Constants.selectedroute.id.toString())
+                        //     .then((value) {
+                        //   Get.back();
+                        //   if (value.success) {
+                        //     print(value.response);
+                        //     Get.to(() => AddStockCount(
+                        //       stockType: value.response,
+                        //     ));
+                        //   } else {
+                        //     Utilities.showInToast(
+                        //         "Could not fetch stock status data. Please try again later",
+                        //         toastType: ToastType.ERROR);
+                        //   }
+                        // });
+                        showAlertDialog(context);
+                      },
+                      child: Text("Absent Request"),
+                      style: expandedButtonStyle,
+                    ),
+                  ],
+                ),
+                SizedBox(height: Get.size.height * 0.01),
+                ExpansionTile(
+                  title: InputDecorator(
+                    decoration: InputDecoration(),
+                    child: Row(
+                      children: [
                         Icon(Icons.tour_rounded),
                         SizedBox(
                           width: 20,
@@ -350,7 +491,7 @@ class DrawerPage extends StatelessWidget {
                           barrierDismissible: false,
                         );
                         fetchStockStatus(
-                                Constants.selectedDistributor.id.toString())
+                                Constants.selectedroute.id.toString())
                             .then((value) {
                           Get.back();
                           if (value.success) {
@@ -405,7 +546,7 @@ class DrawerPage extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(left: 15 ,top: 4),
                       child: Text("Version : ${Constants.appVerId}"
-                          " 2 June 022")),
+                          " 16 June 022")),
                 ),
                 SizedBox(height: Get.size.height * 0.06),
                 Align(

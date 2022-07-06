@@ -15,10 +15,12 @@ class Constants {
   static final int callWaitSec = 22;
   static Distributor selectedDistributor;
   static int value_increase = 0;
+  static String datetime = '';
   static Routes selectedRoute;
-  static String selectmyRoute;
+  static String selectmyRoute  ;
   static String selectedbrand;
   static String salesoficer_id;
+  static String imageurl;
   static int increase_unsucessfulcall =0;
   static int storage;
   static Outlet selectedbrand_name;

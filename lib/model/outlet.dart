@@ -7,6 +7,7 @@ import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 import 'distributer_outlet.dart';
 
@@ -245,7 +246,7 @@ class UserApi{
       'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
       'Accept': 'application/json'
     };
-    final url = Uri.parse(ApiUrls.outlets  + Constants.selectedRoute.id.toString() );
+    final url = Uri.parse(ApiUrls.outlets  +  Constants.selectedRoute.id.toString()  );
     //final url_1 = Uri.parse(ApiUrls_Group.getoutlet);
     final response = await http.get(url, headers: headers);
     // final response_1 = await http.get(url_1, headers: headers);
@@ -286,7 +287,11 @@ class UserApi{
           //element.route;
         //}
       }).toList();
+
       return outss;
+    }
+    else{
+      throw Exception();
     }
   }
 
@@ -380,6 +385,39 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
   // try {
   var res = await http.get(
       Uri.parse(ApiUrls.outlets + Constants.selectedRoute.id.toString()),
+      headers: headers);
+  Map<String, dynamic> obj = json.decode(res.body);
+
+
+  if (res.statusCode == 200) {
+    final data = obj["data"].cast<Map<String, dynamic>>();
+
+    List<Outlet> outlets = await data.map<Outlet>((json) {
+      var out = Outlet.fromJson(json);
+      out.synced = true;
+      return out;
+    }).toSet().toList();
+    return ApiResponse(true, obj['message'], outlets);
+  } else {
+    print(obj);
+    return ApiResponse(
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+  }
+  // } catch (e) {
+  //   print(e.toString());
+  //   return ApiResponse(false, e.toString(), null);
+  // }
+}
+
+Future<ApiResponse<List<Outlet>>> fetchOutletsimageApi() async {
+  var headers = {
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Accept': 'application/json'
+  };
+
+  // try {
+  var res = await http.get(
+      Uri.parse(ApiUrls.imaggeurl),
       headers: headers);
   Map<String, dynamic> obj = json.decode(res.body);
 

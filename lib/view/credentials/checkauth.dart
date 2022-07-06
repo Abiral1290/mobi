@@ -12,7 +12,7 @@ class CheckAuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<AuthController>(
       builder: (authController) {
-        return Get.find<AuthController>().isLoggedIn ? DashBoard() : LoginPage();
+        return Get.find<AuthController>().isLoggedIn ? DashBoards() : LoginPage();
       },
     );
   }

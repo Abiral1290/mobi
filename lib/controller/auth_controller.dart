@@ -8,6 +8,7 @@ import 'package:mobitrack_dv_flutter/utils/api_urls_group.dart';
 import 'package:mobitrack_dv_flutter/view/credentials/first_widget.dart';
 //import 'package:mobitrack_dv_flutter/view/credentials/login.dart';
 
+import '../model/resp.dart';
 import '../view/credentials/login.dart';
 import 'preference_controller.dart';
 import 'package:http/http.dart' as http;
@@ -33,7 +34,7 @@ class AuthController extends GetxController {
     });
   }
 
-  Future<dynamic> signIn(String phone) async {
+  Future<ApiResponse<dynamic>> signIn(String phone) async {
     var body = {'phone': phone};
     try {
       final response = await http.post(Uri.parse(ApiUrls.login), body: body);
@@ -44,15 +45,17 @@ class AuthController extends GetxController {
           isLoggedIn = true;
           _officer = SalesOfficer.fromJson(obj['data']);
           update();
-          return SalesOfficer.fromJson(obj['data']);
+          return ApiResponse(obj['sucess'], obj['message'], SalesOfficer.fromJson(obj['data'])
+            );
         }
         return obj['message'];
       } else {
-        return 'Unknown error occured';
+        return ApiResponse(
+            obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
       }
     } catch (e) {
       debugPrint(e.toString());
-      return 'Unknown error occured';
+      return ApiResponse(false, e.toString(), null);
     }
   }
   Future<dynamic> signIn_1(String phone) async {

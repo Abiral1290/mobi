@@ -635,6 +635,8 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
   var provinceLists = Get.find<ProductBrandController>().productList.obs;
 
   bool isProvinceSelected = false;
+  Symbol symbol;
+  bool change = false;
    int _activeMeterIndex;
    var isSelected = false;
    List<String> searchResult = [];
@@ -1022,10 +1024,10 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(onPressed: (){Get.to(() => DashBoard());}, icon: Icon(Icons.arrow_back,color: Colors.black,)),
-          title: Text(widget.outlet.name,style: TextStyle(color: Colors.black),),
-          // actions: [
+          backgroundColor: Colors.black,
+          leading: IconButton(onPressed: (){Get.to(() => DashBoards());}, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+          title: Text(widget.outlet.name,style: TextStyle(color: Colors.white),),
+          actions: [
           //   ElevatedButton(onPressed: (){
           //     Get.to(()=> TotalCostReport());
           //   //  Get.to(()=> TestExpandableView());
@@ -1033,7 +1035,7 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
           // //    print(Get.find<ProductBrandController>().selectedArea);
           // //   Get.to(()=> DetailsProduct());
           //     }, child: Text("Press"))
-          // ],
+          ],
         ),
         floatingActionButton:  FloatingActionButton.extended(
           backgroundColor: Colors.black,
@@ -1115,11 +1117,10 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
           label: Row(
             children: [
               Icon(Icons.check_circle),
-              GetBuilder<ProductBrandController>(builder: (context){
-              return  Get.find<ProductBrandController>().punched_product.isEmpty ?
-                Text(   "No Order Remarks" ) : Text( "Punch Your Order");
-              })
-
+            change == true ?
+            Text( "Punch Your Order"  ) : Text(  "No Order Remarks")
+              // GetBuilder<ProductBrandController>(builder: (context){
+              // return}
             ],
           ),
         ),
@@ -4122,9 +4123,13 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                                                                 print(Get.find<ProductBrandController>().selectedunits);
                                                                 Get.find<ProductBrandController>().quantity.add(_textEditingController.text);
                                                                 print(Get.find<ProductBrandController>().punched_product.length);
+                                                                setState(() {
+                                                                  change = true;
+                                                                });
                                                                 int total = int.parse(_textEditingController.text) * int.parse(Get.find<ProductBrandController>().selectedUnit);
                                                                 print( Get.find<ProductBrandController>().selectedUnit);
-                                                                Get.find<ProductBrandController>().punched_product.add(Punched(Name: ite,
+                                                                Get.find<ProductBrandController>().brandwisename.add(item);
+                                                                Get.find<ProductBrandController>().punched_product.add(Punched(  Name: ite,
                                                                     quantity: int.parse(_textEditingController.text),Cost: total));
                                                                 _textEditingController.clear();
                                                                 //  _textEditingController.clear();
@@ -7977,14 +7982,12 @@ class _BrandWiseProductState extends State<BrandWiseProduct> {
                  //          // );
                  //        }),
                  //  ),
-
                   Get.find<ProductBrandController>().productList.isEmpty ? CupertinoActivityIndicator():
                   RefreshIndicator(
                     onRefresh:  () async{
                       await Future.delayed(Duration(seconds: 2));
                       Get.find<ProductBrandController>().getProvinceList() ;
                     },
-
                     child: GetBuilder<ProductBrandController>(
                       builder: (context) {
                         return ListView.builder(

@@ -140,9 +140,11 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobitrack_dv_flutter/controller/database_controller.dart';
 import 'package:mobitrack_dv_flutter/controller/location_controller.dart';
+import 'package:mobitrack_dv_flutter/controller/sales_report_controller.dart';
 import 'package:mobitrack_dv_flutter/model/alloutlet.dart';
 import 'package:mobitrack_dv_flutter/model/outlet.dart';
 import 'package:mobitrack_dv_flutter/model/outlet_post.dart';
+import 'package:mobitrack_dv_flutter/model/sales_report.dart';
 import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
@@ -155,10 +157,13 @@ class OutletsController extends GetxController {
   List<OutletPost> allOutlet = [];
   List<Outlet> searchList = [];
   List<LatLng> latlng =[];
+  List<Outlet > formattedlist = [];
   Outlet let;
   Outlet get marker =>let;
+  bool selectedtick ;
   var selectedDrowpdown = 'Outlet Closed Image';
   List item = ["Outlet Closed Image","Stock Availabe Image","margin Issue","Owner not in shop","Credit limit Issue"];
+  var image;
 
   OutletsController() {
     // if (Constants.selectedDistributor != null)
@@ -197,6 +202,11 @@ class OutletsController extends GetxController {
     update();
    }
 
+   imagewiseoutlet(Outlet outlet){
+    var imageUrl = outletList.where((element) => element.id == outlet.id);
+     image= imageUrl.first.image;
+     Constants.image = imageUrl.first.image;
+   }
   // fetchAllOutlets() async {
   //   var conn = await Utilities.isInternetWorking();
   //   if (conn) {
@@ -302,7 +312,17 @@ class OutletsController extends GetxController {
   //   print(outletList);
   //   //Get.find<LocationController>().setNearestOutletName();
   // }
+  formatOutletReport(SalesReport salesReport){
+    formattedlist = outletList.where((element) => element.outid == salesReport.outletId).toList();
 
+    if(   selectedtick = true ){
+      Get.find<SalesReportController>().formattedSalesReportList.where((element) => element.outletId == outletList.first.id ).toList();
+
+    }else{
+      selectedtick =false;
+    }
+    update();
+  }
   searchOutlets(String text) {
     if (outletList != null && outletList.isNotEmpty) {
       searchList = outletList
@@ -312,7 +332,6 @@ class OutletsController extends GetxController {
       update();
     }
   }
-
 }
 
 // import 'package:get/get.dart';

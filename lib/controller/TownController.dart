@@ -10,10 +10,11 @@ class TownController extends GetxController {
   List<Town> townlist = [];
   List<Town> list = [];
   List<String> name = [];
-  int selectedtown ;
+  String selectedtowns = '';
+  int selectedtown = 0;
   String selectedZone = "";
   int selectedZones;
-  int selectedTown;
+ // int selectedTown;
 
   TownController() {
     getTownList();
@@ -22,12 +23,13 @@ class TownController extends GetxController {
     selectedZone =zone;
   //  selectedZones = zone_id;
   }
-  setSelectedTown(int town){
-    selectedtown = town;
+  setSelectedTown(String town){
+   // selectedtown = town;
    // selectedTown = town_id;
-   //  var newlist = list.where((element) => element.town == selectedTown);
-   //  selectedTown = newlist.first.id;
-    update();
+    var newlist = townlist.where((element) => element.town == town);
+    selectedtowns = newlist.first.town;
+    selectedtown = newlist.first.id;
+   update();
      // var newlist = list.where((element) => element.town == selectedTown);
      // selectedTown = newlist.first.id;
      // update();
@@ -47,9 +49,9 @@ class TownController extends GetxController {
         if (value.success){
           townlist = value.response;
           print(townlist.length);
-          setSelectedTown(townlist.first.id
+       //   setSelectedTown(townlist.first.id
             //  townlist.first.id
-          );
+        //  );
           setSelectionZone(townlist.first.toString());
           update();
            // var newlist = list.where((element) => element.town == selectedTown);

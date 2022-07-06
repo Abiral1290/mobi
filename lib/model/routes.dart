@@ -14,11 +14,12 @@ class Routees {
   int id;
   String routename;
 
-  Routees({this.id, this.routename});
+
+  Routees({this.id, this.routename });
 
   Routees.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    routename = json['routename'];
+    id = json['id'] ?? "";
+    routename = json['routename'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -29,43 +30,54 @@ class Routees {
   }
 }
 
-
-
-
 class Routes {
   int id;
   String routename;
+  String day;
 
-  Routes({this.id, this.routename});
+  Routes({this.id, this.routename,this.day});
 
-  Routes.fromJson(Map<String, dynamic> json, [isLocalStorage = false]) {
+  Routes.fromJson(Map<String, dynamic> json  ) {
     id = json['id'];
     routename = json['routename'];
+    day = json['day'];
 
 
-    if (isLocalStorage) {
-      id = json['id'];
-      // total_cost = json['total_cost'];
-      // outletLatitude = json["outlet_latitude"];
-      // outletLongitude = json["outlet_longitude"];
-    }
   }
 
-  Map<String, dynamic> toJson([bool isLocalStorage = false]) {
+  Map<String, dynamic> toJson( ) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['routename'] = this.routename;
-    if (isLocalStorage) {
-      data['id'] = this.id;
-
-      // data['outlet_latitude'] = this.outletLatitude;
-      // data['outlet_longitude'] = this.outletLongitude;
-    }
+    data['day']= this.day;
 
     return data;
   }
 }
 
+Future<ApiResponse<List<Routes>>> fetchallRouteApi( ) async {
+  var headers = {
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Accept': 'application/json'
+  };
+  // try {
+  var res = await http.get(Uri.parse(ApiUrls.route), headers: headers);
+  //var res_1 = await http.get(Uri.parse(ApiUrls_Group.distributors), headers: headers);
+  Map<String, dynamic> obj = json.decode(res.body);
+  //Map<String, dynamic> obj_1 = json.decode(res_1.body);
+  if (res.statusCode == 200) {
+    final data = obj["data"].cast<Map<String, dynamic>>();
+    List<Routes> routees = await data.map<Routes>((json) {
+      return Routes.fromJson(json);
+    }).toList();
+    return
+      ApiResponse(true, obj['message'], routees);
+  } else {
+    print(obj);
+    return ApiResponse(
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+  }
+}
 
 Future<ApiResponse<List<Routes>>> fetchRouteApi( ) async {
   var headers = {
