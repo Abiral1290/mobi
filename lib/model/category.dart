@@ -11,8 +11,8 @@ import '../utils/constants.dart';
 import 'package:http/http.dart' as http;
 
 class Categories {
-  int id;
-  String category;
+  int? id;
+  String? category;
 
   Categories({this.id, this.category});
 
@@ -31,7 +31,7 @@ class Categories {
 
 Future<ApiResponse<List<Categories>>> fetchCategoryApi( ) async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -55,7 +55,7 @@ Future<ApiResponse<List<Categories>>> fetchCategoryApi( ) async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
@@ -64,7 +64,7 @@ Future<ApiResponse<List<Categories>>> fetchCategoryApi( ) async {
 }
 // Future<ApiResponse<List<Distributor>>> fetchDistributorsApis() async {
 //   var headers = {
-//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
 //     'Accept': 'application/json'
 //   };
 //

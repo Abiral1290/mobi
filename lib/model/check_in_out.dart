@@ -7,19 +7,19 @@ import 'package:mobitrack_dv_flutter/model/resp.dart';
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 
 class CheckInOut {
-  int id;
-  int salesOfficerId;
-  double checkinLatitude;
-  double checkinLongitude;
-  String createdAt;
-  String updatedAt;
-  DateTime checkinDeviceTime;
-  double checkoutLatitude;
-  double checkoutLongitude;
-  DateTime checkoutDeviceTime;
+  int? id;
+  int? salesOfficerId;
+  double? checkinLatitude;
+  double? checkinLongitude;
+  String? createdAt;
+  String? updatedAt;
+  DateTime? checkinDeviceTime;
+  double? checkoutLatitude;
+  double? checkoutLongitude;
+  DateTime? checkoutDeviceTime;
 
   /// Check in/out check out time
-  String date;
+  String? date;
 
   CheckInOut(
       {this.id,
@@ -51,8 +51,8 @@ class CheckInOut {
         : DateTime.parse(json['checkout_device_time']);
 
     date = checkinDeviceTime != null
-        ? "${checkinDeviceTime.year}-${checkinDeviceTime.month}-${checkinDeviceTime.day}"
-        : "${checkoutDeviceTime.year}-${checkoutDeviceTime.month}-${checkoutDeviceTime.day}";
+        ? "${checkinDeviceTime!.year}-${checkinDeviceTime!.month}-${checkinDeviceTime!.day}"
+        : "${checkoutDeviceTime!.year}-${checkoutDeviceTime!.month}-${checkoutDeviceTime!.day}";
     // createdAt = json['created_at'];
     // updatedAt = json['updated_at'];
   }
@@ -76,7 +76,7 @@ class CheckInOut {
 
 Future<ApiResponse<List<CheckInOut>>> fetchcheckDataApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -93,7 +93,7 @@ Future<ApiResponse<List<CheckInOut>>> fetchcheckDataApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
@@ -108,7 +108,7 @@ Future<ApiResponse<int>> checkInAPI(String lat, String long) async {
     'checkin_device_time': DateTime.now().toString()
   };
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -123,11 +123,11 @@ Future<ApiResponse<int>> checkInAPI(String lat, String long) async {
       return ApiResponse(obj['success'], obj['message'], data["id"]);
     } else {
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }
 
@@ -139,7 +139,7 @@ Future<ApiResponse> checkOutAPI(String lat, String long, String id) async {
     'id': id,
   };
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 

@@ -12,26 +12,26 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import 'distributer_outlet.dart';
 
 class Outlets {
-  int id;
-  int outletId;
-  String name;
-  String ownerName;
-  String addressId;
-  String street;
-  String contact;
-  double latitude;
-  double longitude;
-  String salesOfficerId;
-  String createdAt;
-  String updatedAt;
-  int distributorId;
-  String image;
-  int flag;
-  String visitFrequency;
-  int townId;
-  int routeId;
-  int channelId;
-  int categoryId;
+  int? id;
+  int? outletId;
+  String? name;
+  String? ownerName;
+  String? addressId;
+  String? street;
+  String? contact;
+  double? latitude;
+  double? longitude;
+  String? salesOfficerId;
+  String? createdAt;
+  String? updatedAt;
+  int? distributorId;
+  String? image;
+  int? flag;
+  String? visitFrequency;
+  int? townId;
+  int? routeId;
+  int? channelId;
+  int? categoryId;
 
   Outlets(
       {this.id,
@@ -107,26 +107,26 @@ class Outlets {
 }
 
 class Outlet  {
-  int id;
-  int outid;
-  String name;
-  String ownerName;
-  String addressId;
-  String street;
-  String image;
-  String contact;
-  String type;
-  String latitude;
-  String longitude;
-  String town_id;
-  String route_id;
-  String channel_id;
-  String category_id;
-  String visitfrequency;
-  String createdAt;
-  String updatedAt;
-  String distributorId;
-  bool selected;
+  int? id;
+  int? outid;
+  String? name;
+  String? ownerName;
+  String? addressId;
+  String? street;
+  String? image;
+  String? contact;
+  String? type;
+  String? latitude;
+  String? longitude;
+  String? town_id;
+  String? route_id;
+  String? channel_id;
+  String? category_id;
+  String? visitfrequency;
+  String? createdAt;
+  String? updatedAt;
+  String? distributorId;
+  bool? selected;
 
 
  // String visitfrequency;
@@ -134,7 +134,7 @@ class Outlet  {
 
 
   ///flag to check if the outlet is synced with backend
-  bool synced = true; //default is true for data fetched from api
+  bool? synced = true; //default is true for data fetched from api
 
   Outlet(
       {
@@ -210,7 +210,7 @@ class Outlet  {
     data['category_id'] = this.category_id.toString();
     data['visiting frequency'] = this.visitfrequency.toString();
 
-    data['synced'] = (this.synced ? 1 : 0).toString();
+    data['synced'] = (this.synced! ? 1 : 0).toString();
 
     return data;
   }
@@ -219,7 +219,7 @@ class Outlet  {
 class UserApi{
 
 
-  List<String> outss;
+  List<String>? outss;
   // static Future<List<Outlet>> getOutletSuggestions(String query) async {
   //   final url = Uri.parse(ApiUrls.outlets  + Constants.selectedDistributor.id.toString());
   //   final response = await http.get(url);
@@ -243,10 +243,10 @@ class UserApi{
   static Future<List<Outlet>> getUserSuggestionsa(String query) async {
     //
     var headers = {
-      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
       'Accept': 'application/json'
     };
-    final url = Uri.parse(ApiUrls.outlets  +  Constants.selectedRoute.id.toString()  );
+    final url = Uri.parse(ApiUrls.outlets  +  Constants.selectedRoute!.id.toString()  );
     //final url_1 = Uri.parse(ApiUrls_Group.getoutlet);
     final response = await http.get(url, headers: headers);
     // final response_1 = await http.get(url_1, headers: headers);
@@ -271,7 +271,7 @@ class UserApi{
 
       List<Outlet> outss =out.where((element) {
         //if (element.name == Constants.selectedOutlets.name) {
-          final out = element.name.toLowerCase();
+          final out = element.name!.toLowerCase();
           // outlet_town.where((element) {
           //   final town = element.town;
           //
@@ -295,11 +295,11 @@ class UserApi{
     }
   }
 
-  static Future<List<Outlet>> getlist(String query)async{
-    final outl = Constants.selectedOutlets.name;
+  static Future<List<Outlet>?> getlist(String query)async{
+    final outl = Constants.selectedOutlets!.name;
   }
   static Future<List<Outlet>> getUserSuggestionsroute() async {
-    final url = Uri.parse(ApiUrls.outlets  + Constants.selectedRoute.id.toString());
+    final url = Uri.parse(ApiUrls.outlets  + Constants.selectedRoute!.id.toString());
     final response = await http.get(url);
     Map<String, dynamic> obj = json.decode(response.body);
 
@@ -355,7 +355,7 @@ class UserApi{
 Future<ApiResponse> registerOutlet(Outlet outlet) async {
   var body = outlet.toJson();
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -378,13 +378,13 @@ Future<ApiResponse> registerOutlet(Outlet outlet) async {
 
 Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
   // try {
   var res = await http.get(
-      Uri.parse(ApiUrls.outlets + Constants.selectedRoute.id.toString()),
+      Uri.parse(ApiUrls.outlets + Constants.selectedRoute!.id.toString()),
       headers: headers);
   Map<String, dynamic> obj = json.decode(res.body);
 
@@ -401,7 +401,7 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
@@ -411,7 +411,7 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
 
 Future<ApiResponse<List<Outlet>>> fetchOutletsimageApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -434,7 +434,7 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsimageApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
@@ -443,7 +443,7 @@ Future<ApiResponse<List<Outlet>>> fetchOutletsimageApi() async {
 }
 // Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
 //   var headers = {
-//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
 //     'Accept': 'application/json'
 //   };
 //

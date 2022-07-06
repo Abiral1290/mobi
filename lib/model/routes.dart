@@ -11,8 +11,8 @@ import '../utils/constants.dart';
 import 'outlet.dart';
 
 class Routees {
-  int id;
-  String routename;
+  int? id;
+  String? routename;
 
 
   Routees({this.id, this.routename });
@@ -31,9 +31,9 @@ class Routees {
 }
 
 class Routes {
-  int id;
-  String routename;
-  String day;
+  int? id;
+  String? routename;
+  String? day;
 
   Routes({this.id, this.routename,this.day});
 
@@ -57,7 +57,7 @@ class Routes {
 
 Future<ApiResponse<List<Routes>>> fetchallRouteApi( ) async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
   // try {
@@ -75,13 +75,13 @@ Future<ApiResponse<List<Routes>>> fetchallRouteApi( ) async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
 }
 
 Future<ApiResponse<List<Routes>>> fetchRouteApi( ) async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
   // try {
@@ -99,12 +99,12 @@ Future<ApiResponse<List<Routes>>> fetchRouteApi( ) async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
 }
 // Future<ApiResponse<Routes>> fetchRoutes() async {
 //   var headers = {
-//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
 //     'Accept': 'application/json'
 //   };
 //
@@ -128,7 +128,7 @@ Future<ApiResponse<List<Routes>>> fetchRouteApi( ) async {
 // }
 // Future<ApiResponse<List<Routees>>> fetchDayWiseRouteApi( ) async {
 //   var headers = {
-//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
 //     'Accept': 'application/json'
 //   };
 //   // try {

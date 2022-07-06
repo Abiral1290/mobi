@@ -138,7 +138,7 @@ class Streets {
 
 Future<ApiResponse<List<Address>>> fetchAddressApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 

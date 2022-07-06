@@ -6,12 +6,12 @@ import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 
 class AppVersion {
-  int versionId;
-  String versionName;
-  String url;
-  String remarks;
-  String createdAt;
-  String updatedAt;
+  int? versionId;
+  String? versionName;
+  String? url;
+  String? remarks;
+  String? createdAt;
+  String? updatedAt;
 
   AppVersion(
       {this.versionId,
@@ -44,7 +44,7 @@ class AppVersion {
 
 Future<ApiResponse<AppVersion>> checkForUpdate() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -59,10 +59,10 @@ Future<ApiResponse<AppVersion>> checkForUpdate() async {
           obj['success'], obj['message'], AppVersion.fromJson(obj['data']));
     } else {
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }

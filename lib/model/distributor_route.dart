@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 import '../controller/auth_controller.dart';
 
 class Distributor_route{
-  int Distributor_id;
-  int Route_id;
+  int? Distributor_id;
+  int? Route_id;
 
   Distributor_route.fromJson(Map<String, dynamic> json){
     Distributor_id = int.parse(json['dis_id'].toString());
@@ -28,7 +28,7 @@ class Distributor_route{
 Future<ApiResponse> registerOutlet(Distributor_route dis_route) async {
   var body = dis_route.toJson();
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 

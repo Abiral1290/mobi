@@ -8,9 +8,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// [InfoWindow] to your marker here, then you can use the [toMarker] method to convert
 /// this to a proper [Marker] that the [GoogleMap] can read.
 class MapMarker extends Clusterable {
-   String id;
-    LatLng position;
-  BitmapDescriptor icon;
+   String? id;
+    LatLng? position;
+  BitmapDescriptor? icon;
 
   MapMarker({
      this.id,
@@ -22,8 +22,8 @@ class MapMarker extends Clusterable {
     childMarkerId,
   }) : super(
     markerId: id,
-    latitude: position.latitude,
-    longitude: position.longitude,
+    latitude: position!.latitude,
+    longitude: position!.longitude,
     isCluster: isCluster,
     clusterId: clusterId,
     pointsSize: pointsSize,
@@ -31,11 +31,11 @@ class MapMarker extends Clusterable {
   );
 
   Marker toMarker() => Marker(
-    markerId: MarkerId(isCluster ? 'cl_$id' : id),
+    markerId: MarkerId(isCluster! ? 'cl_$id' : id!),
     position: LatLng(
-      position.latitude,
-      position.longitude,
+      position!.latitude,
+      position!.longitude,
     ),
-    icon: icon,
+    icon: icon!,
   );
 }

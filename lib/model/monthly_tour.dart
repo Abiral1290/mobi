@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 
 class MonthlyTourApiData {
-  String data;
-  String year;
-  String month;
-  String deviceTime;
+  String? data;
+  String? year;
+  String? month;
+  String? deviceTime;
 
   MonthlyTourApiData({this.data, this.year, this.month, this.deviceTime});
 
@@ -33,15 +33,15 @@ class MonthlyTourApiData {
 }
 
 class MonthlyTour {
-  int id;
-  String day;
-  String date;
-  String town;
-  String route;
-  String nightHalt;
-  String contactAddress;
-  String stocklistPhone;
-  String hotelPhone;
+  int? id;
+  String? day;
+  String? date;
+  String? town;
+  String? route;
+  String? nightHalt;
+  String? contactAddress;
+  String? stocklistPhone;
+  String? hotelPhone;
 
   MonthlyTour({
     this.id,
@@ -61,7 +61,7 @@ Future<ApiResponse> postMonthlyTours(
   var body = monthlyTourApiData.toJson();
   var headers = {
     "Accept": "Application/json",
-    "Authorization": "Bearer ${Get.find<AuthController>().user.apiToken}"
+    "Authorization": "Bearer ${Get.find<AuthController>().user.apiToken!}"
   };
 
   try {
@@ -72,6 +72,6 @@ Future<ApiResponse> postMonthlyTours(
 
     return ApiResponse(obj["success"], obj["message"], null);
   } catch (e) {
-    return ApiResponse(false, e.message, null);
+    return ApiResponse(false, e.toString(), null);
   }
 }

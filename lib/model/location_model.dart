@@ -7,15 +7,15 @@ import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 
 class LocationModel {
-  String longitude;
-  String latitude;
-  String checkinoutId;
-  String outletId;
+  String? longitude;
+  String? latitude;
+  String? checkinoutId;
+  String? outletId;
   // int userId;
-  String date;
+  String? date;
   // String updatedAt;
   // String createdAt;
-  String id;
+  String? id;
 
   LocationModel(
       {this.longitude,
@@ -62,7 +62,7 @@ Future<ApiResponse> postLocationApi(
   var body = locationModel.toJson(inOutlet);
   var headers = {
     'Accept': 'application/json',
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
   };
 
   try {

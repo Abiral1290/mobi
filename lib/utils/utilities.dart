@@ -86,7 +86,7 @@ class Utilities {
   ///
   ///2 is bottom and default
   static void showInToast(String message,
-      {ToastType toastType, int toastPos = 2}) {
+      {ToastType? toastType, int toastPos = 2}) {
     FlutterFlexibleToast.cancel();
     FlutterFlexibleToast.showToast(
         message: " " + message,
@@ -119,14 +119,14 @@ class Utilities {
   }
 
   static showPlatformSpecificAlert(
-      {@required String title,
-      @required String body,
+      {@required String? title,
+      @required String? body,
       @required context,
-      Function onDismiss,
-      DialogAction addionalAction,
-      Widget additional,
-      bool canclose = true,
-      bool dismissable}) async {
+      Function? onDismiss,
+      DialogAction? addionalAction,
+      Widget? additional,
+      bool? canclose = true,
+      bool? dismissable}) async {
     return await showDialog(
       barrierDismissible: dismissable == null ? false : dismissable,
       context: context,
@@ -134,10 +134,10 @@ class Utilities {
         return Platform.isIOS
             ? CupertinoAlertDialog(
                 title: Text(
-                  title,
+                  title!,
                   textAlign: TextAlign.left,
                 ),
-                content: Text(body),
+                content: Text(body!),
                 actions: <Widget>[
                   CupertinoDialogAction(
                     child: additional != null
@@ -149,7 +149,7 @@ class Utilities {
                       if (onDismiss != null) {
                         onDismiss();
                       }
-                      if (canclose) {
+                      if (canclose!) {
                         Get.back();
                       }
                     },
@@ -163,10 +163,10 @@ class Utilities {
               )
             : AlertDialog(
                 title: new Text(
-                  title,
+                  title!,
                   textAlign: TextAlign.left,
                 ),
-                content: Text(body),
+                content: Text(body!),
                 actions: <Widget>[
                   TextButton(
                     child: additional != null
@@ -178,7 +178,7 @@ class Utilities {
                       if (onDismiss != null) {
                         onDismiss();
                       }
-                      if (canclose) {
+                      if (canclose!) {
                         Get.back();
                       }
                     },

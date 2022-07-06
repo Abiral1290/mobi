@@ -11,23 +11,23 @@ import 'package:http/http.dart' as http;
 import '../utils/constants.dart';
 
 class OutletPost{
-  int id;
-  String outletId;
-  String name;
-  String ownerName;
-  String contact;
-  String latitude;
-  String longitude;
-  String salesOfficer;
+  int? id;
+  String? outletId;
+  String? name;
+  String? ownerName;
+  String? contact;
+  String? latitude;
+  String? longitude;
+  String? salesOfficer;
  // String image;
-  String image;
-  String visitFrequency;
-  String townId;
-  String routeId;
-  String channelId;
-  String categoryId;
-  String distributorId;
-  bool selected;
+  String? image;
+  String? visitFrequency;
+  String? townId;
+  String? routeId;
+  String? channelId;
+  String? categoryId;
+  String? distributorId;
+  bool? selected;
 
  bool synced = true;
 
@@ -109,7 +109,7 @@ Future<ApiResponse> registerOutletPost(OutletPost outlet) async {
     'Authorization': 'Bearer ' + Get
         .find<AuthController>()
         .user
-        .apiToken,
+        .apiToken!,
     'Accept': 'application/json'
   };
 
@@ -132,13 +132,13 @@ Future<ApiResponse> registerOutletPost(OutletPost outlet) async {
 
 Future<ApiResponse<List<OutletPost>>> fetchOutletsApis() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
   // try {
   var res = await http.get(
-      Uri.parse(ApiUrls.outlets + Constants.selectedRoute.id.toString()),
+      Uri.parse(ApiUrls.outlets + Constants.selectedRoute!.id.toString()),
       headers: headers);
   Map<String, dynamic> obj = json.decode(res.body);
 
@@ -155,7 +155,7 @@ Future<ApiResponse<List<OutletPost>>> fetchOutletsApis() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
