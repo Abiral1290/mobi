@@ -25,7 +25,7 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
                 if (conn) {
                   Utilities.showInToast("Syncing Data",
                       toastType: ToastType.INFO);
-                  for (var list in locationController.locationList) {
+                  for (var list in locationController.locationList!) {
                     LocationModel model = LocationModel(
                       id: list.id.toString(),
                       latitude: list.latitude.toString(),
@@ -63,19 +63,19 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
                 ? Center(child: CircularProgressIndicator())
                 : ListView.builder(
                     itemCount:
-                        Get.find<LocationController>().locationList.length,
+                        Get.find<LocationController>().locationList!.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(Get.find<LocationController>()
-                            .locationList[index]
+                            .locationList![index]
                             .date!),
                         subtitle: Text(Get.find<LocationController>()
-                                .locationList[index]
+                                .locationList![index]
                                 .latitude
                                 .toString() +
                             ", " +
                             Get.find<LocationController>()
-                                .locationList[index]
+                                .locationList![index]
                                 .longitude
                                 .toString()),
                       );

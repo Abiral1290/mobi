@@ -797,8 +797,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
             .getCurrentPosition();
         if (location.userPosition != null) {
           var resp = await checkInAPI(
-              location.userPosition.latitude.toString(),
-              location.userPosition.longitude.toString());
+              location.userPosition!.latitude.toString(),
+              location.userPosition!.longitude.toString());
           if (resp.success!) {
             //  location.startLocationService();
             Get.find<PreferenceController>()
@@ -806,8 +806,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
                 checkInId: resp.response.toString());
             Constants.checkInOut = resp.response.toString();
             checkInId = resp.response.toString();
-            print(location.userPosition.latitude.toString());
-            print(location.userPosition.longitude.toString());
+            print(location.userPosition!.latitude.toString());
+            print(location.userPosition!.longitude.toString());
           //  Get.to(() => DashBoard());
 
           } else {

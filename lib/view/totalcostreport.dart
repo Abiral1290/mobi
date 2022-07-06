@@ -36,10 +36,10 @@ class _totalCost extends State<TotalCostReport>{
     // TODO: implement initState
     _refreshJournals();
     setState(() {
-      Get.find<OutletsController>().outletList.length;
+      Get.find<OutletsController>().outletList!.length;
 
       //  print(  Get.find<ProductBrandController>().productList.elementAt().name);
-      print(Get.find<SalesReportController>(). formattedSalesReportList.length);
+      print(Get.find<SalesReportController>(). formattedSalesReportList!.length);
     });
     super.initState();
   }
@@ -83,10 +83,10 @@ class _totalCost extends State<TotalCostReport>{
           // }),
                 GetBuilder<SalesReportController>(builder: (context){
                   return ListView.builder(
-                    itemCount:  Get.find<SalesReportController>().formattedSalesReportList.length,
+                    itemCount:  Get.find<SalesReportController>().formattedSalesReportList!.length,
                       itemBuilder:(context, index) {
-                      var items = Get.find<SalesReportController>().formattedSalesReportList[index];
-                    return Text(Get.find<OutletsController>().outletList.where((element) => element.id == items.outletId).toList().first.name!
+                      var items = Get.find<SalesReportController>().formattedSalesReportList![index];
+                    return Text(Get.find<OutletsController>().outletList!.where((element) => element.id == items.outletId).toList().first.name!
                     );
                   });
                 })

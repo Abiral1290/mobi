@@ -452,7 +452,7 @@ class Remarks extends State<Remark>{
                                 orders:  jsonEncode(selectedProductList),
                                 total_cost :"",
                                 remark: _type,
-                                latitude: location.latitude.toString(),
+                                latitude: location!.latitude.toString(),
                                 longitude: location.longitude.toString(),
                                 remark_image: base64Image,
                               );

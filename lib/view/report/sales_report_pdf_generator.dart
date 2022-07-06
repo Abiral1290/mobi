@@ -119,12 +119,12 @@ class PdfParagraphApi {
               // .first
               // .name,
           Get.find<OutletsController>()
-              .outletList
+              .outletList!
               .where((element) => element.id == salesList[index].outletId)
               .toList()
               .isNotEmpty
               ? Get.find<OutletsController>()
-              .outletList
+              .outletList!
               .where((element) => element.id == salesList[index].outletId)
               .toList()
               .first

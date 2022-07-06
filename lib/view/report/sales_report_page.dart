@@ -957,7 +957,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
     setState(() {
       Get.find<ProductBrandController>().productList.length;
       //  print(  Get.find<ProductBrandController>().productList.elementAt().name);
-      print(Get.find<SalesReportController>(). formattedSalesReportList.length);
+      print(Get.find<SalesReportController>(). formattedSalesReportList!.length);
     });
   }
 
@@ -973,7 +973,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
               print(Get.find<SalesReportController>().formattedSalesReportList);
 
               final pdfFile = await PdfParagraphApi.generate(
-                  Get.find<SalesReportController>().formattedSalesReportList,
+                  Get.find<SalesReportController>().formattedSalesReportList!,
                   distributor: Constants.selectedRoute!);
               Get.bottomSheet(
                 Container(
@@ -1028,7 +1028,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   child: Row(
                     children: [
                       Text(
-                          "Total data: ${ Get.find<SalesReportController>().formattedSalesReportList.length}"),
+                          "Total data: ${ Get.find<SalesReportController>().formattedSalesReportList!.length}"),
                       Spacer(),
                       IconButton(
                         icon: Icon(
@@ -1085,14 +1085,14 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   setState(() {
                           Get.find<ProductBrandController>().productList.length;
                    //  print(  Get.find<ProductBrandController>().productList.elementAt().name);
-                    print(Get.find<SalesReportController>(). formattedSalesReportList.length);
+                    print(Get.find<SalesReportController>(). formattedSalesReportList!.length);
                   });
                 }
                     , child: Text("Click to View Unloaded Data")),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    Get.find<SalesReportController>().selectedData,
+                    Get.find<SalesReportController>().selectedData!,
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -1169,11 +1169,11 @@ class _SalesReportPageState extends State<SalesReportPage> {
                   GetBuilder<SalesReportController>(
                     builder: (context) {
                       return Get.find<SalesReportController>()
-                          .formattedSalesReportList
+                          .formattedSalesReportList!
                           .isNotEmpty
                           ? ListView.builder(
                           itemCount: Get.find<SalesReportController>()
-                              .formattedSalesReportList
+                              .formattedSalesReportList!
                               .length,
                           itemBuilder: (context, index) {
                             var item = Get.find<SalesReportController>()
@@ -1205,7 +1205,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                     children: [
                                      Padding(
                                        padding: const EdgeInsets.all(8.0),
-                                       child: Text( item[index].productId == 0 ?
+                                       child: Text( item![index].productId == 0 ?
                                        // newlist
                                        //       .isEmpty ?
                                        "-"
@@ -1220,12 +1220,12 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Text(
                                             Get.find<OutletsController>()
-                                            .outletList
+                                            .outletList!
                                             .where((element) => element.id == item[index].outletId)
                                             .toList()
                                             .isNotEmpty
                                             ? Get.find<OutletsController>()
-                                            .outletList
+                                            .outletList!
                                             .where((element) => element.id == item[index].outletId)
                                             .toList()
                                             .first

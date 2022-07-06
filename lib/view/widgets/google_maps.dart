@@ -257,7 +257,7 @@ class _GoogleMaps extends State<GoogelMaps>{
 
    void setMarkers()   {
      //var notes =  Get.find<OutletsController>().outletList ;
-     List<Marker> markers = Get.find<OutletsController>().outletList.map((n) {
+     List<Marker> markers = Get.find<OutletsController>().outletList!.map((n) {
        LatLng point = LatLng(double.parse(n.latitude == null? "27.45" : n.latitude!) , double.parse(n.longitude == null? "89.45" :n.longitude!)
 
        );

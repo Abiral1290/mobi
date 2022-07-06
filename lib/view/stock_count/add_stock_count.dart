@@ -205,7 +205,7 @@ class _AddStockCountState extends State<AddStockCount> {
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
-                    : Get.find<ProductsController>().productList.isEmpty
+                    : Get.find<ProductsController>().productList!.isEmpty
                         ? Center(child: Text("No Products"))
                         : Scrollbar(
                             isAlwaysShown: true,
@@ -214,12 +214,12 @@ class _AddStockCountState extends State<AddStockCount> {
                             hoverThickness: 10.0,
                             child: ListView.builder(
                               itemCount: Get.find<ProductsController>()
-                                  .productList
+                                  .productList!
                                   .length,
                               itemBuilder: (context, index) {
                                 return buildMainTile(
                                     Get.find<ProductsController>()
-                                        .productList[index]);
+                                        .productList![index]);
                               },
                             ),
                           );

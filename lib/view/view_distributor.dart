@@ -468,8 +468,8 @@ class _View_routeState extends State<View_route> {
             .getCurrentPosition();
         if (location.userPosition != null) {
           var resp = await checkInAPI(
-              location.userPosition.latitude.toString(),
-              location.userPosition.longitude.toString());
+              location.userPosition!.latitude.toString(),
+              location.userPosition!.longitude.toString());
           if (resp.success!) {
           //  location.startLocationService();
             Get.find<PreferenceController>()
@@ -477,8 +477,8 @@ class _View_routeState extends State<View_route> {
                 checkInId: resp.response.toString());
             Constants.checkInOut = resp.response.toString();
             checkInId = resp.response.toString();
-            print(location.userPosition.latitude.toString());
-            print(location.userPosition.longitude.toString());
+            print(location.userPosition!.latitude.toString());
+            print(location.userPosition!.longitude.toString());
            Get.to(() => DashBoards());
 
           } else {
@@ -512,7 +512,7 @@ class _View_routeState extends State<View_route> {
               //      Get.find<Routecontroller>().selel
                 // Get.find<Routecontroller>().storeRouteOffline(routeList[index]);
              //    Get.
-                    if(  Get.find<CheckController>().checkin.isEmpty  ){
+                    if(  Get.find<CheckController>().checkin!.isEmpty  ){
                       setState(() {
                         Constants.selectedRoute = routeList[index];
                         print(Constants.selectedRoute!.id!);
@@ -532,7 +532,7 @@ class _View_routeState extends State<View_route> {
                         Get.to(()=> DashBoards()) ;
                         press();
                       });
-                    }else if(DateFormat('yyyy-MM-dd  ').format(now)== DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin.first.checkinDeviceTime!) ){
+                    }else if(DateFormat('yyyy-MM-dd  ').format(now)== DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin!.first.checkinDeviceTime!) ){
                       Constants.selectedRoute = routeList[index];
                       print(Constants.selectedRoute!.id);
                       print(routeList[index].id);
@@ -543,7 +543,7 @@ class _View_routeState extends State<View_route> {
                       print(Constants.selectedDistributor);
                       Constants.selectmyRoute = routeList[index].routename;
                       print( DateFormat('yyyy-MM-dd  ').format(now));
-                      print(DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin.first.checkinDeviceTime!));
+                      print(DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin!.first.checkinDeviceTime!));
                       Get.find<PreferenceController>()
                           .setDistributor(jsonEncode(Constants.selectedDistributor));
                       Utilities.showInToast(
@@ -1097,10 +1097,10 @@ class _View_routeState extends State<View_route> {
          // init: Routecontroller(),
           builder: (routeController) {
             return
-              routeController.routeList.isNotEmpty
-                ? listSegment(routeController.routeList)
+              routeController.routeList!.isNotEmpty
+                ? listSegment(routeController.routeList!)
                // : routeController.routeList != null
-                : routeController.routeList.isEmpty
+                : routeController.routeList!.isEmpty
                 ? Center(child: Text("No Route Assigned"))
                //  : routeController.routeList ==null ?Center(child: Text("No Route Assign Please contact your Distributor"),)
                // : listSegment(routeController.routeList)

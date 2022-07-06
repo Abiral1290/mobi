@@ -1052,7 +1052,7 @@ class SellProductPage extends StatelessWidget {
                           Expanded(
                             child: Text(
                               Get.find<ProductsController>()
-                                  .productList
+                                  .productList!
                                   .where((element) =>
                               element.id ==
                                   int.parse(selectedProductList[index]
@@ -1302,11 +1302,11 @@ class SellProductPage extends StatelessWidget {
                                   .searchProductList !=
                                   null
                                   ? Get.find<ProductsController>()
-                                  .searchProductList
+                                  .searchProductList!
                                   .isNotEmpty
                                   ? _buildListViewWidget(
                                   Get.find<ProductsController>()
-                                      .searchProductList)
+                                      .searchProductList!)
                                   : Center(child: Text("No Products"))
                                   : Get.find<ProductsController>()
                                   .productList ==
@@ -1315,12 +1315,12 @@ class SellProductPage extends StatelessWidget {
                                 child: CircularProgressIndicator(),
                               )
                                   : Get.find<ProductsController>()
-                                  .productList
+                                  .productList!
                                   .isEmpty
                                   ? Center(child: Text("No Products"))
                                   : _buildListViewWidget(
                                   Get.find<ProductsController>()
-                                      .productList);
+                                      .productList!);
                             },
                           ),
                         ],

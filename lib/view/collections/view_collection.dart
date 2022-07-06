@@ -32,12 +32,12 @@ class ViewCollectionPage extends StatelessWidget {
           init: CollectionController(),
           builder: (collectionController) {
             return collectionController.collectionsList != null
-                ? collectionController.collectionsList.isNotEmpty
+                ? collectionController.collectionsList!.isNotEmpty
                     ? ListView.builder(
-                        itemCount: collectionController.collectionsList.length,
+                        itemCount: collectionController.collectionsList!.length,
                         itemBuilder: (context, index) {
                           var item =
-                              collectionController.collectionsList[index];
+                              collectionController.collectionsList![index];
                           return Card(
                             child: ListTile(
                               leading: CircleAvatar(

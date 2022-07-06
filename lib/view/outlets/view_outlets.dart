@@ -3481,8 +3481,8 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
 
 
   void updateData(){
-    int i = Get.find<OutletsController>().outletList.length +1;
-    Get.find<OutletsController>().outletList.first.name!.allMatches(i.toString());
+    int i = Get.find<OutletsController>().outletList!.length +1;
+    Get.find<OutletsController>().outletList!.first.name!.allMatches(i.toString());
     setState(() {
 
     });
@@ -3627,7 +3627,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                           Expanded(
                             child: Text(
                               Get.find<OutletsController>()
-                                  .outletList
+                                  .outletList!
                                   .where((element) =>
                               element.id ==
                                   int.parse(selectedProductList[index]
@@ -4151,8 +4151,8 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
               elevation: 7.0,
               child: InkWell(
                   onTap: (){
-                    Constants.selectedbrand = Get.find<OutletsController>().outletList[index].id.toString();
-                    Constants.selectedbrand_name= Get.find<OutletsController>().outletList[index] ;
+                    Constants.selectedbrand = Get.find<OutletsController>().outletList![index].id.toString();
+                    Constants.selectedbrand_name= Get.find<OutletsController>().outletList![index] ;
                     print( Constants.selectedbrand );
                     Get.to(() =>
                     //
@@ -4167,10 +4167,10 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                     BrandWiseProduct(outlet:
                             Get
                               .find<OutletsController>()
-                              .outletList[index]));
+                              .outletList![index]));
                     print(Get
                         .find<OutletsController>()
-                        .outletList[index].outid);
+                        .outletList![index].outid);
                                 // SellProductPage(
                                 //   outlet: Get
                                 //       .find<OutletsController>()
@@ -4797,7 +4797,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
             padding: const EdgeInsets.all(20),
             child: GetBuilder<OutletsController>(
               builder: (outletController){
-                return  (Get.find<OutletsController>().outletList.isNotEmpty  || Get.find<OutletsController>().outletList.isEmpty) ?
+                return  (Get.find<OutletsController>().outletList!.isNotEmpty  || Get.find<OutletsController>().outletList!.isEmpty) ?
                 ListView(
                     children: [
                       Column(
@@ -4822,9 +4822,9 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                  :
 
                     Scrollbar(child: ListView.builder(
-                        itemCount: Get.find<OutletsController>().outletList.length,
+                        itemCount: Get.find<OutletsController>().outletList!.length,
                         itemBuilder: (context, index){
-                          Outlet? item = Get.find<OutletsController>().outletList[index];
+                          Outlet? item = Get.find<OutletsController>().outletList![index];
                       return
                         Slidable(
                             startActionPane: ActionPane(
@@ -4881,9 +4881,9 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                 shape: RoundedRectangleBorder(
                                     side: BorderSide(color:  Get
                                         .find<SalesReportController>()
-                                        .formattedSalesReportList.any((element) => element.outletId   ==  Get
+                                        .formattedSalesReportList!.any((element) => element.outletId   ==  Get
                                         .find<OutletsController>()
-                                        .outletList[index].id) ? Colors.green : Colors.red, width: 2),
+                                        .outletList![index].id) ? Colors.green : Colors.red, width: 2),
                                   borderRadius: BorderRadius.circular(12.0),
 
                                 ),
@@ -4901,9 +4901,9 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                 child: InkWell(
 
                                   onTap: (){
-                                    Constants.selectedbrand = Get.find<OutletsController>().outletList[index].id.toString();
+                                    Constants.selectedbrand = Get.find<OutletsController>().outletList![index].id.toString();
                                     print( Constants.selectedbrand);
-                                    Get.find<OutletsController>().imagewiseoutlet(Get.find<OutletsController>().outletList[index]);
+                                    Get.find<OutletsController>().imagewiseoutlet(Get.find<OutletsController>().outletList![index]);
                                     Get.to(() =>
                                     //
                                     // OutletInfoPages(outlet: Get
@@ -4917,7 +4917,7 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                     OutletInfoPages(outlet:
                                         Get
                                             .find<OutletsController>()
-                                            .outletList[index]));
+                                            .outletList![index]));
                                     // BrandWiseProduct(outlet:
                                     // Get
                                     //     .find<OutletsController>()
@@ -5394,9 +5394,9 @@ class _ViewOutletstPageState extends State<ViewOutletstPage> {
                                                 ),
                                                 Get
                                                     .find<SalesReportController>()
-                                                    .formattedSalesReportList.any((element) => element.outletId   ==  Get
+                                                    .formattedSalesReportList!.any((element) => element.outletId   ==  Get
                                                     .find<OutletsController>()
-                                                    .outletList[index].id) ? Text("Already Visited",style: TextStyle(color: Colors.green,fontSize: 10),): Text("Yet to Visit",style: TextStyle(color: Colors.red,fontSize: 10)),
+                                                    .outletList![index].id) ? Text("Already Visited",style: TextStyle(color: Colors.green,fontSize: 10),): Text("Yet to Visit",style: TextStyle(color: Colors.red,fontSize: 10)),
                                                 //    ),
                                                 // Container(
                                                 //   child:   Text(

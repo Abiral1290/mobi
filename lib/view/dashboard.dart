@@ -95,7 +95,7 @@ class _DashBoard extends State<DashBoards>{
   // }
 
   pushLocationData() async {
-    for (var list in locationController.locationList) {
+    for (var list in locationController.locationList!) {
       LocationModel model = LocationModel(
         id: list.id.toString(),
         latitude: list.latitude.toString(),
@@ -453,7 +453,7 @@ class _DashBoard extends State<DashBoards>{
            //        :
            HawkFabMenuItem(
                  label: "Your checkout time: \n"
-                     "${Get.find<CheckController>().checkin.isEmpty ? "":Get.find<CheckController>().checkin.first.checkinDeviceTime!.add( Duration(hours: 6)).toString()}",
+                     "${Get.find<CheckController>().checkin!.isEmpty ? "":Get.find<CheckController>().checkin!.first.checkinDeviceTime!.add( Duration(hours: 6)).toString()}",
                    ontap: () async {
                      // cancel workmanager
                     // Workmanager().cancelAll();
@@ -491,13 +491,13 @@ class _DashBoard extends State<DashBoards>{
                        await Get.find<LocationController>()
                            .getCurrentPosition();
                        if (location.userPosition != null) {
-                         if(DateTime.now().isAfter(Get.find<CheckController>().checkin.first.checkinDeviceTime!.add(Duration(hours: 6))  )){
+                         if(DateTime.now().isAfter(Get.find<CheckController>().checkin!.first.checkinDeviceTime!.add(Duration(hours: 6))  )){
                            var resp = await checkOutAPI(
-                               location.userPosition.latitude.toString(),
-                               location.userPosition.longitude.toString(),
-                               Get.find<CheckController>().checkin.first.checkinDeviceTime.toString());
-                           print(  location.userPosition.latitude.toString());
-                            print(   location.userPosition.longitude.toString());
+                               location.userPosition!.latitude.toString(),
+                               location.userPosition!.longitude.toString(),
+                               Get.find<CheckController>().checkin!.first.checkinDeviceTime.toString());
+                           print(  location.userPosition!.latitude.toString());
+                            print(   location.userPosition!.longitude.toString());
                              print(  Constants.checkInOut);
                            if (resp.success!) {
                              // location.stopBackgroundLocationService();
