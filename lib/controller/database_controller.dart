@@ -541,7 +541,7 @@ class DatabaseHelper {
       return false;
     }
   }
-  Future<List<CheckInOut>> getcheckin() async{
+  Future<List<CheckInOut>?> getcheckin() async{
     Database db = await instance.instace;
     List<CheckInOut> checkinout = [];
     var res = await db.query(checkinoutTable);
@@ -566,7 +566,7 @@ class DatabaseHelper {
     final db = await  instance.instace;
     return db.query(salesTable, orderBy: "id");
   }
-  Future<List<Routes>> getroute() async{
+  Future<List<Routes>?> getroute() async{
     Database db = await instance.instace;
     List<Routes> route = [];
     var res = await db.query(routeTable, orderBy: "id");
@@ -587,7 +587,7 @@ class DatabaseHelper {
   }
   static Future<List<Routes>> getItemsm() async {
     final db = await instance.instace;
-    final List<Map<String, Object>> queryResult =
+    final List<Map<String, Object?>> queryResult =
     await db.query(routeTable);
     return queryResult.map((e) => Routes.fromJson(e)).toList();
   }
@@ -654,7 +654,7 @@ class DatabaseHelper {
       print('inserted collection data');
       return res != 0;
     } catch (e) {
-      print(e.message);
+      print(e.toString());
       return false;
     }
   }

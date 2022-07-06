@@ -13,12 +13,12 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class LocationController extends GetxController {
   var outlet = Get.lazyPut(()=>OutletsController());
-  List<LocationModel> locationList = [];
-  DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  Position userPosition;
-  StreamSubscription<Position> positionStream;
-  String nearestOutletName = 'To be Determined';
-  Outlet nearestOutlet;
+  List<LocationModel>? locationList = [];
+  DatabaseHelper? databaseHelper = DatabaseHelper.instance;
+  Position? userPosition;
+  StreamSubscription<Position>? positionStream;
+  String? nearestOutletName = 'To be Determined';
+  Outlet? nearestOutlet;
 
   var preference = Get.put(PreferenceController());
   var outlets = Get.lazyPut(() => OutletsController());
@@ -68,22 +68,22 @@ class LocationController extends GetxController {
     if (await Utilities.isInternetWorking()) {
       var savedLocation = await Get.find<PreferenceController>().getLocation();
       if (savedLocation != "") {
-        var lat = double.parse(savedLocation.split(",").first.toString());
+        var lat = double.parse(savedLocation!.split(",").first.toString());
         var lng = double.parse(savedLocation.split(",").last.toString());
         if (((Utilities.calculateDistance(
                         lat,
                         lng,
-                        double.parse(locationModel.latitude),
-                        double.parse(locationModel.latitude))) *
+                        double.parse(locationModel.latitude!),
+                        double.parse(locationModel.latitude!))) *
                     1000)
                 .abs() >
             Constants.locationRadius) {
           postLocationApi(locationModel, inOutlet).then((value) {
-            if (value.success) {
+            if (value.success!) {
               print("Location send success");
 
               Get.find<PreferenceController>()
-                  .setLocation(locationModel.latitude, locationModel.longitude);
+                  .setLocation(locationModel.latitude!, locationModel.longitude!);
             } else {
               Get.find<LocationController>()
                   .addLocation(locationModel, inOutlet);
@@ -92,11 +92,11 @@ class LocationController extends GetxController {
         }
       } else {
         postLocationApi(locationModel, inOutlet).then((value) {
-          if (value.success) {
+          if (value.success!) {
             print("Location send success");
 
             Get.find<PreferenceController>()
-                .setLocation(locationModel.latitude, locationModel.longitude);
+                .setLocation(locationModel.latitude!, locationModel.longitude!);
           } else {
             Get.find<LocationController>().addLocation(locationModel, inOutlet);
           }
@@ -178,7 +178,7 @@ class LocationController extends GetxController {
 
   stopBackgroundLocationService() {
     BackgroundLocation.stopLocationService();
-    positionStream.cancel();
+    positionStream!.cancel();
     nearestOutletName = 'To be Determined';
     update();
 
@@ -186,33 +186,33 @@ class LocationController extends GetxController {
   }
 
   getLocationData() {
-    databaseHelper.getAllLocationData().then((value) {
+    databaseHelper!.getAllLocationData().then((value) {
       locationList = value;
       update();
     });
   }
 
   addLocation(LocationModel locationModel, bool inOutlet) {
-    databaseHelper.insertLocationData(locationModel, inOutlet).then((value) {
-      locationList.add(value);
+    databaseHelper!.insertLocationData(locationModel, inOutlet).then((value) {
+      locationList!.add(value);
       update();
     });
   }
 
   deleteLocation(LocationModel locationModel) {
-    databaseHelper
+    databaseHelper!
         .removeLocationData(locationModel.id.toString())
         .then((value) {
       if (value == 1) {
-        locationList.remove(locationModel);
+        locationList!.remove(locationModel);
         update();
       } else {}
     });
   }
 
   deleteAllLocation() {
-    databaseHelper.removeAllLocationData().then((value) {
-      locationList.clear();
+    databaseHelper!.removeAllLocationData().then((value) {
+      locationList!.clear();
       update();
     });
   }

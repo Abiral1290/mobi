@@ -63,19 +63,18 @@ class DashBoards extends StatefulWidget{
 }
 class _DashBoard extends State<DashBoards>{
 
-  TabController tebController;
+  TabController? tebController;
   int _selectedIndex = 0;
-    VoidCallback next;
+    VoidCallback? next;
 
     var checkin = Get.lazyPut(()=>CheckController());
    //DateTime dt1 = DateTime.parse(Get.find<CheckController>().checkin.last.checkinDeviceTime.toString() );
   // DateTime a = DataTime(Get.find<CheckController>().checkin.first.checkinDeviceTime);
  // DateTime b = DateTime.parse();
-  LocationPermission permission;
-  bool serviceEnabled;
+  LocationPermission? permission;
   bool hasLocationPermission = false;
   String checkInId = "";
-  Timer countdown;
+  Timer? countdown;
   Duration myDuration = Duration(days: 5);
 
   var locationController = Get.find<LocationController>();
@@ -135,7 +134,7 @@ class _DashBoard extends State<DashBoards>{
     setState(() {
       final second =  myDuration.inSeconds - reduceSceond;
       if(second < 0 ){
-        countdown.cancel();
+        countdown!.cancel();
       }else{
        myDuration = Duration(seconds: second);
       }
@@ -210,12 +209,12 @@ class _DashBoard extends State<DashBoards>{
     var auth = Get.find<AuthController>().isLoggedIn;
     if (conn && auth) {
       var resp = await checkForUpdate();
-      if (resp.success) {
-        print(resp.response.versionId)  ;
+      if (resp.success!) {
+        print(resp.response!.versionId!)  ;
         print(Constants.appVerId);
-        if (resp.response.versionId > Constants.appVerId) {
-          print(resp.response.url);
-          downloadApk(resp.response.url, downloadPath, context);
+        if (resp.response!.versionId! > Constants.appVerId) {
+          print(resp.response!.url);
+          downloadApk(resp.response!.url!, downloadPath, context);
           // Constants.storage = resp.response.versionId;
           //  resp.response.versionId = id;
         } else {
@@ -223,7 +222,7 @@ class _DashBoard extends State<DashBoards>{
               Duration(seconds: 2), () => Get.off(() => CheckAuthPage()));
         }
       } else {
-        Utilities.showInToast('Failed to check for update.\n' + resp.message);
+        Utilities.showInToast('Failed to check for update.\n' + resp.message!);
         Future.delayed(
             Duration(seconds: 2), () => Get.off(() => CheckAuthPage()));
       }
@@ -454,7 +453,7 @@ class _DashBoard extends State<DashBoards>{
            //        :
            HawkFabMenuItem(
                  label: "Your checkout time: \n"
-                     "${Get.find<CheckController>().checkin.isEmpty ? "":Get.find<CheckController>().checkin.first.checkinDeviceTime.add( Duration(hours: 6)).toString()}",
+                     "${Get.find<CheckController>().checkin.isEmpty ? "":Get.find<CheckController>().checkin.first.checkinDeviceTime!.add( Duration(hours: 6)).toString()}",
                    ontap: () async {
                      // cancel workmanager
                     // Workmanager().cancelAll();
@@ -492,7 +491,7 @@ class _DashBoard extends State<DashBoards>{
                        await Get.find<LocationController>()
                            .getCurrentPosition();
                        if (location.userPosition != null) {
-                         if(DateTime.now().isAfter(Get.find<CheckController>().checkin.first.checkinDeviceTime.add(Duration(hours: 6))  )){
+                         if(DateTime.now().isAfter(Get.find<CheckController>().checkin.first.checkinDeviceTime!.add(Duration(hours: 6))  )){
                            var resp = await checkOutAPI(
                                location.userPosition.latitude.toString(),
                                location.userPosition.longitude.toString(),
@@ -500,7 +499,7 @@ class _DashBoard extends State<DashBoards>{
                            print(  location.userPosition.latitude.toString());
                             print(   location.userPosition.longitude.toString());
                              print(  Constants.checkInOut);
-                           if (resp.success) {
+                           if (resp.success!) {
                              // location.stopBackgroundLocationService();
                              // Get.find<PreferenceController>()
                              //     .setCheckInValue(true);
@@ -508,7 +507,7 @@ class _DashBoard extends State<DashBoards>{
                              SystemNavigator.pop();
                              // Get.to(() => View_route());
                            } else {
-                             Utilities.showInToast(resp.message,
+                             Utilities.showInToast(resp.message!,
                                  toastType: ToastType.ERROR);
                            }
                          }else{

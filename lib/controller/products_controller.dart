@@ -9,9 +9,9 @@ import 'package:mobitrack_dv_flutter/utils/constants.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class ProductsController extends GetxController {
-  List<Product> productList = [];
-  List<Product> searchProductList;
-  List<Sales> localSalesList = [];
+  List<Product>? productList = [];
+  List<Product>? searchProductList;
+  List<Sales>? localSalesList = [];
 
   Map<String, String> stockCountList = {};
 
@@ -30,12 +30,12 @@ class ProductsController extends GetxController {
       await fetchProducts().then((value) async {
         print(value.response);
         await databaseHelper.deleteAllProducts().then((res) {
-          if (value.success) {
-            for (var data in value.response) {
+          if (value.success!) {
+            for (var data in value.response!) {
               databaseHelper.insertProducts(data);
             }
           } else {
-            Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+            Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           }
         });
       });
@@ -56,7 +56,7 @@ class ProductsController extends GetxController {
   }
 
   setStockCountData() {
-    productList.forEach((element) {
+    productList!.forEach((element) {
       stockCountList[element.id.toString()] = "0";
     });
     update();
@@ -68,21 +68,21 @@ class ProductsController extends GetxController {
   }
 
   searchProducts(String text) {
-    if (productList != null && productList.isNotEmpty) {
-      searchProductList = productList
+    if (productList!.isNotEmpty) {
+      searchProductList = productList!
           .where((element) =>
-          element.name.toLowerCase().contains(text.toLowerCase()))
+          element.name!.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }
   }
 
   addremark(Sales sales){
-    localSalesList.add(sales);
+    localSalesList!.add(sales);
     update();
   }
   addProductInList(String productId) {
-    for (var product in productList) {
+    for (var product in productList!) {
       if (productId == product.id.toString()) {
         product.selected = true;
         break;
@@ -92,7 +92,7 @@ class ProductsController extends GetxController {
   }
 
   removeAllProductFromList() {
-    for (var product in productList) {
+    for (var product in productList!) {
       product.selected = false;
     }
     update();
@@ -100,7 +100,7 @@ class ProductsController extends GetxController {
 
   sellProducts(Sales sales) async {
     sellProductApi(sales).then((value) {
-      if (value.success) {
+      if (value.success!) {
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
           date: DateTime.now().toString(),
@@ -119,10 +119,10 @@ class ProductsController extends GetxController {
         //   }
         // });
 
-        Utilities.showInToast(value.message, toastType: ToastType.SUCCESS);
+        Utilities.showInToast(value.message!, toastType: ToastType.SUCCESS);
         Get.back();
       } else {
-        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+        Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
       }
     });
   }
@@ -140,7 +140,7 @@ class ProductsController extends GetxController {
     sales.id = DateTime.now().millisecondsSinceEpoch;
     databaseHelper.insertSales(sales).then((value) {
       if (value) {
-        localSalesList.add(sales);
+        localSalesList!.add(sales);
         update();
         Utilities.showInToast("Sales Stored locally",
             toastType: ToastType.SUCCESS);
@@ -154,10 +154,10 @@ class ProductsController extends GetxController {
 
   Future<bool> syncSalesData() async {
     Utilities.showInToast('Syncing Data', toastType: ToastType.INFO);
-    for (var i = 0; i < localSalesList.length; i++) {
-      var item = localSalesList[i];
+    for (var i = 0; i < localSalesList!.length; i++) {
+      var item = localSalesList![i];
       var res = await sellProductApi(item);
-      if (res.success) {
+      if (res.success!) {
         LocationModel model = LocationModel(
           id: Random().nextInt(100).toString(),
           // latitude: item.outletLatitude.toString(),
@@ -178,7 +178,7 @@ class ProductsController extends GetxController {
         // });
         await databaseHelper.deleteSales(item).then((value) {
           if (value) {
-            localSalesList.remove(item);
+            localSalesList!.remove(item);
             update();
           }
         });

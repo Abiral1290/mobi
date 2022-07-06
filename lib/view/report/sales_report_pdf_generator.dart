@@ -15,9 +15,9 @@ import 'package:pdf/widgets.dart';
 class PdfParagraphApi {
   var outlets = Get.lazyPut(() => OutletsController());
   static Future<File> generate(List<SalesReport> salesList,
-      {Routes distributor}) async {
+      {Routes? distributor}) async {
     final pdf = Document();
-    final soldDate = DateTime.parse(salesList.first.soldAt);
+    final soldDate = DateTime.parse(salesList.first.soldAt!);
     pdf.addPage(
       MultiPage(
         build: (context) => <Widget>[

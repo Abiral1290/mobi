@@ -11,9 +11,9 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class DashBoardMain extends StatefulWidget{
 
-  final String route;
+  final String? route;
 
-  DashBoardMain({Key key, this.route}) : super(key: key);
+  DashBoardMain({Key? key, this.route}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -278,12 +278,12 @@ class _DashBoardMain extends State<DashBoardMain>{
 
 
   }
-  Widget mycard({String text}) {
+  Widget mycard({String? text}) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(text),
+          child: Text(text!),
         ),
       ],
     );

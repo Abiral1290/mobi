@@ -17,12 +17,12 @@ class DashBoard_Controller extends GetxController{
     var conn = await Utilities.isInternetWorking();
     if (conn) {
       await fetchDashboardApi().then((value) async {
-        if (value.success) {
+        if (value.success!) {
        //   await DatabaseHelper.instance.deleteSyncedOutlet();
-          dashboard = value.response;
+          dashboard = value.response!;
           update();
         } else {
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           dashboard = [];
           update();
         }

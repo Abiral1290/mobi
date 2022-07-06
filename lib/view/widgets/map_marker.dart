@@ -7,7 +7,7 @@ class TestExpandableView extends StatefulWidget {
 }
 
 class _TestExpandableViewState extends State<TestExpandableView> {
-  int _activeMeterIndex;
+  int? _activeMeterIndex;
   @override
   Widget build(BuildContext context) {
     return Container(

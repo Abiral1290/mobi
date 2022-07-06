@@ -61,12 +61,12 @@ class _MonthlyTourPageState extends State<MonthlyTourPage> {
                         currentMonthInInt.value.toString();
                     monthlyTourApiData.deviceTime = DateTime.now().toString();
                     postMonthlyTours(monthlyTourApiData).then((value) {
-                      if (value.success) {
+                      if (value.success!) {
                         Utilities.showInToast(
                             "Successfully posted monthly data",
                             toastType: ToastType.SUCCESS);
                       } else {
-                        Utilities.showInToast(value.message,
+                        Utilities.showInToast(value.message!,
                             toastType: ToastType.ERROR);
                       }
                     });
@@ -121,8 +121,8 @@ class _MonthlyTourPageState extends State<MonthlyTourPage> {
 class MonthlyTourFormPage extends StatelessWidget {
   MonthlyTourFormPage({@required this.day, @required this.date});
 
-  String date;
-  String day;
+  String? date;
+  String? day;
 
   TextEditingController
   townController = TextEditingController();
@@ -168,7 +168,7 @@ class MonthlyTourFormPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(day),
+          title: Text(day!),
           leading: IconButton(
             onPressed: () {
               Get.back(result: null);
@@ -236,8 +236,8 @@ class MonthlyTourFormPage extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       if (validate()) {
-                        tourMap["date"] = date;
-                        tourMap["day"] = day;
+                        tourMap["date"] = date!;
+                        tourMap["day"] = day!;
                         tourMap["town"] = townController.text;
                         tourMap["route"] = routeController.text;
                         tourMap["nightHalt"] = nightHaltController.text;

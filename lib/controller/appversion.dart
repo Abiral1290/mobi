@@ -11,12 +11,12 @@ class AppVersion extends GetxController{
     if(conn){
       await checkForUpdate().then((value){
        // print(value.response);
-        if(value.success){
+        if(value.success!){
         //  print(value.response);
        //   appversion = value.response;
           update();
         }else{
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           appversion =[];
           update();
         }

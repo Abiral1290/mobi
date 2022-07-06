@@ -194,7 +194,7 @@ class ProductBrandController extends GetxController {
     var newprovinceList =
     productList.groupListsBy((element) => element.brandname);
     for (var list in newprovinceList.keys) {
-      brandList.add(list);
+      brandList.add(list!);
     }
     setSelectedBrand(brandList.first);
    // getNameList(brandList.first);
@@ -362,8 +362,8 @@ class ProductBrandController extends GetxController {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
       fetchSalesReport().then((value) {
-        if (value.success) {
-          salesReportList = value.response;
+        if (value.success!) {
+          salesReportList = value.response!;
           //var newlist = productList.where((element) => element.id == salesReportList.where((element) => element.productId))
           update();
       //    formatSalesDate(DateTime.now());
@@ -374,14 +374,14 @@ class ProductBrandController extends GetxController {
     } else {}
   }
   calc(){
-    Get.find<ProductBrandController>().punched_product.forEach((element) {Get.find<ProductBrandController>().calculate += element.Cost;});
+    Get.find<ProductBrandController>().punched_product.forEach((element) {Get.find<ProductBrandController>().calculate += element.Cost!;});
   }
   getBrandList() async {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
       await fetchProducts().then((value) async {
         print(value.response);
-        if (value.success) {
+        if (value.success!) {
           print(value.response);
           Get.find<PreferenceController>()
               .saveProduct(jsonEncode(value.response));

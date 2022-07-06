@@ -741,7 +741,7 @@ class _ScoreBoardState extends State<ScoreBoard> {
  // String Percentage = (double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement * 100 ) / double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value)).toString();
 
   String checkInId = "";
-    DatabaseHelper _databasehelper;
+    DatabaseHelper? _databasehelper;
 
   @override
   void initState() {
@@ -799,7 +799,7 @@ class _ScoreBoardState extends State<ScoreBoard> {
           var resp = await checkInAPI(
               location.userPosition.latitude.toString(),
               location.userPosition.longitude.toString());
-          if (resp.success) {
+          if (resp.success!) {
             //  location.startLocationService();
             Get.find<PreferenceController>()
                 .setCheckInValue(true,
@@ -811,7 +811,7 @@ class _ScoreBoardState extends State<ScoreBoard> {
           //  Get.to(() => DashBoard());
 
           } else {
-            Utilities.showInToast(resp.message,
+            Utilities.showInToast(resp.message!,
                 toastType: ToastType.ERROR);
           }
         } else {
@@ -1000,7 +1000,7 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                       Container(
                                         alignment: AlignmentDirectional.center,
                                         child:   Text(
-                                          Constants.selectmyRoute,
+                                          Constants.selectmyRoute!,
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 30.0,
@@ -1106,12 +1106,12 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                                 lineWidth: 18.0,
                                                 animation: true,
                                                 animationDuration: 1200,
-                                                percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())/double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value) > 1 ? 1 :
-                                              double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())/double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value) ,
+                                                percent: double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())/double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value!) > 1 ? 1 :
+                                              double.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString())/double.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value!) ,
                                                 circularStrokeCap:
                                                 CircularStrokeCap.butt,
                                                 center:  Text((int.parse(Get.find<DashBoard_Controller>().dashboard.first.achivement.toString()) * 100  /
-                                                    int.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value))
+                                                    int.parse(Get.find<DashBoard_Controller>().dashboard.first.target_value!))
                                                     .toStringAsFixed(2) + "%",
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
@@ -1128,8 +1128,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                                 children:   [
                                                   ListTile(
                                                     title: Text(
-                                              Get.find<DashBoard_Controller>().dashboard.first.target_value
-                                                  == null ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value,
+                                              Get.find<DashBoard_Controller>().dashboard.first.target_value!.isNotEmpty
+                                                  ? "0" :  Get.find<DashBoard_Controller>().dashboard.first.target_value!,
                                                       style: TextStyle(
                                                           fontWeight: FontWeight.w500,
                                                           fontSize: 16.0),
@@ -1287,19 +1287,19 @@ class _ScoreBoardState extends State<ScoreBoard> {
     ;
   }
 
-  Widget mycard({String text}) {
+  Widget mycard({String? text}) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(text),
+          child: Text(text!),
         ),
       ],
     );
   }
 }
 
-Widget calls({String text,VoidCallback ontap}) {
+Widget calls({String? text,VoidCallback? ontap}) {
   return InkWell(
    onTap: ontap,
     child: Column(
@@ -1307,7 +1307,7 @@ Widget calls({String text,VoidCallback ontap}) {
 
         Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: Text(text,style: TextStyle(fontSize: 10),),
+          child: Text(text!,style: TextStyle(fontSize: 10),),
         ),
       ],
     ),
@@ -1422,12 +1422,12 @@ Widget calls({String text,VoidCallback ontap}) {
 //   );
 // }
 
-Widget activites({String text}) {
+Widget activites({String? text}) {
   return Column(
     children: [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(text),
+        child: Text(text!),
       ),
     ],
   );

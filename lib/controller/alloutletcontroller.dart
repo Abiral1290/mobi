@@ -15,14 +15,14 @@ class AllOutletController extends GetxController {
     if (conn) {
       await fetchAllOutletsApi().then((value) async {
         print(value.response);
-        if (value.success) {
-          alloutlet = value.response;
+        if (value.success!) {
+          alloutlet = value.response!;
           update();
           print(alloutlet.length);
           // Get.find<PreferenceController>()
           //     .saveAddress(jsonEncode(value.response));
         } else {
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           alloutlet = [];
           update();
         }

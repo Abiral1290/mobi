@@ -68,7 +68,7 @@ class _LocationStatusPageState extends State<LocationStatusPage> {
                       return ListTile(
                         title: Text(Get.find<LocationController>()
                             .locationList[index]
-                            .date),
+                            .date!),
                         subtitle: Text(Get.find<LocationController>()
                                 .locationList[index]
                                 .latitude

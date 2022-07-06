@@ -42,7 +42,7 @@ class CategoriesController extends GetxController {
   setSelectedProvince( String category  ) {
     //selectedCategory = category;
     var newlist = categoriesList.where((element) => element.category == category);
-    selectedCategory = newlist.first.category;
+    selectedCategory = newlist.first.category!;
     var list = categoriesList.where((element) => element.category == selectedCategory);
     selectedid =  list.first.id.toString();
    // selectedid = category_id;
@@ -83,15 +83,15 @@ class CategoriesController extends GetxController {
     if (conn) {
       await fetchCategoryApi().then((value) async {
         print(value.response);
-        if (value.success) {
-          categoriesList = value.response;
+        if (value.success!) {
+          categoriesList = value.response!;
         //  setSelectedProvince(categoriesList.first.id.toString() );
           update();
           print(categoriesList.length);
           // Get.find<PreferenceController>()
           //     .saveAddress(jsonEncode(value.response));
         }else{
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           categoriesList = [];
           update();
         }

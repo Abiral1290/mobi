@@ -37,7 +37,7 @@ class _GoogleMaps extends State<GoogelMaps>{
   // static final CameraPosition _kInitialPosition =
   // CameraPosition(target: _kMapCenter, zoom: 8.0, tilt: 0, bearing: 0);view
 
-   Outlet outlet;
+   Outlet? outlet;
 
   // var _streetCntrl = new TextEditingController().obs;
   // Position position;
@@ -101,7 +101,7 @@ class _GoogleMaps extends State<GoogelMaps>{
    // ),
    // );
    // }
-  GoogleMapController mapController;
+  GoogleMapController? mapController;
 
    final List<MapMarker> marker  =[];
    //String base64ImBitmapDescriptor.defaultMarkert<Marker> googleMarkers;
@@ -121,15 +121,15 @@ class _GoogleMaps extends State<GoogelMaps>{
   //   ) => MapMarker(id: cluster.id.toString(), position: LatLng(lat, lng)    )
   // );
 
-  LatLng _center = const LatLng(27.7172, 85.3240);
-  Location _location ;
+  LatLng? _center = const LatLng(27.7172, 85.3240);
+  Location? _location ;
   final Set<Marker> markers = new Set(); //markers for google map
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _location.onLocationChanged.listen((l) {
-      mapController.animateCamera(
+    _location!.onLocationChanged.listen((l) {
+      mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 20),
+          CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 20),
         ),
       );
     });
@@ -170,7 +170,7 @@ class _GoogleMaps extends State<GoogelMaps>{
           ElevatedButton(
             child: Text("press"),
             onPressed: (){
-              print(_markers.length);
+              print(_markers!.length);
               //print(markerss.length);
             },
           )
@@ -186,16 +186,16 @@ class _GoogleMaps extends State<GoogelMaps>{
       child:   Padding(
         padding: const EdgeInsets.all(15.0),
         child: Container(
-
-          child: GoogleMap(
+          child:(_markers!.isNotEmpty)? GoogleMap(
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: _center,
+              target: _center!,
               zoom: 15.0,
             ),
             myLocationEnabled: true,
-            markers: _markers.toSet() == null ? "as" :  _markers.toSet(),
-          ),
+            markers: _markers!.toSet(),
+            // markers: _markers.toSet() == null ? "as" :  _markers.toSet(),
+          ) : Container(),
           ),
         ),
       );
@@ -253,12 +253,12 @@ class _GoogleMaps extends State<GoogelMaps>{
   //   position: LatLng(double.parse(Get.find<OutletsController>().outletList[].latitude),double.parse(Get.find<OutletsController>().outletList[].longitude))
   //     ma
   // );
-   List<Marker> _markers ;
+   List<Marker>? _markers ;
 
    void setMarkers()   {
      //var notes =  Get.find<OutletsController>().outletList ;
      List<Marker> markers = Get.find<OutletsController>().outletList.map((n) {
-       LatLng point = LatLng(double.parse(n.latitude == null? "27.45" : n.latitude) , double.parse(n.longitude == null? "89.45" :n.longitude)
+       LatLng point = LatLng(double.parse(n.latitude == null? "27.45" : n.latitude!) , double.parse(n.longitude == null? "89.45" :n.longitude!)
 
        );
        var title = n.name;
@@ -280,7 +280,7 @@ class _GoogleMaps extends State<GoogelMaps>{
      setState(() {
       // _markers.clear();
        _markers = markers;
-       _markers.removeWhere((element) => element.position == null);
+       _markers!.removeWhere((element) => element.position == null);
      });
 
    }

@@ -4,16 +4,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class Glow extends StatefulWidget {
-  final bool repeat;
-  final Duration duration;
-  final double endRadius;
-  final Duration repeatPauseDuration;
-  final Widget child;
-  final bool animate;
-  final bool showTwoGlows;
-  final Color glowColor;
-  final Duration startDelay;
-  final BoxShape shape;
+  final bool? repeat;
+  final Duration? duration;
+  final double? endRadius;
+  final Duration? repeatPauseDuration;
+  final Widget? child;
+  final bool? animate;
+  final bool? showTwoGlows;
+  final Color? glowColor;
+  final Duration? startDelay;
+  final BoxShape? shape;
 
   Glow({
     @required this.endRadius,
@@ -33,10 +33,10 @@ class Glow extends StatefulWidget {
 }
 
 class _GlowState extends State<Glow> with SingleTickerProviderStateMixin {
-  Animation<double> smallDiscAnimation;
-  Animation<double> bigDiscAnimation;
-  Animation<double> alphaAnimation;
-  AnimationController controller;
+  Animation<double>? smallDiscAnimation;
+  Animation<double>? bigDiscAnimation;
+  Animation<double>? alphaAnimation;
+  AnimationController? controller;
 
   @override
   void initState() {
@@ -44,27 +44,27 @@ class _GlowState extends State<Glow> with SingleTickerProviderStateMixin {
     controller = AnimationController(
         duration: widget.duration ?? Duration(milliseconds: 2000), vsync: this);
     final Animation curve =
-        CurvedAnimation(parent: controller, curve: Curves.decelerate);
+        CurvedAnimation(parent: controller!, curve: Curves.decelerate);
     smallDiscAnimation = Tween(
-            begin: (widget.endRadius * 2) / 6,
-            end: (widget.endRadius * 2) * (3 / 4))
-        .animate(curve)
+            begin: (widget.endRadius! * 2) / 6,
+            end: (widget.endRadius! * 2) * (3 / 4))
+        .animate(curve.value)
           ..addListener(() {
             setState(() {});
           });
     bigDiscAnimation =
-        Tween(begin: 0.0, end: (widget.endRadius * 2)).animate(curve)
+        Tween(begin: 0.0, end: (widget.endRadius! * 2)).animate(curve.value)
           ..addListener(() {
             setState(() {});
           });
-    alphaAnimation = Tween(begin: 0.30, end: 0.0).animate(controller);
-    controller.addStatusListener((_) async {
-      if (controller.status == AnimationStatus.completed) {
+    alphaAnimation = Tween(begin: 0.30, end: 0.0).animate(controller!);
+    controller!.addStatusListener((_) async {
+      if (controller!.status == AnimationStatus.completed) {
         await Future.delayed(
             widget.repeatPauseDuration ?? Duration(milliseconds: 100));
-        if (mounted && widget.repeat) {
-          controller.reset();
-          controller.forward();
+        if (mounted && widget.repeat!) {
+          controller!.reset();
+          controller!.forward();
         }
       }
     });
@@ -73,48 +73,48 @@ class _GlowState extends State<Glow> with SingleTickerProviderStateMixin {
 
   void startAnimation() async {
     if (widget.startDelay != null) {
-      await Future.delayed(widget.startDelay);
-      if (mounted) controller.forward();
+      await Future.delayed(widget.startDelay!);
+      if (mounted) controller!.forward();
     } else {
-      controller.forward();
+      controller!.forward();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.endRadius * 2,
-      width: widget.endRadius * 2,
+      height: widget.endRadius! * 2,
+      width: widget.endRadius! * 2,
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
           Container(
-            height: bigDiscAnimation.value,
-            width: bigDiscAnimation.value,
+            height: bigDiscAnimation!.value,
+            width: bigDiscAnimation!.value,
             child: SizedBox(),
             decoration: BoxDecoration(
                 shape: widget.shape ?? BoxShape.circle,
-                color: widget.animate
+                color: widget.animate!
                     ? (widget.glowColor ?? Colors.white)
-                        .withOpacity(alphaAnimation.value)
+                        .withOpacity(alphaAnimation!.value)
                     : Colors.transparent),
           ),
-          widget.showTwoGlows && widget.animate
+          widget.showTwoGlows! && widget.animate!
               ? Container(
-                  height: smallDiscAnimation.value,
-                  width: smallDiscAnimation.value,
+                  height: smallDiscAnimation!.value,
+                  width: smallDiscAnimation!.value,
                   child: SizedBox(),
                   decoration: BoxDecoration(
                     shape: widget.shape ?? BoxShape.circle,
                     color: (widget.glowColor ?? Colors.white)
-                        .withOpacity(alphaAnimation.value),
+                        .withOpacity(alphaAnimation!.value),
                   ),
                 )
               : SizedBox(
                   height: 0.0,
                   width: 0.0,
                 ),
-          widget.child,
+          widget.child!,
         ],
       ),
     );
@@ -122,7 +122,7 @@ class _GlowState extends State<Glow> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 }

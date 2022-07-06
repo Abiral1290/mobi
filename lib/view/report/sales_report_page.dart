@@ -926,7 +926,7 @@ import 'package:pdf/pdf.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SalesReportPage extends StatefulWidget {
-  SalesReportPage({Key key}) : super(key: key);
+  SalesReportPage({Key? key}) : super(key: key);
 
   @override
   _SalesReportPageState createState() => _SalesReportPageState();
@@ -938,8 +938,8 @@ class _SalesReportPageState extends State<SalesReportPage> {
   var outletController = Get.lazyPut(() => OutletsController());
   var productbrandcontroller = Get.lazyPut(() => ProductBrandController());
 
-  Routees selectedDistributor;
-  Product product;
+  Routees? selectedDistributor;
+  Product? product;
   // sw(){
   //   //Get.find<ProductBrandController>(). ==    item.productId.toString() ?     Get.find<ProductBrandController>().name.first : ""
   //   Get.find<ProductBrandController>().productList
@@ -974,7 +974,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
 
               final pdfFile = await PdfParagraphApi.generate(
                   Get.find<SalesReportController>().formattedSalesReportList,
-                  distributor: Constants.selectedRoute);
+                  distributor: Constants.selectedRoute!);
               Get.bottomSheet(
                 Container(
                   padding: EdgeInsets.all(10.0),
@@ -1229,7 +1229,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                             .where((element) => element.id == item[index].outletId)
                                             .toList()
                                             .first
-                                            .name
+                                            .name!
                                             : "N/A",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: Get.size.height *0.012)
                                         ),
                                       ),
@@ -1245,7 +1245,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Text(  item[index].remarks ==null ? "-" : item[index].remarks,textAlign: TextAlign.center,
+                                        child: Text(  item[index].remarks ==null ? "-" : item[index].remarks!,textAlign: TextAlign.center,
                                             style: TextStyle(fontWeight: FontWeight.bold,fontSize: Get.size.height *0.01)),
                                       ),
                                       Container(
@@ -1264,7 +1264,7 @@ class _SalesReportPageState extends State<SalesReportPage> {
                                               .where((element) => element.id == item[index].productId)
                                               .toList()
                                               .first
-                                              .value * item[index].quantity).toString()
+                                              .value! * item[index].quantity!).toString()
                                              : "N/A"
                                               ,textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: Get.size.height *0.01)),
                                         ),

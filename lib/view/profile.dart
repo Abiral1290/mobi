@@ -23,11 +23,11 @@ class ProfilePage extends StatelessWidget {
                   radius: 50,
                 ),
                 Text(
-                  Get.find<AuthController>().user.name,
+                  Get.find<AuthController>().user.name!,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  Get.find<AuthController>().user.phone,
+                  Get.find<AuthController>().user.phone!,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Divider(
@@ -41,7 +41,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      Get.find<AuthController>().user.email,
+                      Get.find<AuthController>().user.email!,
                       overflow: TextOverflow.visible,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -57,7 +57,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      Constants.selectedRoute == null ? "" : Constants.selectmyRoute,
+                      Constants.selectedRoute == null ? "" : Constants.selectmyRoute!,
                       overflow: TextOverflow.visible,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

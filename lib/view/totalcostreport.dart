@@ -25,7 +25,7 @@ class _totalCost extends State<TotalCostReport>{
 
   var productcontroller = Get.lazyPut(()=>ProductBrandController());
   List<Sales> sales = [];
-  DatabaseHelper databaseHelper;
+  DatabaseHelper? databaseHelper;
   bool _isLoading = true;
   List<Routes> _journals = [];
   var outletcontroller = Get.lazyPut(()=>OutletsController());
@@ -86,7 +86,7 @@ class _totalCost extends State<TotalCostReport>{
                     itemCount:  Get.find<SalesReportController>().formattedSalesReportList.length,
                       itemBuilder:(context, index) {
                       var items = Get.find<SalesReportController>().formattedSalesReportList[index];
-                    return Text(Get.find<OutletsController>().outletList.where((element) => element.id == items.outletId).toList().first.name
+                    return Text(Get.find<OutletsController>().outletList.where((element) => element.id == items.outletId).toList().first.name!
                     );
                   });
                 })

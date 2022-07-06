@@ -30,7 +30,7 @@ class DrawerPage extends StatelessWidget {
         Size(Get.size.width, Get.size.height * 0.05)),
   );
   final ButtonStyle expandedButtonStyle = ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue[900]),
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue[900]!),
     minimumSize: MaterialStateProperty.all<Size>(
         Size(Get.size.width, Get.size.height * 0.05)),
     elevation: MaterialStateProperty.all<double>(10.0),
@@ -58,7 +58,7 @@ class DrawerPage extends StatelessWidget {
                 height: Get.size.height * 0.01,
               ),
               Text(
-                user.name,
+                user.name!,
                 style: TextStyle(fontSize: 19),
               ),
               SizedBox(
@@ -437,7 +437,7 @@ class DrawerPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        NepaliDateTime dateTime =
+                        NepaliDateTime? dateTime =
                             await picker.showMaterialDatePicker(
                           context: context,
                           initialDate: NepaliDateTime.now(),
@@ -491,10 +491,10 @@ class DrawerPage extends StatelessWidget {
                           barrierDismissible: false,
                         );
                         fetchStockStatus(
-                                Constants.selectedroute.id.toString())
+                                Constants.selectedroute!.id.toString())
                             .then((value) {
                           Get.back();
-                          if (value.success) {
+                          if (value.success!) {
                             print(value.response);
                             Get.to(() => AddStockCount(
                                   stockType: value.response,
@@ -559,7 +559,7 @@ class DrawerPage extends StatelessWidget {
                     child: Text("Logout"),
                     style: buttonStyle.copyWith(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red[900]),
+                          MaterialStateProperty.all<Color>(Colors.red[900]!),
                     ),
                   ),
                 ),
