@@ -70,9 +70,9 @@ class Outletss{
         this.visitFrequency});
 
   Outletss.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    outletId = json['outlet_id'];
-    name = json['name'];
+    id = (json['id'] != null) ? json['id'] : '';
+    outletId = (json['outlet_id'] != null) ? json['outlet_id'] :'';
+    name = (json['name'] != null) ? json['name'] : '';
     ownerName = json['owner_name'];
     addressId = json['address_id'];
     street = json['street'];

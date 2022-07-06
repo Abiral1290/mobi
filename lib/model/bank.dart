@@ -16,11 +16,11 @@ class Bank {
   Bank({this.id, this.bankName, this.bankCode, this.createdAt, this.updatedAt});
 
   Bank.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    bankName = json['bank_name'];
-    bankCode = json['bank_code'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    id = (json['id'] != null)? json['id'] :"" ;
+    bankName = (json['bank_name']  != null) ?json['bank_name'] : '' ;
+    bankCode = (json['bank_code'] != null) ? json['bank_code'] : '';
+    createdAt = (json['created_at'] != null) ? json['created_at'] : '';
+    updatedAt = (json['updated_at'] != null) ? json['updated_at'] : '';
   }
 
   Map<String, dynamic> toJson() {
@@ -39,7 +39,6 @@ Future<ApiResponse<List<Bank>>> fetchBanks() async {
     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
-
   try {
     var res = await http.get(Uri.parse(ApiUrls.banks), headers: headers);
     Map<String, dynamic> obj = json.decode(res.body);

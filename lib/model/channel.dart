@@ -15,8 +15,8 @@ class Channel {
   Channel({this.id, this.channel});
 
   Channel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    channel = json['channel'];
+    id = (json['id'] != null) ? json['id']: '';
+    channel = (json['channel'] != null) ? json['channel'] : '';
   }
 
   Map<String, dynamic> toJson() {

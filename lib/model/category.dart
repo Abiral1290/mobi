@@ -17,8 +17,8 @@ class Categories {
   Categories({this.id, this.category});
 
   Categories.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    category = json['category'];
+    id = (json['id'] != null) ? json['id']:'' ;
+    category = (json['category'] != null) ? json['category'] : '' ;
   }
 
   Map<String, dynamic> toJson() {

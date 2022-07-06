@@ -35,12 +35,12 @@ class CheckInOut {
       this.date});
 
   CheckInOut.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    salesOfficerId = json['sales_officer_id'];
-    checkinLatitude = json['checkin_latitude'];
-    checkinLongitude = json['checkin_longitude'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    id = (json['id'] != null) ? json['id'] : '';
+    salesOfficerId = (json['sales_officer_id'] != null) ? json['sales_officer_id'] : '';
+    checkinLatitude = (json['checkin_latitude'] != null) ? json['sales_officer_id']  : '';
+    checkinLongitude = (json['checkin_longitude'] != null) ?json['checkin_longitude'] :'';
+    createdAt = (json['created_at'] != null) ? json['created_at'] : '';
+    updatedAt = (json['updated_at'] != null) ? json['updated_at'] : '';
     checkinDeviceTime = json['checkin_device_time'] == null
         ? null
         : DateTime.parse(json['checkin_device_time']);

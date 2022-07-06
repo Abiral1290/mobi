@@ -18,8 +18,8 @@ class AllOutlet {
 
   AllOutlet.fromJson(Map<String, dynamic> json) {
     id = (json['id']!=null)? json['id'] : '';
-    outletId = (json['outlet_id'])?json['outlet_id']: '' ;
-    name = json['name'];
+    outletId = (json['outlet_id'] != null)?json['outlet_id']: '' ;
+    name = (json['name'] != null) ? json['name'] : '';
   }
 
   Map<String, dynamic> toJson() {

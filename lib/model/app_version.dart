@@ -22,12 +22,12 @@ class AppVersion {
       this.updatedAt});
 
   AppVersion.fromJson(Map<String, dynamic> json) {
-    versionId = int.parse(json['version'].toString());
-    versionName = json['version'];
+    versionId = (int.parse(json['version'].toString()) != 0 ) ?  int.parse(json['version'].toString()) : 0;
+    versionName = (json['version'] != null)? json['version'] : '';
     url = ApiUrls.downloadUrl + json['link'];
-    remarks = json['remarks'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    remarks = (json['remarks'] != null)? json['remarks'] :'';
+    createdAt = (json['created_at'] != null) ? json['created_at'] :'';
+    updatedAt = (json['updated_at'] != null) ? json['updated_at'] :'';
   }
 
   Map<String, dynamic> toJson() {
