@@ -9,10 +9,10 @@ import '../utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class DeleteRequest{
-  String userId;
-  String outletId;
-  String remark;
-   String flag;
+  String? userId;
+  String? outletId;
+  String? remark;
+   String? flag;
   // String updatedAt;
   // String createdAt;
   // int id;
@@ -57,7 +57,7 @@ Future<ApiResponse> DeleteOutletPost(DeleteRequest deleteRequest) async {
     'Authorization': 'Bearer ' + Get
         .find<AuthController>()
         .user
-        .apiToken,
+        .apiToken!,
     'Accept': 'application/json'
   };
 

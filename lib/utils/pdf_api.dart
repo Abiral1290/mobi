@@ -18,10 +18,10 @@ class PdfApi {
   }
 
   static Future<File> saveDocument({
-    String name,
-    Document pdf,
+    String? name,
+    Document? pdf,
   }) async {
-    final bytes = await pdf.save();
+    final bytes = await pdf!.save();
 
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$name');

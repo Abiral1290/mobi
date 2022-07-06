@@ -7,22 +7,22 @@ import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class SalesReport {
-  int id;
-  int salesOfficerId;
-  int distributorId;
-  int batchId;
-  int productId;
-  int quantity;
-  String discount;
-  String soldAt;
-  String remarks;
-  int outletId;
-  int route;
-  int route_id;
-  String latitude;
-  String longitude;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  int? salesOfficerId;
+  int? distributorId;
+  int? batchId;
+  int? productId;
+  int? quantity;
+  String? discount;
+  String? soldAt;
+  String? remarks;
+  int? outletId;
+  int? route;
+  int? route_id;
+  String? latitude;
+  String? longitude;
+  String? createdAt;
+  String? updatedAt;
 
   SalesReport(
       {this.id,
@@ -76,7 +76,7 @@ class SalesReport {
 
 Future<ApiResponse<List<SalesReport>>> fetchSalesReport() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -93,10 +93,10 @@ Future<ApiResponse<List<SalesReport>>> fetchSalesReport() async {
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }

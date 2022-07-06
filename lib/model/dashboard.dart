@@ -13,15 +13,15 @@ import 'package:http/http.dart' as http;
 
 
 class DashBoard {
-  int totalcall;
-  int productivityCall;
-  int unsuccessCall;
-  int remainingcall;
-  String target_value;
-  String target_month;
-  int orderRecevied;
-  String target;
-  int achivement;
+  int? totalcall;
+  int? productivityCall;
+  int? unsuccessCall;
+  int? remainingcall;
+  String? target_value;
+  String? target_month;
+  int? orderRecevied;
+  String? target;
+  int? achivement;
 
   DashBoard(
       {this.totalcall,
@@ -62,13 +62,13 @@ class DashBoard {
 }
 Future<ApiResponse<List<DashBoard>>> fetchDashboardApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
   // try {
   var res = await http.get(
-      Uri.parse(ApiUrls.dashboard + Constants.salesoficer_id),
+      Uri.parse(ApiUrls.dashboard + Constants.salesoficer_id!),
       headers: headers);
   Map<String, dynamic> obj = json.decode(res.body);
   if (res.statusCode == 200) {
@@ -83,7 +83,7 @@ Future<ApiResponse<List<DashBoard>>> fetchDashboardApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());

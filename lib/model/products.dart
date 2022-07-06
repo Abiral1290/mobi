@@ -8,15 +8,15 @@ import '../controller/auth_controller.dart';
 import '../utils/api_urls.dart';
 
 class Product {
-  int id;
-  String name;
-  String unit;
-  int value;
-  String brandname;
-  bool selected;
-  String createdAt;
-  String updatedAt;
-  List<Batches> batches;
+  int? id;
+  String? name;
+  String? unit;
+  int? value;
+  String? brandname;
+  bool? selected;
+  String? createdAt;
+  String? updatedAt;
+  List<Batches>? batches;
 
   Product(
       {this.id,
@@ -48,7 +48,7 @@ class Product {
         }).toList();
       } else {
         json['batches'].forEach((v) {
-          batches.add(Batches.fromJson(v));
+          batches!.add(Batches.fromJson(v));
         });
       }
     }
@@ -71,20 +71,20 @@ class Product {
       if (isLocalDB) {
         data['batches'] = this.bachesAsString();
       } else
-        data['batches'] = this.batches.map((v) => v.toJson()).toList();
+        data['batches'] = this.batches!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class Batches {
-  int id;
-  int productId;
-  String expiredAt;
-  String manufacturedAt;
-  int stock;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  int? productId;
+  String? expiredAt;
+  String? manufacturedAt;
+  int? stock;
+  String? createdAt;
+  String? updatedAt;
 
   Batches(
       {this.id,
@@ -122,19 +122,19 @@ class Batches {
 
 class Sales {
 //  String distributorId;
-  String soldAt;
-  String outletId;
-  String outlet_name;
-  String route;
+  String? soldAt;
+  String? outletId;
+  String? outlet_name;
+  String? route;
  // bool isselected;
-  String orders;
-  String remark;
-  String latitude;
-  String longitude;
-  String remark_image;
-  String total_cost;
+  String? orders;
+  String? remark;
+  String? latitude;
+  String? longitude;
+  String? remark_image;
+  String? total_cost;
   //String remark_image;
-  int id;
+  int? id;
 
   Sales(
       {
@@ -201,7 +201,7 @@ class Sales {
 
 Future<ApiResponse<List<Product>>> fetchProducts() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -218,18 +218,18 @@ Future<ApiResponse<List<Product>>> fetchProducts() async {
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }
 
 Future<ApiResponse<Sales>> sellProductApi(Sales sales) async {
   var body = sales.toJson();
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -240,15 +240,15 @@ Future<ApiResponse<Sales>> sellProductApi(Sales sales) async {
     Map<String, dynamic> obj = json.decode(resp.body);
 
     if (resp.statusCode == 200) {
-      return ApiResponse(obj['success'], obj['message'], null);
+      return ApiResponse(obj['success'], obj['message'], null!);
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }
 
@@ -261,7 +261,7 @@ Future<ApiResponse<Sales>> addStockCountApi(
     "distributor_id": distributorId,
   };
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -272,21 +272,21 @@ Future<ApiResponse<Sales>> addStockCountApi(
     Map<String, dynamic> obj = json.decode(resp.body);
 
     if (resp.statusCode == 200) {
-      return ApiResponse(obj['success'], obj['message'], null);
+      return ApiResponse(obj['success'], obj['message'], null!);
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }
 
 Future<ApiResponse<String>> fetchStockStatus(String distributorId) async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -303,10 +303,10 @@ Future<ApiResponse<String>> fetchStockStatus(String distributorId) async {
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }

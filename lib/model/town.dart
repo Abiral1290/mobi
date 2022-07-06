@@ -11,10 +11,10 @@ import 'package:http/http.dart' as http;
 
 
 class Town {
-  int id;
-  String town;
-  String zone;
-  int zoneid;
+  int? id;
+  String? town;
+  String? zone;
+  int? zoneid;
 
   Town({this.id, this.town, this.zone, this.zoneid});
 
@@ -37,7 +37,7 @@ class Town {
 
 Future<ApiResponse<List<Town>>> fetchTownApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -60,7 +60,7 @@ Future<ApiResponse<List<Town>>> fetchTownApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());

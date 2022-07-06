@@ -7,11 +7,11 @@ import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class Bank {
-  int id;
-  String bankName;
-  String bankCode;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  String? bankName;
+  String? bankCode;
+  String? createdAt;
+  String? updatedAt;
 
   Bank({this.id, this.bankName, this.bankCode, this.createdAt, this.updatedAt});
 
@@ -36,7 +36,7 @@ class Bank {
 
 Future<ApiResponse<List<Bank>>> fetchBanks() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -53,10 +53,10 @@ Future<ApiResponse<List<Bank>>> fetchBanks() async {
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }

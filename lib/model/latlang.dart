@@ -33,7 +33,7 @@
 // }
 
 class Marker_mine {
-  double latitude;
-  double longititude;
-  String name;
+  double? latitude;
+  double? longititude;
+  String? name;
 }

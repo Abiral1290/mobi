@@ -18,7 +18,7 @@ class AllOutlet {
 
   AllOutlet.fromJson(Map<String, dynamic> json) {
     id = (json['id']!=null)? json['id'] : '';
-    outletId = json['outlet_id'];
+    outletId = (json['outlet_id'])?json['outlet_id']: '' ;
     name = json['name'];
   }
 
@@ -33,7 +33,7 @@ class AllOutlet {
 
 Future<ApiResponse<List<AllOutlet>>> fetchAllOutletsApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -55,7 +55,7 @@ Future<ApiResponse<List<AllOutlet>>> fetchAllOutletsApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
@@ -64,7 +64,7 @@ Future<ApiResponse<List<AllOutlet>>> fetchAllOutletsApi() async {
 }
 // Future<ApiResponse<List<Outlet>>> fetchOutletsApi() async {
 //   var headers = {
-//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
 //     'Accept': 'application/json'
 //   };
 //

@@ -1,20 +1,20 @@
 import 'distributor.dart';
 
 class SalesOfficer {
-  int id;
-  String name;
-  String email;
-  int emailVerifiedAt;
-  String createdAt;
-  String updatedAt;
-  String role;
-  int adminId;
-  int marketingDirectorId;
-  int marketingManagerId;
-  int salesSupervisorId;
-  String apiToken;
-  String phone;
-  List<Distributor> distributors;
+  int? id;
+  String? name;
+  String? email;
+  int? emailVerifiedAt;
+  String? createdAt;
+  String? updatedAt;
+  String? role;
+  int? adminId;
+  int? marketingDirectorId;
+  int? marketingManagerId;
+  int? salesSupervisorId;
+  String? apiToken;
+  String? phone;
+  List<Distributor>? distributors;
 
   SalesOfficer(
       {this.id,
@@ -49,7 +49,7 @@ class SalesOfficer {
     if (json['distributors'] != null) {
       distributors = [];
       json['distributors'].forEach((v) {
-        distributors.add(Distributor.fromJson(v));
+        distributors!.add(Distributor.fromJson(v));
       });
     }
   }

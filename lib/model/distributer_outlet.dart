@@ -14,31 +14,31 @@ import '../utils/constants.dart';
 
 
 class Outletss{
-  int id;
-  int outletId;
-  String name;
-  String ownerName;
-  String addressId;
-  String street;
-  String contact;
-  String type;
-  String latitude;
-  String longitude;
-  String salesOfficerId;
-  String createdAt;
-  String updatedAt;
-  int distributorId;
-  String image;
-  int flag;
-  String zone;
-  String town;
-  String route;
-  String channel;
-  String category;
-  String dse;
-  String so;
-  String manager;
-  String visitFrequency;
+  int? id;
+  int? outletId;
+  String? name;
+  String? ownerName;
+  String? addressId;
+  String? street;
+  String? contact;
+  String? type;
+  String? latitude;
+  String? longitude;
+  String? salesOfficerId;
+  String? createdAt;
+  String? updatedAt;
+  int? distributorId;
+  String? image;
+  int? flag;
+  String? zone;
+  String? town;
+  String? route;
+  String? channel;
+  String? category;
+  String? dse;
+  String? so;
+  String? manager;
+  String? visitFrequency;
 
   bool synced = true;
 
@@ -137,13 +137,13 @@ class Outletss{
 
 
 class UserApis {
-  List<String> outss;
+  List<String>? outss;
 
   static Future<List<Outletss>> getUserSuggestionsa(String query) async {
 
 
     var headers = {
-      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
       'Accept': 'application/json'
     };
     final url = Uri.parse(ApiUrls.getoutlet);
@@ -164,7 +164,7 @@ class UserApis {
         return Outletss.fromJson(json);
       }).toList();
       List.of(outs).where((element) {
-        final out = element.name.toLowerCase();
+        final out = element.name!.toLowerCase();
         final quey = query.toLowerCase();
         return out.contains(quey);
       }).toString();
@@ -183,7 +183,7 @@ class UserApis {
   static Future<List<Outletss>> getUserSuggestionsaroute(String query) async {
 
     var headers = {
-      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+      'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
       'Accept': 'application/json'
     };
     final url = Uri.parse(ApiUrls.getoutlet);
@@ -204,7 +204,7 @@ class UserApis {
         return Outletss.fromJson(json);
       }).toList();
       List.of(outs).where((element) {
-        final out = element.route.toLowerCase();
+        final out = element.route!.toLowerCase();
         final quey = query.toLowerCase();
         return out.contains(quey);
       }).toString();
@@ -225,7 +225,7 @@ class UserApis {
 
 Future<ApiResponse<List<Outletss>>> fetchOutlerAp() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -242,7 +242,7 @@ Future<ApiResponse<List<Outletss>>> fetchOutlerAp() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());

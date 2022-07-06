@@ -8,16 +8,16 @@ import 'package:http/http.dart' as http;
 import 'package:mobitrack_dv_flutter/utils/api_urls_group.dart';
 
 class Distributor {
-  int id;
-  String name;
-  String email;
-  String contact;
-  String location;
-  double latitude;
-  double longitude;
-  int salesOfficerId;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  String? name;
+  String? email;
+  String? contact;
+  String? location;
+  double? latitude;
+  double? longitude;
+  int? salesOfficerId;
+  String? createdAt;
+  String? updatedAt;
 
   bool synced = true;
 
@@ -71,7 +71,7 @@ class Distributor {
 Future<ApiResponse> registerdistributor(Distributor distributor) async {
   var body = distributor.toJson();
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -95,7 +95,7 @@ Future<ApiResponse> registerdistributor(Distributor distributor) async {
 }
 Future<ApiResponse<List<Distributor>>> fetchDistributorsApi( ) async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -119,7 +119,7 @@ Future<ApiResponse<List<Distributor>>> fetchDistributorsApi( ) async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());
@@ -128,7 +128,7 @@ Future<ApiResponse<List<Distributor>>> fetchDistributorsApi( ) async {
 }
 // Future<ApiResponse<List<Distributor>>> fetchDistributorsApis() async {
 //   var headers = {
-//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+//     'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
 //     'Accept': 'application/json'
 //   };
 //

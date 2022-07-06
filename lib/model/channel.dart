@@ -9,8 +9,8 @@ import '../utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class Channel {
-  int id;
-  String channel;
+  int? id;
+  String? channel;
 
   Channel({this.id, this.channel});
 
@@ -29,7 +29,7 @@ class Channel {
 
 Future<ApiResponse<List<Channel>>> fetchChannelApi() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -52,7 +52,7 @@ Future<ApiResponse<List<Channel>>> fetchChannelApi() async {
   } else {
     print(obj);
     return ApiResponse(
-        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+        obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
   }
   // } catch (e) {
   //   print(e.toString());

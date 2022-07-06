@@ -7,20 +7,20 @@ import 'package:mobitrack_dv_flutter/utils/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class Collections {
-  int id;
-  int distributorId;
-  String mode;
-  String bankName;
-  String chequeNo;
-  String chequePhoto;
-  int amount;
-  int salesOfficerId;
-  String accountOf;
-  String remarks;
-  String deviceTime;
-  String createdAt;
-  String updatedAt;
-  int synced;
+  int? id;
+  int? distributorId;
+  String? mode;
+  String? bankName;
+  String? chequeNo;
+  String? chequePhoto;
+  int? amount;
+  int? salesOfficerId;
+  String? accountOf;
+  String? remarks;
+  String? deviceTime;
+  String? createdAt;
+  String? updatedAt;
+  int? synced;
 
   Collections(
       {this.id,
@@ -77,7 +77,7 @@ class Collections {
 
 Future<ApiResponse<List<Collections>>> fetchCollectionsAPI() async {
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
@@ -97,11 +97,11 @@ Future<ApiResponse<List<Collections>>> fetchCollectionsAPI() async {
     } else {
       print(obj);
       return ApiResponse(
-          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null);
+          obj['success'] ?? false, obj['message'] ?? 'Unknown error', null!);
     }
   } catch (e) {
     print(e.toString());
-    return ApiResponse(false, e.toString(), null);
+    return ApiResponse(false, e.toString(), null!);
   }
 }
 
@@ -109,7 +109,7 @@ Future<ApiResponse> storeCollectionAPI(Collections collection) async {
   var body = collection.toJson();
 
   var headers = {
-    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken,
+    'Authorization': 'Bearer ' + Get.find<AuthController>().user.apiToken!,
     'Accept': 'application/json'
   };
 
