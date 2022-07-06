@@ -42,9 +42,9 @@ class Districts {
   Districts({this.id, this.provinceId, this.name, this.areas});
 
   Districts.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    provinceId = json['province_id'];
-    name = json['name'];
+    id = (json['id'] != null) ? json['id'] : '' ;
+    provinceId = (json['province_id'] != null) ?json['province_id'] :'';
+    name = (json['name'] != null) ? json['name'] : '';
     if (json['areas'] != null) {
       areas = [];
       json['areas'].forEach((v) {
@@ -74,9 +74,9 @@ class Areas {
   Areas({this.id, this.districtId, this.name, this.streets});
 
   Areas.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    districtId = json['district_id'];
-    name = json['name'];
+    id = (json['id'] != null) ? json['id']: '';
+    districtId = (json['district_id'] != null) ? json['district_id'] : '';
+    name = (json['name'] != null) ? json['name'] : '';
     if (json['streets'] != null) {
       streets = [];
       json['streets'].forEach((v) {
@@ -103,8 +103,8 @@ class Route{
 
   Route({this.id,this.route_name});
   Route.fromJson(Map<String,dynamic> json){
-    id = json['id'];
-    route_name = json['route_name'];
+    id = (json['id'] != null) ? json['id']:'';
+    route_name = (json['route_name'] != null) ? json['route_name'] : '';
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -122,9 +122,9 @@ class Streets {
   Streets({this.id, this.areaId, this.name});
 
   Streets.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    areaId = json['area_id'];
-    name = json['name'];
+    id = (json['id'] != null) ? json['id'] : '';
+    areaId = (json['area_id'] != null) ? json['area_id'] : '' ;
+    name = (json['name'] != null) ? json['name'] : '';
   }
 
   Map<String, dynamic> toJson() {

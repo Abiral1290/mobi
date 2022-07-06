@@ -50,7 +50,7 @@ class ApiUrls {
   static final String dailyLocation = _endPoint + 'daily_locations';
   static final String monthlyTour = _endPoint + 'monthly_tours';
   static final String stockCounts = _endPoint + 'stock_counts';
-  static final String imaggeurl = 'http://202.52.240.148:5063' + Constants.image;
+  static final String imaggeurl = 'http://202.52.240.148:5063' + Constants.image!;
   static final String storageURL = _mainUrl + 'image';
 
   /*

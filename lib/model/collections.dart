@@ -39,19 +39,19 @@ class Collections {
       this.synced});
 
   Collections.fromJson(Map<String, dynamic> json) {
-    id = int.parse(json['id'].toString());
-    distributorId = int.parse(json['distributor_id'].toString());
-    mode = json['mode'];
-    bankName = json['bank_name'];
-    chequeNo = json['cheque_no'];
-    chequePhoto = json['cheque_photo'];
-    amount = int.parse(json['amount'].toString());
-    salesOfficerId = json['sales_officer_id'];
-    accountOf = json['account_of'];
-    remarks = json['remarks'];
-    deviceTime = json['device_time'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    id = (int.parse(json['id'].toString()) != 0) ? int.parse(json['id'].toString()) : 0;
+    distributorId = (int.parse(json['distributor_id'].toString()) != 0) ? int.parse(json['distributor_id'].toString()) : 0;
+    mode = (json['mode'] != null) ? json['mode'] : '';
+    bankName = (json['bank_name'] != null) ? json['bank_name'] :'';
+    chequeNo = (json['cheque_no'] != null) ? json['cheque_no'] : '';
+    chequePhoto = (json['cheque_photo'] != null) ? json['cheque_photo'] : '';
+    amount = (int.parse(json['amount'].toString()) != 0) ? int.parse(json['amount'].toString()) : 0;
+    salesOfficerId = (json['sales_officer_id'] != null) ? json['sales_officer_id'] : '';
+    accountOf = (json['account_of'] != null) ? json['account_of'] :'';
+    remarks = (json['remarks'] != null) ? json['remarks'] : '';
+    deviceTime = (json['device_time'] != null)? json['device_time'] :'';
+    createdAt = (json['created_at'] != null) ? json['created_at'] : '';
+    updatedAt = (json['updated_at'] != null) ? json['updated_at'] : '';
     synced = json['synced'] ?? 0;
   }
 

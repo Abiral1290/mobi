@@ -36,7 +36,7 @@ class DashBoard {
 
   DashBoard.fromJson(Map<String, dynamic> json) {
     totalcall = json['totalcall'] == null ? "0":json['totalcall'];
-    productivityCall = json['productivity_call'];
+    productivityCall = json['productivity_call'] ;
     unsuccessCall = json['unsuccess_call'];
     remainingcall = json['remainingcall'];
     target_value = json['value'] == null ? "0" : json['value'] ;

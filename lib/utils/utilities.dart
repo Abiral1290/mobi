@@ -124,7 +124,7 @@ class Utilities {
       @required context,
       Function? onDismiss,
       DialogAction? addionalAction,
-      Widget? additional,
+       Widget? additional,
       bool? canclose = true,
       bool? dismissable}) async {
     return await showDialog(
@@ -140,11 +140,9 @@ class Utilities {
                 content: Text(body!),
                 actions: <Widget>[
                   CupertinoDialogAction(
-                    child: additional != null
-                        ? additional
-                        : canclose
-                            ? Text('Close')
-                            : null,
+                    child:
+                    (additional!)
+                         ,
                     onPressed: () {
                       if (onDismiss != null) {
                         onDismiss();
@@ -156,7 +154,7 @@ class Utilities {
                   ),
                   if (addionalAction != null)
                     CupertinoDialogAction(
-                      child: Text(addionalAction.label),
+                      child: Text(addionalAction.label!),
                       onPressed: addionalAction.onPressed,
                     )
                 ],
@@ -169,11 +167,9 @@ class Utilities {
                 content: Text(body!),
                 actions: <Widget>[
                   TextButton(
-                    child: additional != null
-                        ? additional
-                        : canclose
-                            ? Text('Close')
-                            : null,
+                    child:
+                       additional!
+                         ,
                     onPressed: () {
                       if (onDismiss != null) {
                         onDismiss();
@@ -185,7 +181,7 @@ class Utilities {
                   ),
                   if (addionalAction != null)
                     TextButton(
-                      child: Text(addionalAction.label),
+                      child: Text(addionalAction.label!),
                       onPressed: addionalAction.onPressed,
                     ),
                 ],
@@ -196,8 +192,8 @@ class Utilities {
 }
 
 class DialogAction {
-  final Function onPressed;
-  final String label;
+  final Function()? onPressed;
+  final String? label;
 
   DialogAction({@required this.label, @required this.onPressed});
 }
