@@ -94,7 +94,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
-  int id;
+  int? id;
   @override
   void initState() {
     initFunction();
@@ -115,11 +115,11 @@ class _SplashScreenState extends State<SplashScreen> {
     var auth = Get.find<AuthController>().isLoggedIn;
     if (conn && auth) {
       var resp = await checkForUpdate();
-      if (resp.success) {
+      if (resp.success!) {
        // resp.response.versionId = id;
-        if (resp.response.versionId > Constants.appVerId) {
-          print(resp.response.url);
-          downloadApk(resp.response.url, downloadPath, context);
+        if (resp.response!.versionId! > Constants.appVerId) {
+          print(resp.response!.url);
+          downloadApk(resp.response!.url!, downloadPath, context);
          // Constants.storage = resp.response.versionId;
         //  resp.response.versionId = id;
         } else {
@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Duration(seconds: 2), () => Get.off(() => CheckAuthPage()));
         }
       } else {
-        Utilities.showInToast('Failed to check for update.\n' + resp.message);
+        Utilities.showInToast('Failed to check for update.\n' + resp.message!);
         Future.delayed(
             Duration(seconds: 2), () => Get.off(() => CheckAuthPage()));
       }

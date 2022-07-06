@@ -248,8 +248,8 @@ class _PunchedProductState extends State<PunchedProduct> {
                 soldAt: DateTime.now().toString(),
                 remark: "",
                 outletId: widget.outlet!.id.toString(),
-                latitude: location.userPosition.latitude.toString(),
-                longitude: location.userPosition.longitude.toString(),
+                latitude: location.userPosition!.latitude.toString(),
+                longitude: location.userPosition!.longitude.toString(),
               );
               print(item.Cost);
               await Get.find<LocationController>().getCurrentPosition();

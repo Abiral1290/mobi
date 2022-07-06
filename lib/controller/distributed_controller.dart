@@ -11,11 +11,11 @@ class DistributedCOntroller extends  GetxController{
 
   fetchDistributor(){
     fetchOutlerAp().then((value) {
-      if(value.success){
-       OutList = value.response;
+      if(value.success!){
+       OutList = value.response!;
        update();
       }else{
-        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+        Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
         OutList = [];
         update();
       }
@@ -26,7 +26,7 @@ class DistributedCOntroller extends  GetxController{
     if (OutList.isNotEmpty) {
       searchedOutList = OutList
           .where((element) =>
-          element.name.toLowerCase().contains(text.toLowerCase()))
+          element.name!.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }

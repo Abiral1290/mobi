@@ -4,8 +4,8 @@ import 'package:mobitrack_dv_flutter/model/collections.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class CollectionController extends GetxController {
-  List<Collections> collectionsList;
-  DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  List<Collections>? collectionsList = [];
+  DatabaseHelper? databaseHelper = DatabaseHelper.instance;
 
   CollectionController() {
     fetchCollections();
@@ -13,7 +13,7 @@ class CollectionController extends GetxController {
 
   fetchCollections() {
     fetchCollectionsAPI().then((value) {
-      if (value.success) {
+      if (value.success!) {
         collectionsList = value.response;
         update();
       } else {
@@ -23,10 +23,10 @@ class CollectionController extends GetxController {
         // Utilities.showInToast(value.message, toastType: ToastType.ERROR);
       }
     });
-    databaseHelper.getAllCollectionData().then((value) {
+    databaseHelper!.getAllCollectionData().then((value) {
       if (value.isNotEmpty) {
         for (var data in value) {
-          collectionsList.add(data);
+          collectionsList!.add(data);
         }
         update();
       }
@@ -35,10 +35,10 @@ class CollectionController extends GetxController {
 
   Future<bool> syncCollectionData() async {
     for (var data
-        in collectionsList.where((element) => element.synced == 0).toList()) {
+        in collectionsList!.where((element) => element.synced == 0).toList()) {
       // var item = collectionsList[i];
       var res = await storeCollectionAPI(data);
-      if (res.success) {
+      if (res.success!) {
         await DatabaseHelper.instance.deleteCollection(data);
         fetchCollections();
       }
@@ -52,16 +52,16 @@ class CollectionController extends GetxController {
       collectionsList = [];
     }
     storeCollectionAPI(collection).then((value) {
-      if (value.success) {
+      if (value.success!) {
         Utilities.showInToast('Collection Uploaded succesfully',
             toastType: ToastType.SUCCESS);
 
-        collectionsList.add(value.response);
+        collectionsList!.add(value.response);
         update();
         Get.back();
       } else {
         print(value.message);
-        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+        Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
       }
     });
   }
@@ -70,9 +70,9 @@ class CollectionController extends GetxController {
     if (collectionsList == null) {
       collectionsList = [];
     }
-    databaseHelper.insertCollection(collection).then((value) {
+    databaseHelper!.insertCollection(collection).then((value) {
       if (value) {
-        collectionsList.add(collection);
+        collectionsList!.add(collection);
         update();
         Utilities.showInToast('Collection stored locally',
             toastType: ToastType.SUCCESS);

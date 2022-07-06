@@ -391,19 +391,18 @@ class _View_routeState extends State<View_route> {
   //final Outlet outlet;
   var _selectedIndex = 0.obs;
 
-  LocationPermission permission;
+  LocationPermission? permission;
 
   var selectedRoute = Routes();
 
   var outlets = Get.lazyPut(() => OutletsController());
   var routecontroller  = Get.lazyPut(()=>Routecontroller());
 
-  bool serviceEnabled;
 
   var user = Get.find<AuthController>().user;
   String checkInId = "";
   DateTime now = new DateTime.now();
-  Timer countdown;
+  Timer? countdown;
   Duration myDuration = Duration(days: 5);
 
   //List<Routees> list = [];
@@ -425,7 +424,7 @@ class _View_routeState extends State<View_route> {
 
         final second = myDuration.inSeconds - reduceSceond;
         if(second < 0 ){
-          countdown.cancel();
+          countdown!.cancel();
         }else{
           myDuration = Duration(seconds: second);
         }
@@ -469,21 +468,21 @@ class _View_routeState extends State<View_route> {
             .getCurrentPosition();
         if (location.userPosition != null) {
           var resp = await checkInAPI(
-              location.userPosition.latitude.toString(),
-              location.userPosition.longitude.toString());
-          if (resp.success) {
+              location.userPosition!.latitude.toString(),
+              location.userPosition!.longitude.toString());
+          if (resp.success!) {
           //  location.startLocationService();
             Get.find<PreferenceController>()
                 .setCheckInValue(true,
                 checkInId: resp.response.toString());
             Constants.checkInOut = resp.response.toString();
             checkInId = resp.response.toString();
-            print(location.userPosition.latitude.toString());
-            print(location.userPosition.longitude.toString());
+            print(location.userPosition!.latitude.toString());
+            print(location.userPosition!.longitude.toString());
            Get.to(() => DashBoards());
 
           } else {
-            Utilities.showInToast(resp.message,
+            Utilities.showInToast(resp.message!,
                 toastType: ToastType.ERROR);
           }
         } else {
@@ -513,10 +512,10 @@ class _View_routeState extends State<View_route> {
               //      Get.find<Routecontroller>().selel
                 // Get.find<Routecontroller>().storeRouteOffline(routeList[index]);
              //    Get.
-                    if(  Get.find<CheckController>().checkin.isEmpty  ){
+                    if(  Get.find<CheckController>().checkin!.isEmpty  ){
                       setState(() {
                         Constants.selectedRoute = routeList[index];
-                        print(Constants.selectedRoute.id);
+                        print(Constants.selectedRoute!.id!);
                         print(routeList[index].id);
                         selectedRoute = routeList[index];
                         Constants.salesoficer_id= user.id.toString();
@@ -533,9 +532,9 @@ class _View_routeState extends State<View_route> {
                         Get.to(()=> DashBoards()) ;
                         press();
                       });
-                    }else if(DateFormat('yyyy-MM-dd  ').format(now)== DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin.first.checkinDeviceTime) ){
+                    }else if(DateFormat('yyyy-MM-dd  ').format(now)== DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin!.first.checkinDeviceTime!) ){
                       Constants.selectedRoute = routeList[index];
-                      print(Constants.selectedRoute.id);
+                      print(Constants.selectedRoute!.id);
                       print(routeList[index].id);
                       selectedRoute = routeList[index];
                       Constants.salesoficer_id= user.id.toString();
@@ -544,7 +543,7 @@ class _View_routeState extends State<View_route> {
                       print(Constants.selectedDistributor);
                       Constants.selectmyRoute = routeList[index].routename;
                       print( DateFormat('yyyy-MM-dd  ').format(now));
-                      print(DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin.first.checkinDeviceTime));
+                      print(DateFormat('yyyy-MM-dd  ').format(Get.find<CheckController>().checkin!.first.checkinDeviceTime!));
                       Get.find<PreferenceController>()
                           .setDistributor(jsonEncode(Constants.selectedDistributor));
                       Utilities.showInToast(
@@ -572,7 +571,7 @@ class _View_routeState extends State<View_route> {
                     }else{
                       setState(() {
                         Constants.selectedRoute = routeList[index];
-                        print(Constants.selectedRoute.id);
+                        print(Constants.selectedRoute!.id);
                         print(routeList[index].id);
                         selectedRoute = routeList[index];
                         Constants.salesoficer_id= user.id.toString();
@@ -1045,7 +1044,7 @@ class _View_routeState extends State<View_route> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          routeList[index].routename,
+                                          routeList[index].routename!,
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
@@ -1098,10 +1097,10 @@ class _View_routeState extends State<View_route> {
          // init: Routecontroller(),
           builder: (routeController) {
             return
-              routeController.routeList.isNotEmpty
-                ? listSegment(routeController.routeList)
+              routeController.routeList!.isNotEmpty
+                ? listSegment(routeController.routeList!)
                // : routeController.routeList != null
-                : routeController.routeList.isEmpty
+                : routeController.routeList!.isEmpty
                 ? Center(child: Text("No Route Assigned"))
                //  : routeController.routeList ==null ?Center(child: Text("No Route Assign Please contact your Distributor"),)
                // : listSegment(routeController.routeList)
@@ -1125,8 +1124,9 @@ class _View_routeState extends State<View_route> {
 
 
     return WillPopScope(
-      onWillPop: (){
+      onWillPop: () async {
         SystemNavigator.pop();
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(

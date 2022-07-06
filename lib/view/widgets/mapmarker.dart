@@ -4,9 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobitrack_dv_flutter/model/latlang.dart';
 
 class MapMarker extends Clusterable {
-  final String id;
-  final LatLng position;
-  final BitmapDescriptor icon;
+  final String? id;
+  final LatLng? position;
+  final BitmapDescriptor? icon;
 
   MapMarker({
     @required this.id,
@@ -18,7 +18,7 @@ class MapMarker extends Clusterable {
     childMarkerId,
   }) : super(
     markerId: id,
-    latitude: position.latitude,
+    latitude: position!.latitude,
     longitude: position.longitude,
     isCluster: isCluster,
     clusterId: clusterId,
@@ -27,11 +27,11 @@ class MapMarker extends Clusterable {
   );
 
   Marker toMarker() => Marker(
-    markerId: MarkerId(id),
+    markerId: MarkerId(id!),
     position: LatLng(
-      position.latitude,
-      position.longitude,
+      position!.latitude,
+      position!.longitude,
     ),
-    icon: icon,
+    icon: icon!,
   );
 }

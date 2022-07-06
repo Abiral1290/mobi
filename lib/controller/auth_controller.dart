@@ -15,8 +15,8 @@ import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   bool isLoggedIn = false;
-  SalesOfficer _officer;
-  SalesOfficer get user => _officer;
+  SalesOfficer? _officer;
+  SalesOfficer get user => _officer!;
 
   AuthController() {
     getLoggedInData();
@@ -27,8 +27,8 @@ class AuthController extends GetxController {
       if (value != null) {
         isLoggedIn = true;
         _officer = SalesOfficer.fromJson(json.decode(value));
-        print(_officer.toJson());
-        print(_officer.apiToken);
+        print(_officer!.toJson());
+        print(_officer!.apiToken);
         update();
       }
     });

@@ -25,10 +25,10 @@ class ChannelController extends GetxController{
 
     //selectedid = channelList.first.channel;
     var newlist = channelList.where((element) => element.channel== channel);
-    selectedchannel = newlist.first.channel;
+    selectedchannel = newlist.first.channel!;
 
     var list = channelList.where((element) => element.channel== selectedchannel);
-    selectedid = list.first.id;
+    selectedid = list.first.id!;
     //var news =channelList.forEach((element) {element.channel == selectedchannel;});
     //idss.add(news);
     // selectedid = channel_id;
@@ -89,8 +89,8 @@ class ChannelController extends GetxController{
     if (conn) {
       await fetchChannelApi().then((value) async {
         print(value.response);
-        if (value.success) {
-          channelList = value.response;
+        if (value.success!) {
+          channelList = value.response!;
           print(channelList.length);
         //  setSelectedTown(channelList.first.id );
          // setSelectedid(channelList.first.channel );
@@ -102,7 +102,7 @@ class ChannelController extends GetxController{
           // Get.find<PreferenceController>()
           //     .saveAddress(jsonEncode(value.response));
         }else{
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
          channelList= [];
           update();
         }

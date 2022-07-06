@@ -34,32 +34,32 @@ class ViewSalesPage extends StatelessWidget {
       body: GetBuilder<ProductsController>(
         builder: (productsController) {
           return ListView.builder(
-              itemCount: Get.find<ProductsController>().localSalesList.length,
+              itemCount: Get.find<ProductsController>().localSalesList!.length,
               itemBuilder: (builder, index) {
                 return ListTile(
                   title: Text(DateFormat().add_yMEd().format(DateTime.parse(
                       Get.find<ProductsController>()
-                          .localSalesList[index]
+                          .localSalesList![index]
                           .soldAt!))),
                   subtitle: ExpansionTile(
                     title: Text(Get.find<OutletsController>()
-                        .outletList
+                        .outletList!
                         .where((element) =>
                     element.id ==
                         int.parse(Get.find<ProductsController>()
-                            .localSalesList[index]
+                            .localSalesList![index]
                             .outletId!))
                         .toList()
                         .first
                         .name!),
                     children: jsonDecode((Get.find<ProductsController>()
-                        .localSalesList[index]
+                        .localSalesList![index]
                         .orders!))
                         .map<Widget>((product) {
                       print(product);
                       return ListTile(
                         title: Text(Get.find<ProductsController>()
-                            .productList
+                            .productList!
                             .where((element) =>
                         element.id == int.parse(product["product_id"]))
                             .toList()

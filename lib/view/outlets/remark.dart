@@ -133,7 +133,7 @@ class RemarkPage extends StatelessWidget {
                           Expanded(
                             child: Text(
                               Get.find<OutletsController>()
-                                  .outletList
+                                  .outletList!
                                   .where((element) =>
                               element.id ==
                                   int.parse(selectedOutletlist[index]
@@ -462,12 +462,12 @@ class RemarkPage extends StatelessWidget {
                                 //   child: CircularProgressIndicator(),
                                 // )
                                      Get.find<OutletsController>()
-                                    .outletList
+                                    .outletList!
                                     .isEmpty
                                     ? Center(child: Text("No cts"))
                                     : _buildListViewWidget(
                                     Get.find<OutletsController>()
-                                        .outletList);
+                                        .outletList!);
                             },
                           ),
                         ],

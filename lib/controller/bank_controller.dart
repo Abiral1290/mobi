@@ -4,8 +4,8 @@ import 'package:mobitrack_dv_flutter/model/bank.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class BankController extends GetxController {
-  List<Bank> bankList;
-  DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  List<Bank?> bankList = [];
+  DatabaseHelper? databaseHelper = DatabaseHelper.instance;
 
   BankController() {
     getBankListFromAPI();
@@ -16,18 +16,18 @@ class BankController extends GetxController {
     if (conn) {
       await fetchBanks().then((value) async {
         print(value.response);
-        await databaseHelper.deleteAllBanks().then((res) {
-          if (value.success) {
-            for (var data in value.response) {
-              databaseHelper.insertBank(data).then((value) => print(value));
+        await databaseHelper!.deleteAllBanks().then((res) {
+          if (value.success!) {
+            for (var data in value.response!) {
+              databaseHelper!.insertBank(data).then((value) => print(value));
             }
           } else {
-            Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+            Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           }
         });
       });
     }
-    databaseHelper.getAllBankData().then((value) {
+    databaseHelper!.getAllBankData().then((value) {
       if (value != null) {
         bankList = value;
         update();

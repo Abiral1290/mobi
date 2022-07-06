@@ -7,13 +7,13 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 import '../model/address.dart';
 
 class Routecontroller extends GetxController {
-  List<Routes> routeList = [] ?? "";
-  Routes routes ;
-  List<Routes> searchedroutelist = [];
-  String selectedroute;
-  int selectedid =0 ;
-  DatabaseHelper databaseHelper = DatabaseHelper.instance;
-  List<Routes> routess= [];
+  List<Routes>? routeList = [];
+  Routes? routes ;
+  List<Routes>? searchedroutelist = [];
+  String? selectedroute;
+  int? selectedid =0 ;
+  DatabaseHelper? databaseHelper = DatabaseHelper.instance;
+  List<Routes>? routess= [];
 
 
   Routecontroller() {
@@ -21,7 +21,7 @@ class Routecontroller extends GetxController {
   }
   setSelectedProvince(String route ){
    // selectedroute = route;
-    var list = routeList.where((element) => element.routename == route);
+    var list = routeList!.where((element) => element.routename == route);
     selectedroute = list.first.routename.toString();
     selectedid = list.first.id;
     update();
@@ -30,13 +30,13 @@ class Routecontroller extends GetxController {
   //
   fetchroute() {
     fetchRouteApi().then((value) {
-      if (value.success) {
+      if (value.success!) {
         routeList = value.response;
-        print(routeList.length);
+        print(routeList!.length);
        // setSelectedProvince(routeList.first.id.toString());
         update();
       } else {
-        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+        Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
         routeList = [];
         update();
       }
@@ -65,9 +65,9 @@ class Routecontroller extends GetxController {
 
   storeRouteOffline(Routes route) async {
     //sales.id = DateTime.now().millisecondsSinceEpoch;
-    databaseHelper.insertroutes(route).then((value) {
+    databaseHelper!.insertroutes(route).then((value) {
       if (value) {
-        routess.add(route);
+        routess!.add(route);
        // localSalesList.add(sales);
         print(route);
         update();
@@ -88,10 +88,10 @@ class Routecontroller extends GetxController {
   //    update();
   // }
   searchDistributor(String text) {
-    if (routeList.isNotEmpty) {
-      searchedroutelist = routeList
+    if (routeList!.isNotEmpty) {
+      searchedroutelist = routeList!
           .where((element) =>
-          element.routename.toLowerCase().contains(text.toLowerCase()))
+          element.routename!.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }

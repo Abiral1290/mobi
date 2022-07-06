@@ -163,13 +163,13 @@ class _DetailsProductState extends State<DetailsProduct> {
                           soldAt:
                           DateTime.now().toString(),
                           outletId: widget.outlet!.id!.toString(),
-                          latitude:  location.userPosition.latitude.toString(),
-                          longitude:   location.userPosition.longitude.toString(),
+                          latitude:  location.userPosition!.latitude.toString(),
+                          longitude:   location.userPosition!.longitude.toString(),
                           //remark_image: "",
                         );
                         print(widget.outlet!.id.toString());
-                        print(location.userPosition.latitude.toString());
-                        print(location.userPosition.longitude.toString());
+                        print(location.userPosition!.latitude.toString());
+                        print(location.userPosition!.longitude.toString());
                         print(widget.outlet!.id);
                         // var register = Outlet(
                         //   outid:  outlet.id,

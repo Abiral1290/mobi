@@ -222,7 +222,7 @@ class _AddCollectionsPageState extends State<AddCollectionsPage> {
 
                           value: value,
                           child: Text(
-                            value.bankName!,
+                            value!.bankName!,
                             style: TextStyle(color: Colors.black),
                           ),
                         );

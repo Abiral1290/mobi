@@ -152,15 +152,15 @@ import '../model/alloutlet.dart';
 import '../model/distributor_route.dart';
 
 class OutletsController extends GetxController {
-  List<Outlet> outletList = [];
-  List<OutletPost> outletLists = [];
-  List<OutletPost> allOutlet = [];
-  List<Outlet> searchList = [];
-  List<LatLng> latlng =[];
-  List<Outlet > formattedlist = [];
-  Outlet let;
-  Outlet get marker =>let;
-  bool selectedtick ;
+  List<Outlet>? outletList = [];
+  List<OutletPost>? outletLists = [];
+  List<OutletPost>? allOutlet = [];
+  List<Outlet>? searchList = [];
+  List<LatLng>? latlng =[];
+  List<Outlet>? formattedlist = [];
+  Outlet? let;
+  Outlet? get marker =>let;
+  bool? selectedtick ;
   var selectedDrowpdown = 'Outlet Closed Image';
   List item = ["Outlet Closed Image","Stock Availabe Image","margin Issue","Owner not in shop","Credit limit Issue"];
   var image;
@@ -173,7 +173,7 @@ class OutletsController extends GetxController {
   }
 
   addoutletInList(String outletid) {
-    for (var outet in outletList) {
+    for (var outet in outletList!) {
       if (outletid == outet.id.toString()) {
         outet.selected = true;
         break;
@@ -192,18 +192,18 @@ class OutletsController extends GetxController {
   //   update();
   // }
   addOutlet(OutletPost o) {
-    allOutlet.add(o);
+    allOutlet!.add(o);
     update();
   }
    setitem(String items){
     //selectedDrowpdown = item.first;
     selectedDrowpdown= items;
-    items =Constants.item;
+    items =Constants.item!;
     update();
    }
 
    imagewiseoutlet(Outlet outlet){
-    var imageUrl = outletList.where((element) => element.id == outlet.id);
+    var imageUrl = outletList!.where((element) => element.id == outlet.id);
      image= imageUrl.first.image;
      Constants.image = imageUrl.first.image;
    }
@@ -261,17 +261,17 @@ class OutletsController extends GetxController {
     var conn = await Utilities.isInternetWorking();
     if (conn) {
       await fetchOutletsApi().then((value) async {
-        if (value.success) {
+        if (value.success!) {
           await DatabaseHelper.instance.deleteSyncedOutlet();
 
           outletList = value.response;
           //  let = outletList.forEach((element) {element.latitude.toString();});
-          outletList.forEach((o) {
+          outletList!.forEach((o) {
            // DatabaseHelper.instance.insertOutlet(o);
           });
           update();
         } else {
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           outletList = [];
           update();
         }
@@ -279,7 +279,7 @@ class OutletsController extends GetxController {
     }
     outletLists = await DatabaseHelper.instance.getAllOutletData();
     update();
-    print(outletLists.length);
+    print(outletLists!.length);
   }
   // fetchOutletss() async {
   //   var conn = await Utilities.isInternetWorking();
@@ -313,21 +313,20 @@ class OutletsController extends GetxController {
   //   //Get.find<LocationController>().setNearestOutletName();
   // }
   formatOutletReport(SalesReport salesReport){
-    formattedlist = outletList.where((element) => element.outid == salesReport.outletId).toList();
+    formattedlist = outletList!.where((element) => element.outid == salesReport.outletId).toList();
 
-    if(   selectedtick = true ){
-      Get.find<SalesReportController>().formattedSalesReportList.where((element) => element.outletId == outletList.first.id ).toList();
-
+    if(selectedtick = true){
+      Get.find<SalesReportController>().formattedSalesReportList!.where((element) => element.outletId == outletList!.first.id ).toList();
     }else{
       selectedtick =false;
     }
     update();
   }
   searchOutlets(String text) {
-    if (outletList != null && outletList.isNotEmpty) {
-      searchList = outletList
+    if (outletList!.isNotEmpty) {
+      searchList = outletList!
           .where((element) =>
-          element.name.toLowerCase().contains(text.toLowerCase()))
+          element.name!.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }

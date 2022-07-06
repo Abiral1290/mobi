@@ -12,11 +12,11 @@ class DistributorController extends GetxController {
 
   fetchDistributor() {
     fetchDistributorsApi().then((value) {
-      if (value.success) {
-        distributorList = value.response;
+      if (value.success!) {
+        distributorList = value.response!;
         update();
       } else {
-        Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+        Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
         distributorList = [];
         update();
       }
@@ -47,7 +47,7 @@ class DistributorController extends GetxController {
     if (distributorList.isNotEmpty) {
       searchedDistributorList = distributorList
           .where((element) =>
-              element.name.toLowerCase().contains(text.toLowerCase()))
+              element.name!.toLowerCase().contains(text.toLowerCase()))
           .toList();
       update();
     }

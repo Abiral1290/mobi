@@ -29,7 +29,7 @@ class PreferenceController extends GetxController {
     }
   }
 
-  Future<String> getUser() async {
+  Future<String?> getUser() async {
     try {
       var pref = await SharedPreferences.getInstance();
       return pref.getString(user);
@@ -70,7 +70,7 @@ class PreferenceController extends GetxController {
     }
   }
 
-  Future<String> getProduct() async {
+  Future<String?> getProduct() async {
     try {
       var pref = await SharedPreferences.getInstance();
       return pref.getString(product);
@@ -81,7 +81,7 @@ class PreferenceController extends GetxController {
     }
   }
 
-  Future<String> getAddress() async {
+  Future<String?> getAddress() async {
     try {
       var pref = await SharedPreferences.getInstance();
       return pref.getString(address);
@@ -161,7 +161,7 @@ class PreferenceController extends GetxController {
     }
   }
 
-  Future<String> getOutlet() async{
+  Future<String?> getOutlet() async{
     try{
       var pre = await SharedPreferences.getInstance();
       return pre.getString(outlet)?? '';
@@ -172,7 +172,7 @@ class PreferenceController extends GetxController {
     }
   }
 
-  Future<String> getDistributor() async {
+  Future<String?> getDistributor() async {
     try {
       var pref = await SharedPreferences.getInstance();
       return pref.getString(distributors) ?? "";
@@ -193,7 +193,7 @@ class PreferenceController extends GetxController {
     }
   }
 
-  Future<String> getLocation() async {
+  Future<String?> getLocation() async {
     try {
       var pref = await SharedPreferences.getInstance();
       return pref.getString(location) ?? "";

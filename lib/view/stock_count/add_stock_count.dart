@@ -11,7 +11,7 @@ import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 class AddStockCount extends StatefulWidget {
   AddStockCount({@required this.stockType});
 
-  String stockType;
+  String? stockType;
 
   @override
   State<AddStockCount> createState() => _AddStockCountState();
@@ -69,7 +69,7 @@ class _AddStockCountState extends State<AddStockCount> {
                     style: titleStyle,
                   ),
                   Text(
-                    products.name,
+                    products.name!,
                     overflow: TextOverflow.visible,
                     maxLines: null,
                     style: contentStyle,
@@ -134,9 +134,9 @@ class _AddStockCountState extends State<AddStockCount> {
                     selectedStockType.value,
                   ).then((value) {
                     Get.back();
-                    Utilities.showInToast(value.message,
+                    Utilities.showInToast(value.message!,
                         toastType: ToastType.SUCCESS);
-                    if (value.success) {
+                    if (value.success!) {
                       Get.back();
                     }
                   });
@@ -183,7 +183,7 @@ class _AddStockCountState extends State<AddStockCount> {
                               ));
                         }).toList(),
                         onChanged: (s) {
-                          selectedStockType.value = s;
+                          selectedStockType.value = s!;
                         },
                       ),
                     )
@@ -205,7 +205,7 @@ class _AddStockCountState extends State<AddStockCount> {
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
-                    : Get.find<ProductsController>().productList.isEmpty
+                    : Get.find<ProductsController>().productList!.isEmpty
                         ? Center(child: Text("No Products"))
                         : Scrollbar(
                             isAlwaysShown: true,
@@ -214,12 +214,12 @@ class _AddStockCountState extends State<AddStockCount> {
                             hoverThickness: 10.0,
                             child: ListView.builder(
                               itemCount: Get.find<ProductsController>()
-                                  .productList
+                                  .productList!
                                   .length,
                               itemBuilder: (context, index) {
                                 return buildMainTile(
                                     Get.find<ProductsController>()
-                                        .productList[index]);
+                                        .productList![index]);
                               },
                             ),
                           );

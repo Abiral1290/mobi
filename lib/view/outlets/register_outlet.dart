@@ -318,7 +318,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   // hint: Text(
                   //     Get.find<Routecontroller>().selectedchannel),
                   items:
-                  Get.find<Routecontroller>().routeList.map((e) {
+                  Get.find<Routecontroller>().routeList!.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.routename.toString(), child: Text(e.routename.toString()));
                   }).toList(),
@@ -385,7 +385,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         padding: const EdgeInsets.all(10.0),
         child: GetBuilder<Routecontroller>(
           builder: (builder) {
-            return Get.find<Routecontroller>().routess.isEmpty
+            return Get.find<Routecontroller>().routess!.isEmpty
                 ? SizedBox()
                 : InputDecorator(
               decoration: decoration("Select Route"),
@@ -397,9 +397,9 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   isDense: true,
                   isExpanded: true,
                   hint: Text(
-                      Get.find<Routecontroller>().routess.first.routename!),
+                      Get.find<Routecontroller>().routess!.first.routename!),
                   items:
-                  Get.find<Routecontroller>().routess.map((e) {
+                  Get.find<Routecontroller>().routess!.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.routename, child: Text(e.routename!));
                   }).toList(),
@@ -532,7 +532,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         padding: const EdgeInsets.all(10.0),
         child: GetBuilder<TownController>(
           builder: (builder) {
-            return Get.find<TownController>().townlist.isEmpty
+            return Get.find<TownController>().townlist!.isEmpty
                 ? SizedBox()
                 : InputDecorator(
               decoration: decoration("Select Town"),
@@ -543,14 +543,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   iconDisabledColor: Colors.red,
                   isDense: true,
                   isExpanded: true,
-                  hint: Text( Get.find<TownController>().selectedtowns),
+                  hint: Text(Get.find<TownController>().selectedtowns!),
                   items:
                   // item_town.map((e) {
                   //   return DropdownMenuItem<String>(
                   //     value: e, child: Text(e),
                   //   );
                   // }),
-                  Get.find<TownController>().townlist.map((e) {
+                  Get.find<TownController>().townlist!.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.town, child: Text(e.town!));
                   }).toList(),
@@ -572,7 +572,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
         padding: const EdgeInsets.all(10.0),
         child: GetBuilder<TownController>(
           builder: (builder) {
-            return Get.find<TownController>().townlist.isEmpty
+            return Get.find<TownController>().townlist!.isEmpty
                 ? SizedBox()
                 : InputDecorator(
               decoration: decoration("Select Town"),
@@ -583,14 +583,14 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                   iconDisabledColor: Colors.red,
                   isDense: true,
                   isExpanded: true,
-                    hint: Text( Get.find<TownController>().selectedtowns),
+                    hint: Text( Get.find<TownController>().selectedtowns!),
                   items:
                   // item_town.map((e) {
                   //   return DropdownMenuItem<String>(
                   //     value: e, child: Text(e),
                   //   );
                   // }),
-                  Get.find<TownController>().townlist.map((e) {
+                  Get.find<TownController>().townlist!.map((e) {
                     return DropdownMenuItem<String>(
                         value: e.town, child: Text(e.town!));
                   }).toList(),
@@ -854,12 +854,12 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                         // ),
                        //  Constants.selectedRoute == null?
                        // _buildzoneDropdown(): SizedBox(),
-                        Get.find<OutletsController>().outletList.isEmpty?
+                        Get.find<OutletsController>().outletList!.isEmpty?
                         _buildtownDropdown() : SizedBox(),
                      //  _buildzoneDropdown(),
-                        Get.find<OutletsController>().outletList.isEmpty?
+                        Get.find<OutletsController>().outletList!.isEmpty?
             _buildzoneDropdown() : SizedBox(),
-                        Get.find<OutletsController>().outletList.isEmpty?
+                        Get.find<OutletsController>().outletList!.isEmpty?
                          _buildchanelDropdown() : SizedBox(),
                         Constants.selectedRoute == null?
                        _buildrouteDropdown() :SizedBox(),
@@ -1086,7 +1086,7 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                           // distributer_id == null ? Get.find<AuthController().: distributer_id,
                                salesOfficer:  Get.find<AuthController>().user.id.toString(),
                                townId:
-                               Get.find<TownController>().selectedtown== 0 ? Get.find<OutletsController>().outletList.first.town_id:
+                               Get.find<TownController>().selectedtown== 0 ? Get.find<OutletsController>().outletList!.first.town_id:
                                Get.find<TownController>().selectedtown.toString(),
 
                                 // Get.find<OutletsController>().outletList.first.town_id== null
@@ -1096,20 +1096,20 @@ class _RegisterShopPageState extends State<RegisterShopPage> {
                              //  Get.find<TownController>().selectedtown,
                               //  : Get.find<TownController>().selectedZone,
                                 channelId:
-                                Get.find<ChannelController>().selectedid   == 0 ?Get.find<OutletsController>().outletList.first.channel_id:
+                                Get.find<ChannelController>().selectedid   == 0 ?Get.find<OutletsController>().outletList!.first.channel_id:
                                 Get.find<ChannelController>().selectedid.toString(),
                                 // Get.find<OutletsController>().outletList.first.channel_id== null ?
                                 // Get.find<ChannelController>().selectedchannel.toString(): Get.find<OutletsController>().outletList.first.channel_id,
                                 //Constants.selectedRoute.id.toString(),
                                 //Get.find<ChannelController>().selectedchannel,
                                 categoryId:
-                                Get.find<CategoriesController>().selectedid.isEmpty ? Get.find<OutletsController>().outletList.first.category_id:
+                                Get.find<CategoriesController>().selectedid.isEmpty ? Get.find<OutletsController>().outletList!.first.category_id:
                                 Get.find<CategoriesController>().selectedid,
                                 // Get.find<OutletsController>().outletList.first.category_id == null ?Get.find<CategoriesController>().selectedCategory :
                                 // Get.find<OutletsController>().outletList.first.category_id ,
                                 //Constants.selectedRoute.id.toString(),
                                 routeId:
-                                Constants.selectedRoute!.id.toString().isNotEmpty ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute!.id.toString(),
+                                Constants.selectedRoute!.id.toString().isNotEmpty ?   Get.find<OutletsController>().outletList!.first.route_id:  Constants.selectedRoute!.id.toString(),
                                 //   Constants.selectedRoute.id.toString() == null? Get.find<Routecontroller>().selectedroute : Constants.selectedRoute.id.toString() ,
                              //   //route  ,
                                 //"1",

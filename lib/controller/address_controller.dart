@@ -65,7 +65,7 @@ class AddressController extends GetxController {
     var newprovinceList =
         addressList.groupListsBy((element) => element.province);
     for (var list in newprovinceList.keys) {
-      provinceList.add(list);
+      provinceList.add(list!);
     }
     setSelectedProvince(provinceList.first);
 
@@ -78,7 +78,7 @@ class AddressController extends GetxController {
     var newprovinceList =
     addressList.groupListsBy((element) => element.province);
     for (var list in newprovinceList.keys) {
-      provinceList.add(list);
+      provinceList.add(list!);
     }
     setSelectedProvince(provinceList.first);
 
@@ -94,7 +94,7 @@ class AddressController extends GetxController {
         .toList();
     var newdistrictList = newList.groupListsBy((element) => element.district);
     newdistrictList.keys.forEach((district) {
-      districtList.add(district);
+      districtList.add(district!);
     });
     setSelectedDistrict(districtList.first);
 
@@ -111,7 +111,7 @@ class AddressController extends GetxController {
     print(newList);
     var newArealist = newList.groupListsBy((element) => element.localLevelEn);
     newArealist.keys.forEach((area) {
-      areaList.add(area);
+      areaList.add(area!);
     });
     setSelectedArea(areaList.first);
 
@@ -128,7 +128,7 @@ class AddressController extends GetxController {
     if (conn) {
       await fetchAddressApi().then((value) async {
         print(value.response);
-        if (value.success) {
+        if (value.success!) {
           print(value.response);
           Get.find<PreferenceController>()
               .saveAddress(jsonEncode(value.response));

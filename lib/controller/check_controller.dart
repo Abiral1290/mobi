@@ -3,10 +3,10 @@ import 'package:mobitrack_dv_flutter/model/check_in_out.dart';
 import 'package:mobitrack_dv_flutter/utils/utilities.dart';
 
 class CheckController extends GetxController{
-  List<CheckInOut> checkin =[];
+  List<CheckInOut>? checkin =[];
   var dates ;
-  List datess;
-  DateTime datetime;
+  List? datess;
+  DateTime? datetime;
 
   CheckController(){
     fetchCheckidata();
@@ -16,13 +16,13 @@ class CheckController extends GetxController{
     var conn = await Utilities.isInternetWorking();
     if(conn)  {
       await fetchcheckDataApi().then((value) {
-        if(value.success){
+        if(value.success!){
       //   dates = value.response;
           checkin = value.response;
 
           update();
         }else{
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           update();
         }
       });
@@ -30,7 +30,7 @@ class CheckController extends GetxController{
   }
   datetimecheckin(){
    // DateTime fits = checkin.first.checkinDeviceTime;
-    datetime =checkin.first.checkinDeviceTime.add( Duration(hours: 6));
+    datetime =checkin!.first.checkinDeviceTime!.add( Duration(hours: 6));
   }
   groupby (){
      datess = dates.groupListsBy((element) => element.date);

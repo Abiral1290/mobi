@@ -7,13 +7,13 @@ import 'package:mobitrack_dv_flutter/model/town.dart';
 import '../utils/utilities.dart';
 
 class TownController extends GetxController {
-  List<Town> townlist = [];
-  List<Town> list = [];
-  List<String> name = [];
-  String selectedtowns = '';
-  int selectedtown = 0;
-  String selectedZone = "";
-  int selectedZones;
+  List<Town>? townlist = [];
+  List<Town>? list = [];
+  List<String>? name = [];
+  String? selectedtowns = '';
+  int? selectedtown = 0;
+  String? selectedZone = "";
+  int? selectedZones;
  // int selectedTown;
 
   TownController() {
@@ -26,7 +26,7 @@ class TownController extends GetxController {
   setSelectedTown(String town){
    // selectedtown = town;
    // selectedTown = town_id;
-    var newlist = townlist.where((element) => element.town == town);
+    var newlist = townlist!.where((element) => element.town == town);
     selectedtowns = newlist.first.town;
     selectedtown = newlist.first.id;
    update();
@@ -46,13 +46,13 @@ class TownController extends GetxController {
     if (conn) {
       await fetchTownApi().then((value) async{
         print(value.response);
-        if (value.success){
+        if (value.success!){
           townlist = value.response;
-          print(townlist.length);
+          print(townlist!.length);
        //   setSelectedTown(townlist.first.id
             //  townlist.first.id
         //  );
-          setSelectionZone(townlist.first.toString());
+          setSelectionZone(townlist!.first.toString());
           update();
            // var newlist = list.where((element) => element.town == selectedTown);
            // selectedTown = newlist.first.id;
@@ -61,7 +61,7 @@ class TownController extends GetxController {
           // Get.find<PreferenceController>()
           //     .saveAddress(jsonEncode(value.response));
         } else {
-          Utilities.showInToast(value.message, toastType: ToastType.ERROR);
+          Utilities.showInToast(value.message!, toastType: ToastType.ERROR);
           townlist = [];
           update();
         }
@@ -69,7 +69,7 @@ class TownController extends GetxController {
     }
     fetchTown() {
       fetchTownApi().then((value) {
-        if (value.success) {
+        if (value.success!) {
           townlist = value.response;
         }
       }

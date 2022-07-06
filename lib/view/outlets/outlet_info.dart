@@ -386,7 +386,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                               id: id == null ? DateTime.now().millisecondsSinceEpoch : id,
                               outletId:  DateTime.now().millisecondsSinceEpoch.toString() ,
                               contact: _phoneCntrl.text,
-                              latitude:Get.find<LocationController>().userPosition.longitude.toString(),
+                              latitude:Get.find<LocationController>().userPosition!.longitude.toString(),
                               name: _nameCntrl.text,
                               ownerName: _ownerCntrl.text,
                               distributorId: '',
@@ -394,7 +394,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                               // distributer_id == null ? Get.find<AuthController().: distributer_id,
                               salesOfficer:  Get.find<AuthController>().user.id.toString(),
                               townId:
-                              Get.find<TownController>().selectedtown== 0 ? Get.find<OutletsController>().outletList.first.town_id:
+                              Get.find<TownController>().selectedtown== 0 ? Get.find<OutletsController>().outletList!.first.town_id:
                               Get.find<TownController>().selectedtown.toString(),
 
                               // Get.find<OutletsController>().outletList.first.town_id== null
@@ -404,20 +404,20 @@ class OutletInfoPage extends State<OutletInfoPages>{
                               //  Get.find<TownController>().selectedtown,
                               //  : Get.find<TownController>().selectedZone,
                               channelId:
-                              Get.find<ChannelController>().selectedid   == 0 ?Get.find<OutletsController>().outletList.first.channel_id:
+                              Get.find<ChannelController>().selectedid   == 0 ?Get.find<OutletsController>().outletList!.first.channel_id:
                               Get.find<ChannelController>().selectedid.toString(),
                               // Get.find<OutletsController>().outletList.first.channel_id== null ?
                               // Get.find<ChannelController>().selectedchannel.toString(): Get.find<OutletsController>().outletList.first.channel_id,
                               //Constants.selectedRoute.id.toString(),
                               //Get.find<ChannelController>().selectedchannel,
                               categoryId:
-                              Get.find<CategoriesController>().selectedid.isEmpty ? Get.find<OutletsController>().outletList.first.category_id:
+                              Get.find<CategoriesController>().selectedid.isEmpty ? Get.find<OutletsController>().outletList!.first.category_id:
                               Get.find<CategoriesController>().selectedid,
                               // Get.find<OutletsController>().outletList.first.category_id == null ?Get.find<CategoriesController>().selectedCategory :
                               // Get.find<OutletsController>().outletList.first.category_id ,
                               //Constants.selectedRoute.id.toString(),
                               routeId:
-                              Constants.selectedRoute!.id.toString().isNotEmpty ?   Get.find<OutletsController>().outletList.first.route_id:  Constants.selectedRoute!.id.toString(),
+                              Constants.selectedRoute!.id.toString().isNotEmpty ?   Get.find<OutletsController>().outletList!.first.route_id:  Constants.selectedRoute!.id.toString(),
                               //   Constants.selectedRoute.id.toString() == null? Get.find<Routecontroller>().selectedroute : Constants.selectedRoute.id.toString() ,
                               //   //route  ,
                               //"1",
@@ -434,7 +434,7 @@ class OutletInfoPage extends State<OutletInfoPages>{
                               //   category: _categoryCntrl.text,
                               // visitfrequency: _selectedvalue,
                               //   type: _type,
-                              longitude: Get.find<LocationController>().userPosition.longitude.toString(),
+                              longitude: Get.find<LocationController>().userPosition!.longitude.toString(),
                               image: base64Image,
                             );
                             if (conn) {
